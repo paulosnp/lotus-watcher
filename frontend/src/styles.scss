@@ -1,0 +1,37 @@
+/* --- STYLES.SCSS (Tema Global) --- */
+@import '@angular/material/prebuilt-themes/purple-green.css';
+
+:root {
+  --steam-bg: #171a21;         /* Fundo Principal */
+  --steam-card: #2a475e;       /* Fundo dos Paineis */
+  --steam-text: #c7d5e0;       /* Texto padrão */
+  --steam-accent: #66c0f4;     /* Azul Steam */
+  --color-gain: #4cff50;       /* Verde Neon */
+  --color-loss: #ff4c4c;       /* Vermelho Neon */
+  --font-main: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: var(--steam-bg);
+  color: var(--steam-text);
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Scrollbar Bonita */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--steam-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--steam-card);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--steam-accent);
+}

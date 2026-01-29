@@ -1,0 +1,17 @@
+<div class="main-layout">
+  
+  <nav class="navbar">
+    <div class="nav-brand" routerLink="/">
+      <h1>LOTUS WATCHER <span class="badge">TCG</span></h1>
+    </div>
+
+    <div class="nav-search" *ngIf="!isHomePage">
+      <app-search [isCompact]="true"></app-search>
+    </div>
+  </nav>
+
+  <main class="content-area">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

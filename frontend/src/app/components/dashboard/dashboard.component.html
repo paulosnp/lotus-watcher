@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Bem-vindo ao <span class="highlight">Lotus Watcher</span></h1>
+      <p>Monitore preços, descubra tendências e proteja sua coleção.</p>
+      
+      <div class="hero-search-wrapper">
+        <app-search></app-search>
+      </div>
+    </div>
+  </section>
+
+  <section class="market-overview">
+    
+    <div class="market-list winners">
+      <div class="list-header">
+        <mat-icon>trending_up</mat-icon>
+        <h2>Maiores Altas (24h)</h2>
+      </div>
+      
+      <div class="cards-grid">
+        @for (card of topRisers; track card.id) {
+          <div class="mini-card" (click)="irParaDetalhes(card.id)">
+            <div class="card-thumb">
+              <img [src]="card.imageUrl" 
+              alt="{{ card.name }}"
+              (error)="card.imageUrl = 'https://i.imgur.com/LdOBU1I.jpg'"> 
+            </div>
+            <div class="card-info">
+              <span class="name">{{ card.name }}</span>
+              <span class="set">{{ card.setName }}</span>
+              <span class="price up">+{{ card.priceChangePercentage | number:'1.1-2' }}%</span>
+              <span class="current-price">${{ card.priceUsd }}</span>
+            </div>
+          </div>
+        } @empty {
+          <p class="empty-msg">Carregando dados do mercado...</p>
+        }
+      </div>
+    </div>
+
+    <div class="market-list losers">
+      <div class="list-header">
+        <mat-icon>trending_down</mat-icon>
+        <h2>Maiores Quedas (24h)</h2>
+      </div>
+
+      <div class="cards-grid">
+        @for (card of topFallers; track card.id) {
+          <div class="mini-card" (click)="irParaDetalhes(card.id)">
+            <div class="card-thumb">
+                <img [src]="card.imageUrl" 
+                    alt="{{ card.name }}"
+                    (error)="card.imageUrl = 'https://i.imgur.com/LdOBU1I.jpg'">
+              </div>
+            <div class="card-info">
+              <span class="name">{{ card.name }}</span>
+              <span class="set">{{ card.setName }}</span>
+              <span class="price down">{{ card.priceChangePercentage | number:'1.1-2' }}%</span>
+              <span class="current-price">${{ card.priceUsd }}</span>
+            </div>
+          </div>
+        } @empty {
+          <p class="empty-msg">Carregando dados do mercado...</p>
+        }
+      </div>
+    </div>
+
+  </section>
+
+</div>

@@ -1,0 +1,66 @@
+<div *ngIf="isLoading" class="loading-container">
+  <h2>Acessando os arquivos do multiverso...</h2>
+</div>
+
+<div class="details-container" *ngIf="!isLoading && card">
+  
+  <button class="back-btn" (click)="voltar()">← Voltar</button>
+
+  <div class="top-deck">
+    
+    <div class="card-profile">
+      <div class="card-image-box">
+        <img [src]="card.imageUrl" 
+             class="main-img" 
+             (error)="card.imageUrl = 'assets/placeholder_card.png'">
+      </div>
+      
+      <div class="card-info-box">
+        <h1>{{ card.name }}</h1>
+        <span class="set-badge">{{ card.setName }}</span>
+        
+        <div class="price-box">
+          <span class="label">Preço Atual</span>
+          <span class="value">${{ card.priceUsd | number:'1.2-2' }}</span>
+        </div>
+        <a [href]="getLigaMagicLink()" target="_blank" class="ligamagic-btn">
+          <mat-icon>shopping_cart</mat-icon>
+          Ver na LigaMagic
+        </a>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <h3>Histórico de Preço</h3>
+      <div class="chart-wrapper">
+        <canvas baseChart
+                [data]="lineChartData"
+                [options]="lineChartOptions"
+                [type]="'line'">
+        </canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <div class="prints-section">
+    <h2>Outras Versões & Edições</h2>
+    <div class="prints-grid">
+      @for (print of prints; track print.id) {
+        <div class="print-item">
+            <img [src]="print.image_uris?.normal || print.card_faces?.[0]?.image_uris?.normal" 
+                 [title]="print.set_name">
+            <span class="print-set">{{ print.set_name }}</span>
+            <span class="print-price">
+              {{ (print.prices?.usd | currency:'USD') || '---' }}
+            </span>
+        </div>
+      } @empty {
+        <p class="empty-prints">Nenhuma outra edição encontrada.</p>
+      }
+    </div>
+  </div>
+
+</div>

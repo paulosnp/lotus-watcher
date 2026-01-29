@@ -1,0 +1,84 @@
+/* =============================================== */
+/* ESTILO PADRÃO (GRANDE - PARA A HOME)           */
+/* =============================================== */
+.search-container {
+  width: 100%;
+  max-width: 800px; /* Bem largo na Home */
+  margin: 0 auto;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Input Grande */
+::ng-deep .custom-search .mat-mdc-text-field-wrapper {
+  background-color: #1b2838 !important; 
+  border-radius: 50px !important; /* Bem arredondado na Home */
+  padding: 0 25px !important; 
+  height: 60px !important; /* Altura generosa */
+  display: flex;
+  align-items: center;
+  border: 1px solid #2a475e;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Sombra chique */
+}
+
+/* Texto Grande */
+::ng-deep .custom-search input.mat-mdc-input-element {
+  font-size: 1.3rem !important; /* Letra maior */
+  color: white !important;
+  caret-color: #66c0f4 !important;
+}
+
+::ng-deep .custom-search .mat-icon {
+  transform: scale(1.5); /* Lupa grande */
+  color: #66c0f4 !important;
+  margin-right: 10px;
+}
+
+
+/* =============================================== */
+/* MODO COMPACTO (PEQUENO - PARA O HEADER)        */
+/* =============================================== */
+.search-container.compact-mode {
+  max-width: 100%; /* Ocupa o espaço do header */
+  margin: 0; 
+}
+
+/* Input Pequeno */
+.compact-mode ::ng-deep .custom-search .mat-mdc-text-field-wrapper {
+  background-color: #0b1015 !important; /* Mais escuro */
+  border-radius: 4px !important; /* Quadrado "Tech" */
+  padding: 0 10px !important;
+  height: 40px !important; /* Altura reduzida */
+  box-shadow: none;
+  border: 1px solid #1a2635;
+}
+
+/* Texto Pequeno */
+.compact-mode ::ng-deep .custom-search input.mat-mdc-input-element {
+  font-size: 0.95rem !important;
+}
+
+.compact-mode ::ng-deep .custom-search .mat-icon {
+  transform: scale(0.9); /* Lupa pequena */
+  margin-right: 0;
+}
+
+
+/* --- COMUM A AMBOS (LIMPEZA DO MATERIAL) --- */
+::ng-deep .mat-mdc-form-field-subscript-wrapper,
+::ng-deep .mat-mdc-line-ripple { display: none !important; }
+
+::ng-deep .custom-search .mat-mdc-form-field-flex {
+  height: 100%; align-items: center !important; padding: 0 !important;
+}
+
+/* --- MENSAGENS FLUTUANTES --- */
+.loading, .error {
+  position: absolute;
+  top: 110%; left: 0; right: 0;
+  padding: 10px; border-radius: 4px;
+  z-index: 999; text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.loading { background: #17222e; color: #66c0f4; border: 1px solid #2a475e; }
+.error { background: #2e1717; color: #ff6666; border: 1px solid #5e2a2a; }

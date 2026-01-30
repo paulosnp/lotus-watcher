@@ -107,6 +107,7 @@ cd backend
 mvn spring-boot:run
 ```
 *O servidor iniciará na porta `8080`.*
+> **Nota:** A aplicação espera um banco PostgreSQL com usuário `postgres` e senha `postgres`. Se sua senha for diferente, defina a variável de ambiente `DB_PASSWORD` ou edite o `application.properties`.
 
 ### Passo 3: Executar o Frontend
 Em um **novo terminal**:

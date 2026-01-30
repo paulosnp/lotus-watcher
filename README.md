@@ -3,7 +3,7 @@
   <h3>Monitoramento de Mercado para Magic: The Gathering</h3>
 
   <p>
-    <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java" alt="Java 21">
+    <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java" alt="Java 21">
     <img src="https://img.shields.io/badge/Spring%20Boot-3.0-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
     <img src="https://img.shields.io/badge/Angular-17-red?style=for-the-badge&logo=angular" alt="Angular">
     <img src="https://img.shields.io/badge/PostgreSQL-H2-blue?style=for-the-badge&logo=postgresql" alt="Database">

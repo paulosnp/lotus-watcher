@@ -32,44 +32,87 @@ public class ScryfallService {
     public Card searchCard(String name) {
         Optional<Card> localCard = cardRepository.findByNameIgnoreCase(name);
         if (localCard.isPresent()) {
-            return updateCardPrice(localCard.get());
+            Card existing = localCard.get();
+            if (existing.getPriceUsd() != null && existing.getPriceUsd() > 0) {
+                return updateCardPrice(existing);
+            }
+            // Se o preço for zero/nulo, removemos a carta "ruim" do banco e deixamos o
+            // código buscar uma nova
+            System.out.println("♻️ Carta local '" + name + "' está sem preço ($" + existing.getPriceUsd()
+                    + "). Substituindo por melhor versão...");
+            cardRepository.delete(existing);
         }
 
         String encodedName = name.replace(" ", "+");
         String url = "https://api.scryfall.com/cards/named?fuzzy=" + encodedName;
-        return fetchAndSave(url);
+
+        JsonNode root = fetchJson(url);
+        if (root == null)
+            return null;
+
+        // SE NÃO TIVER PREÇO, TENTA ACHAR UMA VERSÃO QUE TENHA
+        if (!hasValidPrice(root)) {
+            System.out.println("⚠️ A versão padrão de " + name + " não tem preço. Buscando alternativas...");
+            JsonNode betterVersion = findBestPrint(name);
+            if (betterVersion != null) {
+                root = betterVersion;
+                System.out.println("✅ Versão alternativa encontrada: " + root.get("set_name").asText() + " ($"
+                        + root.get("prices").get("usd").asText() + ")");
+            }
+        }
+
+        return saveCardFromScryfall(root);
     }
 
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
-        return fetchAndSave(url);
+        JsonNode root = fetchJson(url);
+        if (root != null) {
+            return saveCardFromScryfall(root);
+        }
+        return card;
     }
 
     public JsonNode findPrintsByName(String name) {
-        String encodedName = name.replace(" ", "+");
-        String url = "https://api.scryfall.com/cards/search?q=!\"" + encodedName + "\"&unique=prints";
+        try {
+            String query = "!\"" + name + "\"";
+            String encodedQuery = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+            String url = "https://api.scryfall.com/cards/search?q=" + encodedQuery + "&unique=prints";
+            return fetchJson(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    // Método auxiliar para buscar prints e escolher o melhor
+    private JsonNode findBestPrint(String name) {
+        JsonNode prints = findPrintsByName(name);
+        if (prints != null && prints.has("data")) {
+            for (JsonNode print : prints.get("data")) {
+                if (hasValidPrice(print)) {
+                    return print;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Verifica se o JSON da carta tem preço válido
+    private boolean hasValidPrice(JsonNode root) {
+        return root.has("prices")
+                && root.get("prices").has("usd")
+                && !root.get("prices").get("usd").isNull()
+                && root.get("prices").get("usd").asDouble() > 0;
+    }
+
+    private JsonNode fetchJson(String url) {
         try {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
                 return objectMapper.readTree(response.body());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Card fetchAndSave(String url) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                JsonNode root = objectMapper.readTree(response.body());
-                return saveCardFromScryfall(root);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

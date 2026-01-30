@@ -1,0 +1,165 @@
+.steam-footer {
+    background-color: #171a21;
+    width: 100%;
+    padding: 0;
+    margin-top: auto;
+    /* Empurra para o fundo se estiver num flex container */
+    font-family: "Motiva Sans", Sans-serif, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #8f98a0;
+
+    .footer-content {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 16px 0 60px 0;
+    }
+
+    /* Separadores (Linhas horizontais) */
+    .footer-separator {
+        height: 1px;
+        background-color: #363c44;
+        margin: 8px 0;
+        width: 100%;
+    }
+
+    /* Links Gerais */
+    a {
+        color: #8f98a0;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.2s;
+
+        &:hover {
+            color: #ffffff;
+        }
+    }
+
+    /* Layout da Linha Principal */
+    .footer-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 0;
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #8f98a0;
+            opacity: 0.6;
+
+            i {
+                transition: opacity 0.2s;
+
+                &:hover {
+                    opacity: 1;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    /* Marca e Copyright */
+    .brand {
+        font-size: 24px;
+        font-weight: bold;
+        color: #8f98a0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+
+        .brand-lotus {
+            color: #ffffff;
+            /* Efeito gradiente sutil se quiser */
+        }
+    }
+
+    .copyright {
+        line-height: 1.6;
+        font-size: 11px;
+
+        .vat-info {
+            display: inline-block;
+            margin-top: 4px;
+        }
+    }
+
+    /* Links de texto na esquerda */
+    .legal-links {
+        margin-top: 8px;
+
+        .sep {
+            margin: 0 8px;
+            color: #363c44;
+        }
+    }
+
+    /* Links de baixo */
+    .footer-bottom-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding-top: 10px;
+
+        .sep {
+            margin: 0 10px;
+            color: #363c44;
+        }
+
+        .social-icons {
+            margin-left: auto;
+            /* Empurra para direita */
+            display: flex;
+            gap: 10px;
+
+            a {
+                font-size: 18px;
+                opacity: 0.8;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    /* Responsividade: Celular */
+    @media (max-width: 768px) {
+        .footer-content {
+            padding: 20px;
+        }
+
+        .footer-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 30px;
+        }
+
+        .footer-right {
+            flex-direction: row;
+            /* Mantém ícones lado a lado */
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .footer-bottom-links {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+
+            .sep {
+                display: none;
+            }
+
+            .social-icons {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <--- 1. Importar ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private router: Router,
     private cardService: CardService,
-    private cdr: ChangeDetectorRef // <--- 2. Injetar o Despertador
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -38,8 +38,7 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         console.log('Dados Reais:', data);
 
-        // AGORA É DIRETO: Não precisamos mais do .map() para inventar numeros
-        // O Java já mandou o campo "priceChangePercentage" preenchido!
+
         
         if (data && data.risers) {
           this.topRisers = data.risers;

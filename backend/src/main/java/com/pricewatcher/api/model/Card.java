@@ -1,6 +1,6 @@
 package com.pricewatcher.api.model;
 
-import jakarta.persistence.*; // Se der erro aqui, tente "import javax.persistence.*;"
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,21 +22,14 @@ public class Card {
 
     private LocalDateTime lastUpdate;
 
-    // --- RELACIONAMENTO COM HISTÓRICO ---
-    // mappedBy = "card" refere-se ao campo 'card' dentro da classe PriceHistory
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PriceHistory> priceHistory = new ArrayList<>();
 
-    // --- CAMPO CALCULADO (NÃO VAI PRO BANCO) ---
     @Transient
     private Double priceChangePercentage;
 
-    // --- CONSTRUTORES ---
     public Card() {
-        // Construtor vazio necessário para o JPA
     }
-
-    // --- GETTERS E SETTERS ---
 
     public String getId() {
         return id;

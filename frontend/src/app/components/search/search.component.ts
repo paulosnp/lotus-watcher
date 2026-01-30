@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, NgZone } from '@angular/core'; // <--- Adicione Input
+import { Component, Input, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,11 +25,11 @@ export class SearchComponent {
   errorMessage: string = '';
 
   constructor(
-    private cardService: CardService, 
+    private cardService: CardService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone // <--- 2. Injete o NgZone
-  ) {}
+    private ngZone: NgZone
+  ) { }
 
   buscar() {
     if (!this.searchTerm.trim()) return;
@@ -41,22 +41,19 @@ export class SearchComponent {
     this.errorMessage = '';
     this.cdr.detectChanges();
 
-    // Usando subscribe clássico para garantir compatibilidade
+
     this.cardService.searchCard(this.searchTerm).subscribe({
       next: (card) => {
-        
+
         if (card && card.id) {
-            console.log('Carta encontrada. Forçando recarregamento para:', card.id);
-            
-            // --- AQUI ESTÁ A MUDANÇA ---
-            // Isso obriga o navegador a carregar a nova página do zero.
-            // É impossível o Angular "travar" aqui, pois o navegador assume o controle.
-            window.location.assign('/card/' + card.id);
-            
+          console.log('Carta encontrada. Forçando recarregamento para:', card.id);
+
+          window.location.assign('/card/' + card.id);
+
         } else {
-            this.isLoading = false;
-            this.errorMessage = 'Carta não encontrada.';
-            this.cdr.detectChanges();
+          this.isLoading = false;
+          this.errorMessage = 'Carta não encontrada.';
+          this.cdr.detectChanges();
         }
       },
       error: (err) => {

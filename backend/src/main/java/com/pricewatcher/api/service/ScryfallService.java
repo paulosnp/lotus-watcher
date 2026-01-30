@@ -29,7 +29,6 @@ public class ScryfallService {
         this.objectMapper = new ObjectMapper();
     }
 
-    // 1. BUSCAR CARTA
     public Card searchCard(String name) {
         Optional<Card> localCard = cardRepository.findByNameIgnoreCase(name);
         if (localCard.isPresent()) {
@@ -41,13 +40,11 @@ public class ScryfallService {
         return fetchAndSave(url);
     }
 
-    // 2. ATUALIZAR PREÇO
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
         return fetchAndSave(url);
     }
 
-    // 3. BUSCAR PRINTS
     public JsonNode findPrintsByName(String name) {
         String encodedName = name.replace(" ", "+");
         String url = "https://api.scryfall.com/cards/search?q=!\"" + encodedName + "\"&unique=prints";
@@ -64,8 +61,6 @@ public class ScryfallService {
         }
         return null;
     }
-
-    // --- MÉTODOS AUXILIARES ---
 
     private Card fetchAndSave(String url) {
         try {
@@ -107,9 +102,7 @@ public class ScryfallService {
             card.setImageUrl(root.get("card_faces").get(0).get("image_uris").get("normal").asText());
         }
 
-        // --- CORREÇÃO DO ERRO ---
-        // Se a carta é nova, salvamos ela AGORA para garantir que o ID exista no banco.
-        // Sem isso, ao tentar salvar o histórico (que depende do ID da carta), dava erro.
+        // Salva a carta imediatamente se for nova para garantir o ID
         if (isNew) {
             card = cardRepository.saveAndFlush(card); // saveAndFlush força a ida ao banco imediatamente
         }
@@ -123,12 +116,11 @@ public class ScryfallService {
         Double currentDbPrice = card.getPriceUsd();
 
         // Se o preço mudou OU se é carta nova, adiciona histórico
-        // (Nota: removemos a checagem de null do currentDbPrice pois se for nova, já salvamos acima e pode ter ficado null)
         if (currentDbPrice == null || !currentDbPrice.equals(newPrice)) {
             PriceHistory history = new PriceHistory();
             history.setPriceUsd(newPrice);
             history.setTimestamp(LocalDateTime.now());
-            history.setCard(card); // <--- Agora isso funciona porque 'card' já está no banco
+            history.setCard(card);
 
             card.getPriceHistory().add(history);
             card.setPriceUsd(newPrice);

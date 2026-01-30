@@ -1,0 +1,10 @@
+# OS junk files
+*.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Global IDE files
+.vscode/
+.idea/
+*.iml
+*.iws

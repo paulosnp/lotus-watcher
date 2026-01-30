@@ -12,7 +12,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/cards")
-@CrossOrigin(origins = "http://localhost:4200") // Permite o Angular acessar
+@CrossOrigin(origins = "http://localhost:4200")
 public class CardController {
 
     private final CardRepository cardRepository;
@@ -23,7 +23,6 @@ public class CardController {
         this.scryfallService = scryfallService;
     }
 
-    // 1. BUSCA (Comando da Barra de Pesquisa)
     @GetMapping("/search")
     public ResponseEntity<Card> searchCard(@RequestParam String name) {
         Card card = scryfallService.searchCard(name);
@@ -33,7 +32,6 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
-    // 2. DETALHES (Carrega a página da carta)
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCardById(@PathVariable String id) {
         return cardRepository.findById(id)
@@ -41,7 +39,6 @@ public class CardController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 3. HISTÓRICO (Para o gráfico)
     @GetMapping("/{id}/history")
     public ResponseEntity<List<PriceHistory>> getCardHistory(@PathVariable String id) {
         return cardRepository.findById(id)
@@ -49,24 +46,22 @@ public class CardController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 4. MERCADO (Dashboard - Altas e Baixas)
-    // Aqui removemos as chamadas para 'findTopGainers' e fazemos o cálculo na mão
     @GetMapping("/market")
     public Map<String, List<Card>> getMarketOverview() {
         List<Card> allCards = cardRepository.findAll();
 
-        // Calcula a porcentagem para cada carta na memória
+        // Calcula a porcentagem para cada carta
         for (Card card : allCards) {
             card.setPriceChangePercentage(calcularVariacao(card));
         }
 
-        // Ordena os Vencedores (Maior % para Menor)
+        // Ordena os Vencedores
         List<Card> risers = allCards.stream()
                 .sorted(Comparator.comparing(Card::getPriceChangePercentage).reversed())
                 .limit(5)
                 .toList();
 
-        // Ordena os Perdedores (Menor % para Maior)
+        // Ordena os Perdedores
         List<Card> fallers = allCards.stream()
                 .sorted(Comparator.comparing(Card::getPriceChangePercentage))
                 .limit(5)
@@ -79,8 +74,6 @@ public class CardController {
         return marketData;
     }
 
-    // 5. OUTRAS VERSÕES (Prints)
-    // Correção do erro de tipo: Agora retorna JsonNode direto
     @GetMapping("/prints/{name}")
     public ResponseEntity<JsonNode> getCardPrints(@PathVariable String name) {
         JsonNode prints = scryfallService.findPrintsByName(name);
@@ -90,7 +83,6 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
-    // --- LÓGICA MATEMÁTICA ---
     private double calcularVariacao(Card card) {
         if (card.getPriceUsd() == null || card.getPriceHistory().isEmpty()) {
             return 0.0;
@@ -100,7 +92,8 @@ public class CardController {
         // Pega o preço mais antigo disponível para comparar
         double oldPrice = card.getPriceHistory().get(0).getPriceUsd();
 
-        if (oldPrice == 0) return 0.0;
+        if (oldPrice == 0)
+            return 0.0;
 
         return ((currentPrice - oldPrice) / oldPrice) * 100;
     }

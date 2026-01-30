@@ -2,76 +2,106 @@
 :host {
   display: block;
   min-height: 100vh;
-  background-color: #171a21; /* Fundo Global */
+  background-color: var(--steam-bg-dark);
 }
 
 .main-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* --- NAVBAR (Barra do Topo) --- */
+/* --- NAVBAR PROFESSIONAL (Scryfall Style) --- */
 .navbar {
   display: flex;
+  /* Flexbox para alinhar apenas 2 itens principais */
   align-items: center;
-  justify-content: space-between; /* Logo na ponta, Busca na outra */
-  background-color: #171a21;
-  padding: 15px 30px;
-  border-bottom: 1px solid #2a475e; /* Linha sutil separando */
-  gap: 40px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  
-  /* Se quiser que a barra fique fixa enquanto rola a página: */
+  justify-content: space-between;
+  gap: 20px;
+  background-color: var(--steam-header);
+  padding: 0 40px;
+  height: 70px;
+  /* Um pouco mais baixo que antes */
+  border-bottom: 2px solid #000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   position: sticky;
   top: 0;
   z-index: 1000;
-}
 
-/* Estilo do Logo */
-.nav-brand {
-  cursor: pointer;
-  flex-shrink: 0; /* Impede o logo de esmagar */
+  /* 1. Busca (Agora é o elemento principal da esquerda) */
+  .nav-search-box {
+    flex-grow: 1;
+    /* Ocupa o espaço disponível */
+    max-width: 600px;
+    /* Mas não cresce infinitamente */
+    /* <- REMOVIDO para alinhar à esquerda */
+  }
 
-  h1 {
-    font-size: 1.5rem; /* Menor que antes para caber na barra */
-    font-weight: 900;
-    color: white;
-    margin: 0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  /* 2. Botões da Direita (Random) */
+  .nav-actions {
+    display: flex;
+    align-items: center;
 
-    .badge {
-      font-size: 0.7rem;
-      background: #66c0f4;
-      color: black;
-      padding: 2px 6px;
+    .random-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--steam-text-main);
+      padding: 8px 16px;
       border-radius: 4px;
-      vertical-align: middle;
-      margin-left: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-primary);
+      transition: all 0.2s;
+
+      mat-icon {
+        font-size: 20px;
+        height: 20px;
+        width: 20px;
+      }
+
+      .text {
+        font-weight: 500;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border-color: var(--steam-accent);
+        transform: translateY(-2px);
+      }
     }
   }
 }
 
 /* Container da Busca na Navbar */
 .nav-search {
-  flex-grow: 1; /* Ocupa o espaço disponível */
-  max-width: 600px; /* Mas não cresce infinitamente */
+  flex-grow: 1;
+  max-width: 600px;
 }
 
 /* Área do Conteúdo */
 .content-area {
-  padding: 20px;
+  padding: 0;
   flex-grow: 1;
-  overflow-y: auto; /* Scroll apenas aqui dentro se precisar */
+  background: radial-gradient(circle at top, #1b2838 0%, #171a21 100%);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Responsividade: No celular, empilha logo e busca */
+/* Responsividade */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
-    padding: 15px;
-    gap: 15px;
+    padding: 20px;
+    height: auto;
+    gap: 20px;
   }
-  .nav-search { width: 100%; }
+
+  .nav-search {
+    width: 100%;
+  }
 }

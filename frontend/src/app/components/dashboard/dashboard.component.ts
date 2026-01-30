@@ -17,14 +17,14 @@ export class DashboardComponent implements OnInit {
   topRisers: any[] = [];
   topFallers: any[] = [];
   isLoading: boolean = true;
-  
+
   cardBackUrl = 'https://upload.wikimedia.org/wikipedia/en/a/a4/Magic_the_gathering-card_back.jpg';
 
   constructor(
     private router: Router,
     private cardService: CardService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.carregarDadosMercado();
@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit {
         console.log('Dados Reais:', data);
 
 
-        
+
         if (data && data.risers) {
           this.topRisers = data.risers;
         } else {
@@ -67,5 +67,13 @@ export class DashboardComponent implements OnInit {
     if (id) {
       window.location.assign('/card/' + id);
     }
+  }
+
+  onRandomCard() {
+    this.cardService.getRandomCard().subscribe(card => {
+      if (card && card.id) {
+        this.router.navigate(['/card', card.id]);
+      }
+    });
   }
 }

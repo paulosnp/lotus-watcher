@@ -1,12 +1,19 @@
 <div class="search-container" [class.compact-mode]="isCompact">
-  
+
   <div class="search-box">
     <mat-form-field appearance="outline" class="full-width custom-search">
-      <input matInput 
-             placeholder="Digite o nome da carta (ex: Sol Ring)..." 
-             [(ngModel)]="searchTerm" 
-             (keyup.enter)="buscar()">
-             
+
+      <!-- LOGO EMBUTIDA (Apenas Compact Mode) -->
+      @if (isCompact) {
+      <div matPrefix class="search-logo-prefix" routerLink="/">
+        <img src="assets/logo.svg" alt="Home">
+        <div class="separator"></div>
+      </div>
+      }
+
+      <input matInput placeholder="Digite o nome da carta (ex: Sol Ring)..." [(ngModel)]="searchTerm"
+        (keyup.enter)="buscar()">
+
       <button mat-icon-button matSuffix type="button" (click)="buscar()">
         <mat-icon>search</mat-icon>
       </button>
@@ -14,11 +21,11 @@
   </div>
 
   @if (isLoading) {
-    <p class="loading">Buscando no Multiverso...</p>
+  <p class="loading">Buscando no Multiverso...</p>
   }
 
   @if (errorMessage) {
-    <p class="error">{{ errorMessage }}</p>
+  <p class="error">{{ errorMessage }}</p>
   }
 
-  </div>
+</div>

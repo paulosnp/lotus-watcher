@@ -1,37 +1,59 @@
-/* --- STYLES.SCSS (Tema Global) --- */
+/* --- STYLES.SCSS (Tema Global Steam Professional) --- */
 @import '@angular/material/prebuilt-themes/purple-green.css';
+@import '@fortawesome/fontawesome-free/css/all.css';
 
 :root {
-  --steam-bg: #171a21;         /* Fundo Principal */
-  --steam-card: #2a475e;       /* Fundo dos Paineis */
-  --steam-text: #c7d5e0;       /* Texto padrão */
-  --steam-accent: #66c0f4;     /* Azul Steam */
-  --color-gain: #4cff50;       /* Verde Neon */
-  --color-loss: #ff4c4c;       /* Vermelho Neon */
-  --font-main: 'Roboto', sans-serif;
+  /* Paleta Steam Oficial e Adaptada (VIBRANT EDITION) */
+  --steam-bg-dark: #1b2838;
+  /* Fundo Principal */
+  --steam-bg-light: #2a475e;
+  /* Fundo Cards */
+  --steam-header: #171a21;
+  /* Navbar */
+
+  --steam-text-main: #c7d5e0;
+  --steam-text-hover: #ffffff;
+
+  /* CORES VIBRANTES VOLTARAM */
+  --steam-accent: #66c0f4;
+  /* Azul Steam */
+  --steam-accent-dark: #37a8f1;
+  /* Azul Mais Vivo */
+
+  --price-gain: #4cff50;
+  /* Verde Neon (Original) */
+  --price-loss: #ff4c4c;
+  /* Vermelho Neon */
+
+  --font-primary: "Motiva Sans",
+    "Roboto",
+    "Arial",
+    sans-serif;
 }
 
 body {
-  background-color: var(--steam-bg);
-  color: var(--steam-text);
-  font-family: var(--font-main);
+  background-color: var(--steam-bg-dark);
+  color: var(--steam-text-main);
+  font-family: var(--font-primary);
   margin: 0;
   padding: 0;
   height: 100vh;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  /* Texto mais nítido */
 }
 
-/* Scrollbar Bonita */
+/* Scrollbar Estilizada */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  background-color: #1b2838;
 }
-::-webkit-scrollbar-track {
-  background: var(--steam-bg);
-}
+
 ::-webkit-scrollbar-thumb {
-  background: var(--steam-card);
-  border-radius: 4px;
+  background-color: #4b6a88;
+  border-radius: 5px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--steam-accent);
-}@import '@fortawesome/fontawesome-free/css/all.css';
+  background-color: var(--steam-accent);
+}

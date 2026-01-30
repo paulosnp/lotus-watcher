@@ -64,6 +64,18 @@ public class ScryfallService {
         return saveCardFromScryfall(root);
     }
 
+    public Card getRandomCard() {
+        String url = "https://api.scryfall.com/cards/random?q=lang:en"; // Garante cartas em inglês
+        JsonNode root = fetchJson(url);
+
+        if (root != null && hasValidPrice(root)) {
+            return saveCardFromScryfall(root);
+        } else {
+            // Se cair numa carta sem preço (ex: token), tenta de novo (recursivo simples)
+            return getRandomCard();
+        }
+    }
+
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
         JsonNode root = fetchJson(url);

@@ -36,4 +36,8 @@ export class CardService {
   getMarketOverview(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/market`);
   }
+
+  getRandomCard(): Observable<Card> {
+    return this.http.get<Card>(`${this.apiUrl}/random`);
+  }
 }

@@ -1,12 +1,18 @@
 <div class="main-layout">
 
-  <nav class="navbar">
-    <div class="nav-brand" routerLink="/">
-      <h1>LOTUS WATCHER <span class="badge">TCG</span></h1>
+  <nav class="navbar" *ngIf="!isHomePage">
+
+    <!-- 1. Busca Central (Agora contém a Logo) -->
+    <div class="nav-search-box">
+      <app-search [isCompact]="true"></app-search>
     </div>
 
-    <div class="nav-search" *ngIf="!isHomePage">
-      <app-search [isCompact]="true"></app-search>
+    <!-- 2. Botão Random (Direita) -->
+    <div class="nav-actions">
+      <button class="random-btn" (click)="onRandomCard()" title="Random Card">
+        <mat-icon>shuffle</mat-icon>
+        <span class="text">Random Card</span>
+      </button>
     </div>
   </nav>
 

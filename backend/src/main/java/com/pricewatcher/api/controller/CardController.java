@@ -32,6 +32,15 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/random")
+    public ResponseEntity<Card> getRandomCard() {
+        Card card = scryfallService.getRandomCard();
+        if (card != null) {
+            return ResponseEntity.ok(card);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCardById(@PathVariable String id) {
         return cardRepository.findById(id)

@@ -29,33 +29,27 @@ public class ScryfallService {
         this.objectMapper = new ObjectMapper();
     }
 
-    // 1. BUSCAR CARTA (Usado na Busca do Front)
+    // 1. BUSCAR CARTA
     public Card searchCard(String name) {
         Optional<Card> localCard = cardRepository.findByNameIgnoreCase(name);
         if (localCard.isPresent()) {
-            // Se já tem no banco, atualiza o preço antes de devolver
             return updateCardPrice(localCard.get());
         }
 
-        // Se não tem, busca no Scryfall
         String encodedName = name.replace(" ", "+");
         String url = "https://api.scryfall.com/cards/named?fuzzy=" + encodedName;
         return fetchAndSave(url);
     }
 
-    // 2. ATUALIZAR PREÇO (Usado pelo PriceUpdateTask e searchCard)
-    // Resolve o erro: cannot find symbol method updateCardPrice
+    // 2. ATUALIZAR PREÇO
     public Card updateCardPrice(Card card) {
-        // Usa a API do Scryfall pelo ID para garantir que é a carta exata
         String url = "https://api.scryfall.com/cards/" + card.getId();
         return fetchAndSave(url);
     }
 
-    // 3. BUSCAR PRINTS (Usado pelo CardController)
-    // Resolve o erro: cannot find symbol method findPrintsByName
+    // 3. BUSCAR PRINTS
     public JsonNode findPrintsByName(String name) {
         String encodedName = name.replace(" ", "+");
-        // API do Scryfall para buscar todas as impressões (unique=prints)
         String url = "https://api.scryfall.com/cards/search?q=!\"" + encodedName + "\"&unique=prints";
 
         try {
@@ -71,7 +65,7 @@ public class ScryfallService {
         return null;
     }
 
-    // --- MÉTODOS AUXILIARES (PRIVADOS) ---
+    // --- MÉTODOS AUXILIARES ---
 
     private Card fetchAndSave(String url) {
         try {
@@ -91,8 +85,12 @@ public class ScryfallService {
     @Transactional
     public Card saveCardFromScryfall(JsonNode root) {
         String id = root.get("id").asText();
-        Card card = cardRepository.findById(id).orElse(new Card());
 
+        // Verifica se a carta já existe ou cria uma nova
+        Card card = cardRepository.findById(id).orElse(new Card());
+        boolean isNew = (card.getId() == null); // Marca se é uma carta nova
+
+        // PREENCHE OS DADOS BÁSICOS
         card.setId(id);
         card.setName(root.get("name").asText());
         card.setSetName(root.get("set_name").asText());
@@ -101,7 +99,6 @@ public class ScryfallService {
             card.setCollectorNumber(root.get("collector_number").asText());
         }
 
-        // Imagem
         if (root.has("image_uris")) {
             if (root.get("image_uris").has("normal")) {
                 card.setImageUrl(root.get("image_uris").get("normal").asText());
@@ -110,25 +107,36 @@ public class ScryfallService {
             card.setImageUrl(root.get("card_faces").get(0).get("image_uris").get("normal").asText());
         }
 
-        // Preço e Histórico
+        // --- CORREÇÃO DO ERRO ---
+        // Se a carta é nova, salvamos ela AGORA para garantir que o ID exista no banco.
+        // Sem isso, ao tentar salvar o histórico (que depende do ID da carta), dava erro.
+        if (isNew) {
+            card = cardRepository.saveAndFlush(card); // saveAndFlush força a ida ao banco imediatamente
+        }
+
+        // TRATAMENTO DE PREÇO E HISTÓRICO
         Double newPrice = 0.0;
         if (root.has("prices") && root.get("prices").has("usd") && !root.get("prices").get("usd").isNull()) {
             newPrice = root.get("prices").get("usd").asDouble();
         }
 
         Double currentDbPrice = card.getPriceUsd();
-        // Se o preço mudou OU se é carta nova, salva histórico
+
+        // Se o preço mudou OU se é carta nova, adiciona histórico
+        // (Nota: removemos a checagem de null do currentDbPrice pois se for nova, já salvamos acima e pode ter ficado null)
         if (currentDbPrice == null || !currentDbPrice.equals(newPrice)) {
             PriceHistory history = new PriceHistory();
             history.setPriceUsd(newPrice);
             history.setTimestamp(LocalDateTime.now());
-            history.setCard(card);
+            history.setCard(card); // <--- Agora isso funciona porque 'card' já está no banco
 
             card.getPriceHistory().add(history);
             card.setPriceUsd(newPrice);
         }
 
         card.setLastUpdate(LocalDateTime.now());
+
+        // Salva novamente (agora com o histórico atualizado)
         return cardRepository.save(card);
     }
 }

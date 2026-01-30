@@ -3,7 +3,7 @@
   <h3>Monitoramento de Mercado para Magic: The Gathering</h3>
 
   <p>
-    <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java" alt="Java 17">
+    <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=java" alt="Java 21">
     <img src="https://img.shields.io/badge/Spring%20Boot-3.0-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
     <img src="https://img.shields.io/badge/Angular-17-red?style=for-the-badge&logo=angular" alt="Angular">
     <img src="https://img.shields.io/badge/PostgreSQL-H2-blue?style=for-the-badge&logo=postgresql" alt="Database">
@@ -42,7 +42,7 @@ O sistema consome dados da API global **Scryfall**, armazena o histórico de pre
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend (API RESTful)
-* **Java 17** & **Spring Boot 3**: Núcleo da aplicação.
+* **Java 21** & **Spring Boot 3**: Núcleo da aplicação.
 * **Spring Data JPA (Hibernate)**: Camada de persistência e ORM.
 * **H2 Database / PostgreSQL**: Banco de dados (H2 para dev/testes, pronto para PostgreSQL em produção).
 * **Jackson Library**: Processamento avançado de JSON para lidar com a estrutura complexa da API do Scryfall.
@@ -81,7 +81,7 @@ Uso de `ChangeDetectorRef` e tratamento de erros assíncronos no Angular para ga
 ## 🚀 Como Rodar o Projeto Localmente
 
 ### Pré-requisitos
-* **Java JDK 17** ou superior.
+* **Java JDK 21** ou superior.
 * **Node.js** (v18+) e **NPM**.
 * **Maven** instalado (ou use o wrapper `mvnw` incluso).
 

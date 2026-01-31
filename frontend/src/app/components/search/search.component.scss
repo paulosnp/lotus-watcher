@@ -163,3 +163,71 @@
   color: #ff8888;
   border: 1px solid rgba(255, 76, 76, 0.3);
 }
+
+/* --- SUGGESTIONS DROPDOWN (Google Style) --- */
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #303134;
+  /* Cor de fundo do Google Dark */
+  border-radius: 0 0 24px 24px;
+  /* Arredondado apenas embaixo */
+  padding: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  margin-top: -20px;
+  /* Sobe para colar na input */
+  padding-top: 25px;
+  /* Espaço para não cobrir o texto da input */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  cursor: pointer;
+  color: #e8eaed;
+  /* Texto claro */
+  font-size: 1rem;
+  transition: background 0.2s;
+  font-family: 'Roboto', sans-serif;
+
+  mat-icon {
+    display: none;
+    /* Removemos o ícone de lupa */
+  }
+
+  /* IMAGEM DA CARTA NA SUGESTÃO */
+  .suggestion-img {
+    height: 35px;
+    /* Tamanho discreto mas visível */
+    width: auto;
+    border-radius: 4px;
+    /* Levemente arredondado */
+    margin-right: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* O texto que deu match fica em negrito */
+  ::ng-deep .match {
+    font-weight: bold;
+    color: white;
+  }
+
+  &:hover {
+    background-color: #3c4043;
+    /* Cinza um pouco mais claro no hover */
+  }
+}
+
+/* Ajuste quando estiver no modo compacto (Header) */
+.compact-mode .suggestions-dropdown {
+  margin-top: 0;
+  border-radius: 0 0 8px 8px;
+  background-color: #2a2b2e;
+}

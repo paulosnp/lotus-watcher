@@ -2,7 +2,8 @@ import { Component, Input, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,12 +25,56 @@ export class SearchComponent {
   isLoading: boolean = false;
   errorMessage: string = '';
 
+  suggestions: any[] = [];
+  private searchSubject = new Subject<string>();
+
   constructor(
     private cardService: CardService,
     private router: Router,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone
-  ) { }
+  ) {
+    // Setup Debounce
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (!query || query.length < 2) return [];
+        return this.cardService.getAutocomplete(query).pipe(
+          catchError(() => [])
+        );
+      })
+    ).subscribe((response: any) => {
+      if (response && response.data) {
+        this.suggestions = response.data; // Agora é array de objetos {name, imageUrl, id}
+      } else {
+        this.suggestions = [];
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  onSearchInput() {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  selectSuggestion(suggestion: any) {
+    this.searchTerm = suggestion.name;
+    this.suggestions = [];
+
+    // Navega direto pelo ID se disponível, senão busca pelo nome
+    if (suggestion.id) {
+      this.router.navigate(['/card', suggestion.id]);
+    } else {
+      this.buscar();
+    }
+  }
+
+  highlightMatch(text: string): string {
+    if (!this.searchTerm) return text;
+    const regex = new RegExp(`(${this.searchTerm})`, 'gi');
+    return text.replace(regex, '<span class="match">$1</span>');
+  }
 
   buscar() {
     if (!this.searchTerm.trim()) return;

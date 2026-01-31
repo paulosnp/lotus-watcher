@@ -12,12 +12,23 @@
       }
 
       <input matInput placeholder="Digite o nome da carta (ex: Sol Ring)..." [(ngModel)]="searchTerm"
-        (keyup.enter)="buscar()">
+        (keyup.enter)="buscar()" (input)="onSearchInput()" autocomplete="off">
 
       <button mat-icon-button matSuffix type="button" (click)="buscar()">
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>
+
+    @if (suggestions.length > 0) {
+    <div class="suggestions-dropdown">
+      @for (suggestion of suggestions; track $index) {
+      <div class="suggestion-item" (click)="selectSuggestion(suggestion)">
+        <img [src]="suggestion.imageUrl" alt="Card Art" class="suggestion-img">
+        <span [innerHTML]="highlightMatch(suggestion.name)"></span>
+      </div>
+      }
+    </div>
+    }
   </div>
 
   @if (isLoading) {

@@ -22,6 +22,7 @@ public class CardController {
     public CardController(CardRepository cardRepository, ScryfallService scryfallService) {
         this.cardRepository = cardRepository;
         this.scryfallService = scryfallService;
+        System.out.println(">>> CARD CONTROLLER INICIALIZADO COM AUTOCOMPLETE! <<<");
     }
 
     @GetMapping("/search")
@@ -36,6 +37,18 @@ public class CardController {
     @GetMapping("/search-results")
     public ResponseEntity<String> searchCards(@RequestParam String q) {
         JsonNode results = scryfallService.searchCards(q);
+        if (results != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(results.toString());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<String> params(@RequestParam String q) {
+        System.out.println(">>> REQUEST RECEBIDO: " + q);
+        JsonNode results = scryfallService.getAutocompleteSuggestions(q);
         if (results != null) {
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_JSON)

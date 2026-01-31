@@ -22,6 +22,10 @@ export class CardService {
     return this.http.get<any>(`${this.apiUrl}/search-results?q=${query}`);
   }
 
+  getAutocomplete(query: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/autocomplete?q=${query}`);
+  }
+
 
   getCardById(id: string): Observable<Card> {
     return this.http.get<Card>(`${this.apiUrl}/${id}`);

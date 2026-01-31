@@ -93,6 +93,67 @@ public class ScryfallService {
         }
     }
 
+    public JsonNode getAutocompleteSuggestions(String query) {
+        try {
+            // Usamos busca normal com wildcard para 'simular' autocomplete mas trazendo
+            // objetos completos (com imagens)
+            // auto: prefixo para forçar busca por nome parcial inteligente
+            // Construímos a query "bruta" primeiro: name:/^query/
+            String rawQuery = "name:/^" + query + "/";
+
+            // Encodamos TUDO para garantir que ^, /, : sejam passados corretamente
+            String encodedFullQuery = java.net.URLEncoder.encode(rawQuery, java.nio.charset.StandardCharsets.UTF_8);
+
+            String url = "https://api.scryfall.com/cards/search?q=" + encodedFullQuery
+                    + "&unique=cards&order=edhrec&page=1";
+
+            System.out.println(">>> AUTOCOMPLETE URL: " + url); // DEBUG LOG
+
+            JsonNode searchResult = fetchJson(url);
+
+            if (searchResult != null && searchResult.has("data")) {
+                com.fasterxml.jackson.databind.node.ArrayNode richSuggestions = (com.fasterxml.jackson.databind.node.ArrayNode) new com.fasterxml.jackson.databind.ObjectMapper()
+                        .createArrayNode();
+
+                JsonNode data = searchResult.get("data");
+                int count = 0;
+
+                for (JsonNode card : data) {
+                    if (count >= 10)
+                        break; // Limite de 10 como solicitado
+
+                    com.fasterxml.jackson.databind.node.ObjectNode simpleCard = new com.fasterxml.jackson.databind.ObjectMapper()
+                            .createObjectNode();
+
+                    simpleCard.put("name", card.get("name").asText());
+
+                    // Lógica segura para pegar imagem
+                    String img = "https://i.imgur.com/LdOBU1I.jpg"; // Fallback
+                    if (card.has("image_uris") && card.get("image_uris").has("small")) {
+                        img = card.get("image_uris").get("small").asText();
+                    } else if (card.has("card_faces") && card.get("card_faces").get(0).has("image_uris")) {
+                        img = card.get("card_faces").get(0).get("image_uris").get("small").asText();
+                    }
+                    simpleCard.put("imageUrl", img);
+                    simpleCard.put("id", card.get("id").asText()); // Útil para navegação direta
+
+                    richSuggestions.add(simpleCard);
+                    count++;
+                }
+
+                com.fasterxml.jackson.databind.node.ObjectNode resultContainer = new com.fasterxml.jackson.databind.ObjectMapper()
+                        .createObjectNode();
+                resultContainer.set("data", richSuggestions);
+                return resultContainer;
+            }
+
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
         JsonNode root = fetchJson(url);
@@ -146,11 +207,20 @@ public class ScryfallService {
 
     private JsonNode fetchJson(String url) {
         try {
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("User-Agent", "LotusWatcher/1.0 (Java HttpClient)") // Scryfall pede User-Agent
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(">>> FETCH STATUS: " + response.statusCode() + " for URL: " + url);
 
             if (response.statusCode() == 200) {
                 return objectMapper.readTree(response.body());
+            } else {
+                System.out.println(">>> FETCH ERROR BODY: " + response.body());
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

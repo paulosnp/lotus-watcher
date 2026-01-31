@@ -1,0 +1,131 @@
+.watchlist-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: white;
+
+    h1 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 2rem;
+        margin-bottom: 30px;
+        font-weight: 300;
+
+        mat-icon {
+            color: #ff6b6b;
+        }
+    }
+
+    .cards-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .mini-card {
+        display: flex;
+        align-items: center;
+        background: rgba(22, 32, 45, 0.6);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        position: relative;
+
+        &:hover {
+            background: rgba(30, 45, 60, 0.8);
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-thumb img {
+            width: 50px;
+            border-radius: 4px;
+            margin-right: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+
+            .name {
+                font-size: 1.1rem;
+                font-weight: 500;
+                color: #c7d5e0;
+            }
+
+            .set {
+                font-size: 0.8rem;
+                color: #718ba5;
+            }
+        }
+
+        .price-block {
+            margin-right: 20px;
+
+            .price {
+                font-weight: bold;
+                color: #4caf50;
+                font-size: 1.2rem;
+            }
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #8b9bb4;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+
+            &:hover {
+                background: rgba(255, 0, 0, 0.1);
+                color: #ff6b6b;
+            }
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        margin-top: 80px;
+        color: #718ba5;
+
+        mat-icon {
+            font-size: 4rem;
+            width: 4rem;
+            height: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .go-home-btn {
+            background: var(--steam-accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #4a90e2; // Lighter blue
+            }
+        }
+    }
+}

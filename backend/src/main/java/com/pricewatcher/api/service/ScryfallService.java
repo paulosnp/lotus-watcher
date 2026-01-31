@@ -76,6 +76,23 @@ public class ScryfallService {
         }
     }
 
+    public JsonNode getSets() {
+        // Busca todos os sets
+        String url = "https://api.scryfall.com/sets";
+        return fetchJson(url);
+    }
+
+    public JsonNode searchCards(String query) {
+        try {
+            String encodedQuery = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
+            String url = "https://api.scryfall.com/cards/search?q=" + encodedQuery;
+            return fetchJson(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
         JsonNode root = fetchJson(url);
@@ -95,6 +112,15 @@ public class ScryfallService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Card getCardById(String id) {
+        String url = "https://api.scryfall.com/cards/" + id;
+        JsonNode root = fetchJson(url);
+        if (root != null) {
+            return saveCardFromScryfall(root);
+        }
+        return null;
     }
 
     // Método auxiliar para buscar prints e escolher o melhor

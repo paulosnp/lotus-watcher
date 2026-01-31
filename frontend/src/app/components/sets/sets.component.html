@@ -1,0 +1,27 @@
+<div class="sets-container">
+    <h1>Expansões de Magic</h1>
+
+    @if (isLoading) {
+    <p class="loading">Carregando expansões...</p>
+    } @else {
+    @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    } @else if (sets.length === 0) {
+    <p class="empty">Nenhuma expansão encontrada.</p>
+    } @else {
+    <div class="sets-grid">
+        @for (set of sets; track set.code) {
+        <div class="set-card" (click)="goToSet(set.code)">
+            <img [src]="set.icon_svg_uri" alt="{{ set.name }}" class="set-icon">
+
+            <div class="set-info">
+                <span class="set-name">{{ set.name }}</span>
+                <span class="set-code">{{ set.code | uppercase }}</span>
+                <span class="set-date">{{ set.released_at | date:'MMM yyyy' }}</span>
+            </div>
+        </div>
+        }
+    </div>
+    }
+    }
+</div>

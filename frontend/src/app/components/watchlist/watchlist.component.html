@@ -1,0 +1,34 @@
+<div class="watchlist-container">
+    <h1>Minha Watchlist <mat-icon>favorite</mat-icon></h1>
+
+    @if (watchlist.length > 0) {
+    <div class="cards-grid">
+        @for (card of watchlist; track card.id) {
+        <div class="mini-card" (click)="goToDetails(card.id)">
+            <div class="card-thumb">
+                <img [src]="card.imageUrl" alt="{{ card.name }}">
+            </div>
+
+            <div class="card-info">
+                <span class="name">{{ card.name }}</span>
+                <span class="set">{{ card.setName }}</span>
+            </div>
+
+            <div class="price-block">
+                <span class="price">${{ card.priceUsd | number:'1.2-2' }}</span>
+            </div>
+
+            <button class="remove-btn" (click)="remove(card.id, $event)" title="Remover">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        }
+    </div>
+    } @else {
+    <div class="empty-state">
+        <mat-icon>favorite_border</mat-icon>
+        <p>Você ainda não está observando nenhuma carta.</p>
+        <button class="go-home-btn" routerLink="/">Explorar Cartas</button>
+    </div>
+    }
+</div>

@@ -1,5 +1,6 @@
 <div class="dashboard-container">
 
+  @if (!isSearching) {
   <section class="hero-section">
     <div class="hero-content">
       <h1>Bem-vindo ao <span class="highlight">Lotus Watcher</span></h1>
@@ -12,9 +13,53 @@
           <mat-icon>shuffle</mat-icon>
         </button>
       </div>
+
+      <div class="quick-links">
+        <a routerLink="/sets" class="quick-btn">
+          <mat-icon>view_module</mat-icon> Sets
+        </a>
+        <a routerLink="/watchlist" class="quick-btn">
+          <mat-icon>favorite</mat-icon> Watchlist
+        </a>
+      </div>
     </div>
   </section>
+  }
 
+  @if (isSearching) {
+  <section class="market-overview search-results">
+    <div class="market-list" style="width: 100%">
+      <div class="list-header">
+        <mat-icon>search</mat-icon>
+        <h2>Resultados para "{{ searchQuery }}"</h2>
+      </div>
+
+      <div class="cards-grid">
+        @for (card of searchResults; track card.id) {
+        <div class="mini-card" (click)="irParaDetalhes(card.id)">
+          <div class="card-thumb">
+            <img [src]="card.imageUrl" alt="{{ card.name }}"
+              (error)="card.imageUrl = 'https://i.imgur.com/LdOBU1I.jpg'">
+          </div>
+          <div class="card-info">
+            <span class="name">{{ card.name }}</span>
+            <span class="set">{{ card.setName }}</span>
+          </div>
+          <div class="price-block">
+            <span class="current-price">${{ card.priceUsd }}</span>
+          </div>
+        </div>
+        } @empty {
+        @if(isLoading) {
+        <p class="empty-msg">Buscando...</p>
+        } @else {
+        <p class="empty-msg">Nenhuma carta encontrada.</p>
+        }
+        }
+      </div>
+    </div>
+  </section>
+  } @else {
   <section class="market-overview">
 
     <div class="market-list winners">
@@ -74,5 +119,6 @@
     </div>
 
   </section>
+  }
 
 </div>

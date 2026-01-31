@@ -5,6 +5,7 @@ import com.pricewatcher.api.model.Card;
 import com.pricewatcher.api.model.PriceHistory;
 import com.pricewatcher.api.repository.CardRepository;
 import com.pricewatcher.api.service.ScryfallService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,17 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/search-results")
+    public ResponseEntity<String> searchCards(@RequestParam String q) {
+        JsonNode results = scryfallService.searchCards(q);
+        if (results != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(results.toString());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/random")
     public ResponseEntity<Card> getRandomCard() {
         Card card = scryfallService.getRandomCard();
@@ -41,11 +53,31 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/sets")
+    public ResponseEntity<String> getSets() {
+        // Retorna o JSON direto do Scryfall (proxy simples)
+        JsonNode sets = scryfallService.getSets();
+        if (sets != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(sets.toString());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCardById(@PathVariable String id) {
+        // Tenta buscar no banco local
         return cardRepository.findById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> {
+                    // Se não achar, busca na API do Scryfall e salva no banco
+                    Card apiCard = scryfallService.getCardById(id);
+                    if (apiCard != null) {
+                        return ResponseEntity.ok(apiCard);
+                    }
+                    return ResponseEntity.notFound().build();
+                });
     }
 
     @GetMapping("/{id}/history")

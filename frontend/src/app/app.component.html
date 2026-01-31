@@ -7,8 +7,18 @@
       <app-search [isCompact]="true"></app-search>
     </div>
 
-    <!-- 2. Botão Random (Direita) -->
+    <!-- 2. Botões da Direita (Sets + Random) -->
     <div class="nav-actions">
+      <button class="random-btn" routerLink="/sets" title="Expansões">
+        <mat-icon>inventory_2</mat-icon>
+        <span class="text">Sets</span>
+      </button>
+
+      <button class="random-btn" routerLink="/watchlist" title="Minha Watchlist">
+        <mat-icon>favorite</mat-icon>
+        <span class="text">Watchlist</span>
+      </button>
+
       <button class="random-btn" (click)="onRandomCard()" title="Random Card">
         <mat-icon>shuffle</mat-icon>
         <span class="text">Random Card</span>

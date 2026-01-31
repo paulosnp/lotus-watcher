@@ -1,0 +1,87 @@
+.sets-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: white;
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 300;
+    }
+
+    .sets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .set-card {
+        background: rgba(22, 32, 45, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+
+        &:hover {
+            background: rgba(30, 45, 60, 0.9);
+            transform: translateY(-5px);
+            border-color: var(--steam-accent);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+
+            .set-icon {
+                transform: scale(1.1);
+            }
+        }
+
+        .set-icon {
+            height: 60px;
+            width: 60px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+
+            /* Filtro para deixar o ícone branco/cinza claro */
+            filter: invert(1) brightness(2);
+        }
+
+        .set-info {
+            .set-name {
+                font-weight: 600;
+                font-size: 1rem;
+                display: block;
+                margin-bottom: 5px;
+                color: var(--steam-text-main);
+            }
+
+            .set-code {
+                font-size: 0.8rem;
+                color: #66c0f4;
+                /* Steam Blue */
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: bold;
+            }
+
+            .set-date {
+                font-size: 0.75rem;
+                color: #718ba5;
+                margin-top: 4px;
+                display: block;
+            }
+        }
+    }
+
+    .loading {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #718ba5;
+        margin-top: 50px;
+    }
+}

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
 import { SearchComponent } from './components/search/search.component';
@@ -10,7 +10,7 @@ import { CardService } from './services/card.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SearchComponent, CommonModule, Footer, MatIconModule], // Add MatIconModule
+  imports: [RouterOutlet, RouterModule, SearchComponent, CommonModule, Footer, MatIconModule], // Add RouterModule
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

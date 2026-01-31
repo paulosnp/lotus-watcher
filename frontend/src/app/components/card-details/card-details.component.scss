@@ -55,11 +55,64 @@
   }
 
   .card-info-box {
-    h1 {
-      font-size: 2.5rem;
-      margin: 0 0 10px 0;
-      color: white;
-      line-height: 1.1;
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+
+      h1 {
+        font-size: 2.5rem;
+        margin: 0;
+        color: white;
+        line-height: 1;
+      }
+
+      .favorite-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+
+        mat-icon {
+          color: #8b9bb4;
+          font-size: 28px;
+          width: 28px;
+          height: 28px;
+          transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          transform: scale(1.1);
+
+          mat-icon {
+            color: #ff6b6b;
+          }
+        }
+
+        &.active {
+          background: rgba(255, 107, 107, 0.15);
+          border-color: #ff6b6b;
+
+          mat-icon {
+            color: #ff6b6b;
+            icon-variation: 'FILL' 1;
+            /* Se usar Material Symbols */
+          }
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
     }
 
     .set-badge {

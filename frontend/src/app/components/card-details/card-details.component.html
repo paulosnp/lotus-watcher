@@ -3,22 +3,26 @@
 </div>
 
 <div class="details-container" *ngIf="!isLoading && card">
-  
+
   <button class="back-btn" (click)="voltar()">← Voltar</button>
 
   <div class="top-deck">
-    
+
     <div class="card-profile">
       <div class="card-image-box">
-        <img [src]="card.imageUrl" 
-             class="main-img" 
-             (error)="card.imageUrl = 'assets/placeholder_card.png'">
+        <img [src]="card.imageUrl" class="main-img" (error)="card.imageUrl = 'assets/placeholder_card.png'">
       </div>
-      
+
       <div class="card-info-box">
-        <h1>{{ card.name }}</h1>
+        <div class="header-row">
+          <h1>{{ card.name }}</h1>
+          <button class="favorite-btn" (click)="toggleFavorite()" [class.active]="isFavorite"
+            title="Adicionar aos Favoritos">
+            <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
+        </div>
         <span class="set-badge">{{ card.setName }}</span>
-        
+
         <div class="price-box">
           <span class="label">Preço Atual</span>
           <span class="value">${{ card.priceUsd | number:'1.2-2' }}</span>
@@ -33,10 +37,7 @@
     <div class="chart-panel">
       <h3>Histórico de Preço</h3>
       <div class="chart-wrapper">
-        <canvas baseChart
-                [data]="lineChartData"
-                [options]="lineChartOptions"
-                [type]="'line'">
+        <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'">
         </canvas>
       </div>
     </div>
@@ -49,16 +50,15 @@
     <h2>Outras Versões & Edições</h2>
     <div class="prints-grid">
       @for (print of prints; track print.id) {
-        <div class="print-item">
-            <img [src]="print.image_uris?.normal || print.card_faces?.[0]?.image_uris?.normal" 
-                 [title]="print.set_name">
-            <span class="print-set">{{ print.set_name }}</span>
-            <span class="print-price">
-              {{ (print.prices?.usd | currency:'USD') || '---' }}
-            </span>
-        </div>
+      <div class="print-item">
+        <img [src]="print.image_uris?.normal || print.card_faces?.[0]?.image_uris?.normal" [title]="print.set_name">
+        <span class="print-set">{{ print.set_name }}</span>
+        <span class="print-price">
+          {{ (print.prices?.usd | currency:'USD') || '---' }}
+        </span>
+      </div>
       } @empty {
-        <p class="empty-prints">Nenhuma outra edição encontrada.</p>
+      <p class="empty-prints">Nenhuma outra edição encontrada.</p>
       }
     </div>
   </div>

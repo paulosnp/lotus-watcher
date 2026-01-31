@@ -3,16 +3,16 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
-
 import { Chart, registerables, ChartConfiguration, ChartOptions } from 'chart.js';
 
 import { CardService } from '../../services/card.service';
 import { Card } from '../../models/card.model';
+import { WatchlistService } from '../../services/watchlist.service';
 
 @Component({
   selector: 'app-card-details',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, MatIconModule], // BaseChartDirective é o que desenha o gráfico
+  imports: [CommonModule, BaseChartDirective, MatIconModule],
   templateUrl: './card-details.component.html',
   styleUrls: ['./card-details.component.scss']
 })
@@ -21,6 +21,7 @@ export class CardDetailsComponent implements OnInit {
   card: Card | null = null;
   prints: any[] = [];
   isLoading: boolean = true;
+  isFavorite: boolean = false;
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
@@ -49,10 +50,23 @@ export class CardDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private cardService: CardService,
+    private watchlistService: WatchlistService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
     Chart.register(...registerables);
+  }
+
+  toggleFavorite() {
+    if (!this.card) return;
+
+    if (this.isFavorite) {
+      this.watchlistService.removeFromWatchlist(this.card.id);
+      this.isFavorite = false;
+    } else {
+      this.watchlistService.addToWatchlist(this.card);
+      this.isFavorite = true;
+    }
   }
 
   ngOnInit(): void {
@@ -72,7 +86,10 @@ export class CardDetailsComponent implements OnInit {
     this.cardService.getCardById(id).subscribe({
       next: (c) => {
         this.card = c;
+        this.isFavorite = this.watchlistService.isWatched(c.id); // Check status
         this.cdr.detectChanges();
+
+        // ... rest of loading logic
 
         // Carrega Prints com um pequeno delay para garantir renderização
         this.cardService.getCardPrints(c.name).subscribe(resp => {

@@ -17,6 +17,11 @@ export class CardService {
     return this.http.get<Card>(`${this.apiUrl}/search?name=${name}`);
   }
 
+  // Busca lista de cartas (ex: 'set:dmu' ou 'black lotus')
+  searchCards(query: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/search-results?q=${query}`);
+  }
+
 
   getCardById(id: string): Observable<Card> {
     return this.http.get<Card>(`${this.apiUrl}/${id}`);

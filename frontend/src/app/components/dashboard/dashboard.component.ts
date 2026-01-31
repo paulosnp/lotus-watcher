@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule, Location } from '@angular/common'; // Import Location
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,26 @@ export class DashboardComponent implements OnInit {
   searchResults: any[] = [];
   searchQuery: string = '';
   isLoggedIn: boolean = false;
+  isMenuOpen: boolean = false; // State for hamburger menu
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.isMenuOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    // Verifica se o clique foi fora do menu wrapper
+    const clickedInside = target.closest('.home-menu-wrapper');
+    if (!clickedInside && this.isMenuOpen) {
+      this.isMenuOpen = false;
+    }
+  }
 
   cardBackUrl = 'https://upload.wikimedia.org/wikipedia/en/a/a4/Magic_the_gathering-card_back.jpg';
 

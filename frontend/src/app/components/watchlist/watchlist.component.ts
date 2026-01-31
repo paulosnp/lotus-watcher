@@ -23,7 +23,10 @@ export class WatchlistComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.loadWatchlist();
+        this.watchlistService.watchlist$.subscribe(list => {
+            this.watchlist = list;
+        });
+        this.watchlistService.loadWatchlist();
     }
 
     goBack() {
@@ -31,13 +34,13 @@ export class WatchlistComponent implements OnInit {
     }
 
     loadWatchlist() {
-        this.watchlist = this.watchlistService.getWatchlist();
+        // Agora gerenciado pelo subscription no ngOnInit
+        this.watchlistService.loadWatchlist();
     }
 
     remove(cardId: string, event: Event) {
         event.stopPropagation(); // Evita abrir os detalhes ao clicar em remover
-        this.watchlistService.removeFromWatchlist(cardId);
-        this.loadWatchlist();
+        this.watchlistService.removeFromWatchlist(cardId).subscribe();
     }
 
     goToDetails(cardId: string) {

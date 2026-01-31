@@ -17,7 +17,7 @@ public class JwtTokenProvider {
     private Key key;
     private static final long JWT_EXPIRATION_MS = 86400000; // 1 dia
 
-    @javax.annotation.PostConstruct
+    @jakarta.annotation.PostConstruct
     public void init() {
         if (jwtSecret != null && jwtSecret.length() >= 64) {
             this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
@@ -58,8 +58,10 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
             return true;
-        } catch (SecurityException | MalformedJwtException ex) {
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
             System.err.println("Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            System.err.println("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
             System.err.println("Expired JWT token");
         } catch (UnsupportedJwtException ex) {

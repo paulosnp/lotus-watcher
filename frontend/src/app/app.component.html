@@ -9,34 +9,40 @@
 
     <!-- 2. Botões da Direita (Sets + Random) -->
     <div class="nav-actions">
-      <button class="random-btn" routerLink="/sets" title="Expansões">
-        <mat-icon>inventory_2</mat-icon>
-        <span class="text">Sets</span>
-      </button>
+      <!-- Sets -->
+      <a routerLink="/sets" class="nav-btn" title="Visualizar Expansões">
+        <mat-icon>style</mat-icon>
+        <span>Expansões</span>
+      </a>
 
-      <!-- Botão da Watchlist (Somente se logado) -->
-      <button class="random-btn" routerLink="/watchlist" title="Minha Watchlist" *ngIf="isLoggedIn">
-        <mat-icon>favorite</mat-icon>
-        <span class="text">Watchlist</span>
-      </button>
-
-      <button class="random-btn" (click)="onRandomCard()" title="Random Card">
+      <!-- Random -->
+      <button class="nav-btn" (click)="onRandomCard()" title="Carta Aleatória">
         <mat-icon>shuffle</mat-icon>
-        <span class="text">Random Card</span>
+        <span>Random</span>
       </button>
 
-      <!-- Divisor Vertical -->
-      <div class="v-divider"></div>
+      <!-- Menu Hamburger -->
+      <div class="header-menu-wrapper">
+        <button class="nav-btn menu-toggle" (click)="toggleMenu()">
+          <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
 
-      <!-- Auth Botoes -->
-      <button class="random-btn login-highlight" routerLink="/login" *ngIf="!isLoggedIn">
-        <mat-icon>login</mat-icon>
-        <span class="text">Login</span>
-      </button>
+        @if (isMenuOpen) {
+        <div class="dropdown-menu">
+          @if (!isLoggedIn) {
+          <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> Entrar</a>
+          <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> Criar Conta</a>
+          }
 
-      <button class="random-btn" (click)="logout()" *ngIf="isLoggedIn" title="Sair">
-        <mat-icon>logout</mat-icon>
-      </button>
+          @if (isLoggedIn) {
+          <a routerLink="/account" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+          <a routerLink="/watchlist" class="menu-item"><mat-icon>favorite</mat-icon> Watchlist</a>
+          <div class="menu-divider"></div>
+          <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> Sair</button>
+          }
+        </div>
+        }
+      </div>
     </div>
   </nav>
 

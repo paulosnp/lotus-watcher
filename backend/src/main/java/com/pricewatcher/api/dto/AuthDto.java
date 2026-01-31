@@ -25,4 +25,25 @@ public class AuthDto {
             this.accessToken = accessToken;
         }
     }
+
+    // --- NOVOS DTOs ---
+
+    @Data
+    @lombok.AllArgsConstructor
+    public static class UserDataDto {
+        private String id;
+        private String name;
+        private String email;
+    }
+
+    @Data
+    public static class UpdateProfileRequest {
+        private String name;
+    }
+
+    @Data
+    public static class ChangePasswordRequest {
+        private String oldPassword;
+        private String newPassword;
+    }
 }

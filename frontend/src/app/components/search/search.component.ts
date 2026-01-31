@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, NgZone, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -32,7 +32,8 @@ export class SearchComponent {
     private cardService: CardService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private elementRef: ElementRef
   ) {
     // Setup Debounce
     this.searchSubject.pipe(
@@ -108,5 +109,12 @@ export class SearchComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.suggestions = [];
+    }
   }
 }

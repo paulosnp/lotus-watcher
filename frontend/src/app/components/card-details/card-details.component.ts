@@ -100,19 +100,30 @@ export class CardDetailsComponent implements OnInit {
     if (!this.card) return;
 
     if (this.isFavorite) {
-      this.watchlistService.removeFromWatchlist(this.card.id);
+      this.watchlistService.removeFromWatchlist(this.card.id).subscribe();
       this.isFavorite = false;
     } else {
-      this.watchlistService.addToWatchlist(this.card);
+      this.watchlistService.addToWatchlist(this.card).subscribe();
       this.isFavorite = true;
     }
   }
 
   ngOnInit(): void {
-    // Monitora status de login
+    // Monitora status de login e carrega watchlist
     this.authService.currentUser$.subscribe(user => {
       this.isLoggedIn = !!user;
+      if (this.isLoggedIn) {
+        this.watchlistService.loadWatchlist();
+      }
       this.cdr.detectChanges();
+    });
+
+    // Monitora lista para atualizar status do botão
+    this.watchlistService.watchlist$.subscribe(list => {
+      if (this.card) {
+        this.isFavorite = !!list.find(c => c.id === this.card?.id);
+        this.cdr.detectChanges();
+      }
     });
 
     this.route.paramMap.subscribe(params => {

@@ -6,12 +6,14 @@ import { WatchlistComponent } from './components/watchlist/watchlist.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { VerifyEmailComponent } from './components/auth/verify-email/verify-email.component';
+import { AccountSettingsComponent } from './components/auth/account-settings/account-settings.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent }, // Home
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'verify', component: VerifyEmailComponent }, // Verificação de Email
+  { path: 'account', component: AccountSettingsComponent }, // Configurações da Conta
   { path: 'sets', component: SetsComponent }, // Expansões
   { path: 'watchlist', component: WatchlistComponent }, // Minha Lista
   { path: 'card/:id', component: CardDetailsComponent }, // Página da Carta

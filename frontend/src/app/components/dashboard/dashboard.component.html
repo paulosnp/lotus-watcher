@@ -1,5 +1,28 @@
 <div class="dashboard-container">
 
+  <!-- Menu Hambúrguer (Apenas Home) -->
+  <div class="home-menu-wrapper">
+    <button class="menu-btn" (click)="toggleMenu()">
+      <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+
+    @if (isMenuOpen) {
+    <div class="dropdown-menu">
+      @if (!isLoggedIn) {
+      <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> Entrar</a>
+      <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> Criar Conta</a>
+      }
+
+      @if (isLoggedIn) {
+      <a routerLink="/account" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+      <a routerLink="/watchlist" class="menu-item"><mat-icon>favorite</mat-icon> Watchlist</a>
+      <div class="menu-divider"></div>
+      <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> Sair</button>
+      }
+    </div>
+    }
+  </div>
+
   @if (!isSearching) {
   <section class="hero-section">
     <div class="hero-content">
@@ -9,24 +32,15 @@
       <div class="hero-search-wrapper">
         <app-search [isCompact]="true"></app-search>
 
-        <button class="random-btn-home" (click)="onRandomCard()" title="Random Card">
+        <a routerLink="/sets" class="action-btn-home" title="Expansões (Sets)">
+          <mat-icon>style</mat-icon>
+        </a>
+
+        <button class="action-btn-home" (click)="onRandomCard()" title="Carta Aleatória">
           <mat-icon>shuffle</mat-icon>
         </button>
       </div>
 
-      <div class="quick-links">
-        @if (!isLoggedIn) {
-        <a routerLink="/login" class="quick-btn highlight-btn">
-          <mat-icon>login</mat-icon> Entrar
-        </a>
-        }
-        <a routerLink="/sets" class="quick-btn">
-          <mat-icon>view_module</mat-icon> Sets
-        </a>
-        <a routerLink="/watchlist" class="quick-btn">
-          <mat-icon>favorite</mat-icon> Watchlist
-        </a>
-      </div>
     </div>
   </section>
   }

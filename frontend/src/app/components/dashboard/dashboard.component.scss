@@ -5,6 +5,108 @@
   padding: 20px;
 }
 
+/* --- MENU HAMBURGUER (HOME ONLY) --- */
+.home-menu-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  .menu-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    /* Square shape */
+    background: rgba(22, 32, 45, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #66c0f4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+
+    &:hover {
+      background: #2a475e;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .dropdown-menu {
+    margin-top: 10px;
+    background: rgba(22, 32, 45, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: #c7d5e0;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.2s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 0.95rem;
+      width: 100%;
+      text-align: left;
+      box-sizing: border-box;
+      /* Fix hover overflow */
+
+      mat-icon {
+        color: #66c0f4;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        background: rgba(102, 192, 244, 0.1);
+        color: white;
+      }
+
+      &.logout {
+        color: #ff6b6b;
+
+        mat-icon {
+          color: #ff6b6b;
+        }
+
+        &:hover {
+          background: rgba(255, 107, 107, 0.1);
+        }
+      }
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 5px 0;
+    }
+  }
+}
+
 /* --- HERO SECTION --- */
 .hero-section {
   text-align: center;
@@ -57,10 +159,11 @@
     }
 
     /* REMOVIDO: Overrides antigos que forçavam estilo pílula.
-       Agora usamos o estilo padrão do componente (SearchHeader Style). */
+         Agora usamos o estilo padrão do componente (SearchHeader Style). */
 
     /* Botão Random da Home (Estilo Suave) */
-    .random-btn-home {
+    /* Botões de Ação da Home (Sets, Random) */
+    .action-btn-home {
       height: 56px;
       width: 64px;
       min-width: 64px;
@@ -74,6 +177,8 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
+      text-decoration: none;
+      /* link fix */
       /* Removemos box-shadow pesado e backdrop forte */
 
       mat-icon {
@@ -92,59 +197,16 @@
         /* Sem glow exagerado */
 
         mat-icon {
-          transform: rotate(180deg);
+          transform: scale(1.1);
         }
+      }
+
+      &:last-child:hover mat-icon {
+        transform: rotate(180deg);
       }
 
       &:active {
         transform: scale(0.95);
-      }
-    }
-  }
-
-  /* --- QUICK LINKS (Linha abaixo da busca) --- */
-  .quick-links {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-
-    .quick-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: rgba(22, 32, 45, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: #66c0f4;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: all 0.2s;
-      cursor: pointer;
-
-      mat-icon {
-        font-size: 1.2rem;
-        width: 1.2rem;
-        height: 1.2rem;
-      }
-
-      &:hover {
-        background: rgba(42, 71, 94, 0.8);
-        border-color: #66c0f4;
-        color: white;
-        transform: translateY(-2px);
-      }
-
-      &.highlight-btn {
-        background: rgba(46, 204, 113, 0.2); // Verde suave
-        border-color: rgba(46, 204, 113, 0.4);
-        color: #2ecc71;
-
-        &:hover {
-          background: rgba(46, 204, 113, 0.4);
-          color: white;
-        }
       }
     }
   }

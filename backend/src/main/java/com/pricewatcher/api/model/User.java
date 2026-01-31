@@ -35,4 +35,8 @@ public class User {
     private String verificationToken; // Novo: Token enviado por email
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_watchlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "card_id"))
+    private java.util.Set<Card> watchlist = new java.util.HashSet<>();
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
@@ -20,6 +20,20 @@ export class AppComponent {
   isHomePage: boolean = true;
   isLoggedIn: boolean = false;
   isAuthPage: boolean = false;
+  isMenuOpen: boolean = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const clickedInside = target.closest('.header-menu-wrapper');
+    if (!clickedInside && this.isMenuOpen) {
+      this.isMenuOpen = false;
+    }
+  }
 
   constructor(private router: Router, private cardService: CardService, private authService: AuthService) {
     // Monitora autenticação
@@ -34,8 +48,8 @@ export class AppComponent {
       const url = event.urlAfterRedirects || event.url;
       // Se a URL for '/', estamos na Home
       this.isHomePage = (url === '/');
-      // Verifica se é pagina de auth
-      this.isAuthPage = (url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/verify'));
+      // Verifica se é pagina de auth OU pagina de conta
+      this.isAuthPage = (url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/verify') || url.startsWith('/account'));
     });
   }
 

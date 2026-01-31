@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Card } from '../models/card.model';
 
 @Injectable({
@@ -6,31 +8,42 @@ import { Card } from '../models/card.model';
 })
 export class WatchlistService {
 
-    private storageKey = 'lotus_watchlist';
+    private apiUrl = 'http://localhost:8080/api/user/watchlist';
 
-    constructor() { }
+    // Cache local para atualização instantânea na UI
+    private watchlistSubject = new BehaviorSubject<Card[]>([]);
+    watchlist$ = this.watchlistSubject.asObservable();
 
-    getWatchlist(): Card[] {
-        const list = localStorage.getItem(this.storageKey);
-        return list ? JSON.parse(list) : [];
+    constructor(private http: HttpClient) { }
+
+    loadWatchlist() {
+        this.http.get<Card[]>(this.apiUrl).subscribe({
+            next: (list) => this.watchlistSubject.next(list),
+            error: (err) => console.error('Erro ao carregar watchlist', err)
+        });
     }
 
-    addToWatchlist(card: Card) {
-        const list = this.getWatchlist();
-        if (!list.find(c => c.id === card.id)) {
-            list.push(card);
-            localStorage.setItem(this.storageKey, JSON.stringify(list));
-        }
+    addToWatchlist(card: Card): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${card.id}`, {}).pipe(
+            tap(() => {
+                const current = this.watchlistSubject.value;
+                if (!current.find(c => c.id === card.id)) {
+                    this.watchlistSubject.next([...current, card]);
+                }
+            })
+        );
     }
 
-    removeFromWatchlist(cardId: string) {
-        let list = this.getWatchlist();
-        list = list.filter(c => c.id !== cardId);
-        localStorage.setItem(this.storageKey, JSON.stringify(list));
+    removeFromWatchlist(cardId: string): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${cardId}`).pipe(
+            tap(() => {
+                const current = this.watchlistSubject.value;
+                this.watchlistSubject.next(current.filter(c => c.id !== cardId));
+            })
+        );
     }
 
     isWatched(cardId: string): boolean {
-        const list = this.getWatchlist();
-        return !!list.find(c => c.id === cardId);
+        return !!this.watchlistSubject.value.find(c => c.id === cardId);
     }
 }

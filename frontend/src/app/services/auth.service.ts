@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class AuthService {
 
     private apiUrl = 'http://localhost:8080/api/auth';
+    private userApiUrl = 'http://localhost:8080/api/user';
     private currentUserSubject = new BehaviorSubject<any>(null);
     public currentUser$ = this.currentUserSubject.asObservable(); // Observable público
 
@@ -53,5 +54,19 @@ export class AuthService {
 
     getToken(): string | null {
         return localStorage.getItem('token');
+    }
+
+    // --- NOVOS MÉTODOS DE PERFIL ---
+
+    getMe(): Observable<any> {
+        return this.http.get(`${this.userApiUrl}/me`);
+    }
+
+    updateProfile(data: { name: string }): Observable<any> {
+        return this.http.put(`${this.userApiUrl}/update`, data);
+    }
+
+    changePassword(data: any): Observable<any> {
+        return this.http.put(`${this.userApiUrl}/change-password`, data);
     }
 }

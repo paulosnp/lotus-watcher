@@ -113,6 +113,7 @@ export class SearchComponent {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    // Fecha sugestões ao clicar fora
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.suggestions = [];
     }

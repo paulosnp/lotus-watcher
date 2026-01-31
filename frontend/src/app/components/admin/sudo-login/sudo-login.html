@@ -1,0 +1,21 @@
+<div class="sudo-login-container">
+    <div class="sudo-card">
+        <div class="icon-box">
+            <mat-icon>lock</mat-icon>
+        </div>
+        <h2>Acesso Protegido</h2>
+        <p>Por segurança, confirme sua senha para acessar o Painel Administrativo.</p>
+
+        <form (ngSubmit)="onSubmit()">
+            <div class="input-group">
+                <input type="password" [(ngModel)]="password" name="password" placeholder="Sua senha atual" required>
+            </div>
+
+            <p *ngIf="error" class="error-msg">{{ error }}</p>
+
+            <button type="submit" [disabled]="loading">
+                {{ loading ? 'Verificando...' : 'Confirmar Acesso' }}
+            </button>
+        </form>
+    </div>
+</div>

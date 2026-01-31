@@ -1,39 +1,90 @@
 <div class="watchlist-container">
-    <div class="page-header">
-        <button class="back-btn" (click)="goBack()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h1>Minha Watchlist <mat-icon>favorite</mat-icon></h1>
+    <div class="header">
+        <h1>Minha Watchlist</h1>
+        <p>Acompanhe o preço das cartas que você quer comprar.</p>
     </div>
 
     @if (watchlist.length > 0) {
-    <div class="cards-grid">
-        @for (card of watchlist; track card.id) {
-        <div class="mini-card" (click)="goToDetails(card.id)">
-            <div class="card-thumb">
-                <img [src]="card.imageUrl" alt="{{ card.name }}">
-            </div>
+    <div class="table-wrapper mat-elevation-z8">
+        <table mat-table [dataSource]="watchlist">
 
-            <div class="card-info">
-                <span class="name">{{ card.name }}</span>
-                <span class="set">{{ card.setName }}</span>
-            </div>
+            <!-- Image Column -->
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef> Carta </th>
+                <td mat-cell *matCellDef="let item">
+                    <img [src]="item.card.imageUrl" class="card-thumb" alt="art">
+                </td>
+            </ng-container>
 
-            <div class="price-block">
-                <span class="price">${{ card.priceUsd | number:'1.2-2' }}</span>
-            </div>
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nome </th>
+                <td mat-cell *matCellDef="let item">
+                    <a [routerLink]="['/card', item.card.id]" class="card-link">
+                        {{ item.card.name }}
+                    </a>
+                    <div class="subtitle">{{ item.card.setName }}</div>
+                </td>
+            </ng-container>
 
-            <button class="remove-btn" (click)="remove(card.id, $event)" title="Remover">
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
-        }
+            <!-- Set Column (Hidden on mobile) -->
+            <ng-container matColumnDef="set">
+                <th mat-header-cell *matHeaderCellDef class="hide-mobile"> Tag </th>
+                <td mat-cell *matCellDef="let item" class="hide-mobile">
+                    <span class="tag-badge" *ngIf="item.tag">{{ item.tag }}</span>
+                    <span class="no-data" *ngIf="!item.tag">-</span>
+                </td>
+            </ng-container>
+
+            <!-- Price Column -->
+            <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef> Preço Atual </th>
+                <td mat-cell *matCellDef="let item" class="price-cell">
+                    ${{ item.card.currentPriceUsd}}
+                </td>
+            </ng-container>
+
+            <!-- Target Price Column -->
+            <ng-container matColumnDef="target">
+                <th mat-header-cell *matHeaderCellDef> Alvo </th>
+                <td mat-cell *matCellDef="let item" class="target-cell">
+                    <span *ngIf="item.targetPrice" [class.hit]="item.card.currentPriceUsd <= item.targetPrice">
+                        ${{ item.targetPrice }}
+                        <mat-icon *ngIf="item.card.currentPriceUsd <= item.targetPrice"
+                            class="alert-icon">notifications_active</mat-icon>
+                    </span>
+                    <span class="no-data" *ngIf="!item.targetPrice">-</span>
+                </td>
+            </ng-container>
+
+            <!-- Notes Column -->
+            <ng-container matColumnDef="notes">
+                <th mat-header-cell *matHeaderCellDef class="hide-mobile"> Notas </th>
+                <td mat-cell *matCellDef="let item" class="notes-cell hide-mobile">
+                    {{ item.notes || '-' }}
+                </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Ações </th>
+                <td mat-cell *matCellDef="let item">
+                    <button mat-icon-button color="warn" (click)="removeItem(item.id)" matTooltip="Remover">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
     </div>
     } @else {
     <div class="empty-state">
         <mat-icon>favorite_border</mat-icon>
-        <p>Você ainda não está observando nenhuma carta.</p>
-        <button class="go-home-btn" routerLink="/">Explorar Cartas</button>
+        <h3>Sua watchlist está vazia.</h3>
+        <p>Vá até uma carta e clique em "Adicionar à Watchlist".</p>
+        <a routerLink="/" mat-raised-button color="primary">Explorar Cartas</a>
     </div>
     }
 </div>

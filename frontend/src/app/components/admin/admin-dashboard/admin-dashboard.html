@@ -1,0 +1,95 @@
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1><mat-icon>security</mat-icon> Painel Administrativo</h1>
+        <p>Visão geral do sistema e controles.</p>
+    </header>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="icon-box user"><mat-icon>group</mat-icon></div>
+            <div class="stat-info">
+                <h3>Usuários</h3>
+                <p class="value">{{ stats?.totalUsers || 0 }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card clickable" routerLink="/admin/cards">
+            <div class="icon-box card"><mat-icon>style</mat-icon></div>
+            <div class="stat-info">
+                <h3>Cartas no Banco</h3>
+                <p class="value">{{ stats?.totalCards || 0 }}</p>
+            </div>
+            <mat-icon class="arrow-indicator">chevron_right</mat-icon>
+        </div>
+    </section>
+
+    <section class="admin-actions">
+        <h2>Ações do Sistema</h2>
+
+        <div class="action-card">
+            <div class="action-info">
+                <h3>Sincronizar Scryfall</h3>
+                <p>Atualiza preços de TODAS as cartas no banco. Processo demorado.</p>
+            </div>
+            <button class="action-btn sync" (click)="triggerSync()" [disabled]="isSyncing">
+                <mat-icon [class.spin]="isSyncing">sync</mat-icon>
+                {{ isSyncing ? 'Sincronizando...' : 'Sincronizar Agora' }}
+            </button>
+        </div>
+
+        <div *ngIf="isSyncing" class="progress-wrapper">
+            <div class="progress-bar">
+                <div class="progress-fill"
+                    [style.width]="syncMessage.includes('%') ? syncMessage.split('(')[1].split('%')[0] + '%' : '0%'">
+                </div>
+            </div>
+            <p class="feedback-msg">{{ syncMessage }}</p>
+        </div>
+
+        <p *ngIf="!isSyncing && syncMessage" class="feedback-msg done">{{ syncMessage }}</p>
+    </section>
+
+    <section class="user-management">
+        <h2>Gerenciamento de Usuários</h2>
+
+        <div class="user-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{ user.name }} <span *ngIf="user.role === 'ADMIN'" class="badge admin">ADMIN</span></td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="badge" [class.active]="user.enabled" [class.banned]="!user.enabled">
+                                {{ user.enabled ? 'Ativo' : 'Bloqueado' }}
+                            </span>
+                        </td>
+                        <td>
+                            <button *ngIf="user.role !== 'ADMIN'" class="btn-sm" [class.unban]="!user.enabled"
+                                [class.ban]="user.enabled" (click)="toggleUserStatus(user)">
+                                {{ user.enabled ? 'Bloquear' : 'Desbloquear' }}
+                            </button>
+
+                            <button class="btn-sm role-btn" *ngIf="user.id !== currentUserId"
+                                [class.promote]="user.role !== 'ADMIN'" [class.demote]="user.role === 'ADMIN'"
+                                (click)="toggleUserRole(user)" style="margin-left: 5px;">
+                                <mat-icon>{{ user.role === 'ADMIN' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="users.length === 0" class="empty-state">
+                Nenhum usuário encontrado.
+            </div>
+        </div>
+    </section>
+</div>

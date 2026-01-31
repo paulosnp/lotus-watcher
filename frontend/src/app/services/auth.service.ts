@@ -56,6 +56,19 @@ export class AuthService {
         return localStorage.getItem('token');
     }
 
+    // --- UTILS ROLE ---
+    isAdmin(): boolean {
+        const token = this.getToken();
+        if (!token) return false;
+        try {
+            const payload = token.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            return decoded.role === 'ADMIN';
+        } catch (e) {
+            return false;
+        }
+    }
+
     // --- NOVOS MÉTODOS DE PERFIL ---
 
     getMe(): Observable<any> {
@@ -68,5 +81,19 @@ export class AuthService {
 
     changePassword(data: any): Observable<any> {
         return this.http.put(`${this.userApiUrl}/change-password`, data);
+    }
+
+    // --- SUDO MODE ---
+
+    isSudoAuthenticated(): boolean {
+        return sessionStorage.getItem('sudo_mode') === 'true';
+    }
+
+    verifyPassword(password: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/verify-password`, { password }).pipe(
+            tap(() => {
+                sessionStorage.setItem('sudo_mode', 'true');
+            })
+        );
     }
 }

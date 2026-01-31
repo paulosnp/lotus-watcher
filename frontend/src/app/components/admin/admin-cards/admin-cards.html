@@ -1,0 +1,65 @@
+<div class="admin-cards-container">
+    <header class="page-header">
+        <div class="header-content">
+            <button class="back-btn" routerLink="/admin">
+                <mat-icon>arrow_back</mat-icon> Voltar
+            </button>
+            <h1><mat-icon>style</mat-icon> Gerenciamento de Cartas</h1>
+        </div>
+        <p>Visualizando todas as cartas monitoradas pelo sistema.</p>
+    </header>
+
+    <div class="cards-table-container">
+        <div *ngIf="isLoading" class="loading-state">
+            <mat-icon class="spin">sync</mat-icon>
+            <p>Carregando cartas...</p>
+        </div>
+
+        <table *ngIf="!isLoading">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Img</th>
+                    <th>Nome</th>
+                    <th>Set</th>
+                    <th>Preço (USD)</th>
+                    <!-- <th>Atualizado</th> -->
+                    <th style="text-align: right;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let card of cards">
+                    <td>
+                        <img [src]="card.imageUrl" alt="Card" class="card-thumb">
+                    </td>
+                    <td>
+                        <span class="card-name">{{ card.name }}</span>
+                    </td>
+                    <td>
+                        <span class="set-badge">{{ card.setName }}</span>
+                    </td>
+                    <td>
+                        <span class="price" [class.no-price]="card.priceUsd === 0">
+                            {{ card.priceUsd | currency:'USD' }}
+                        </span>
+                    </td>
+                    <!-- <td>{{ card.lastUpdate | date:'short' }}</td> -->
+                    <td style="text-align: right;">
+                        <button class="btn-sm view" [routerLink]="['/card', card.id]">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination-controls" *ngIf="totalElements > 0">
+            <button [disabled]="page === 0" (click)="changePage(-1)">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+            <span>Página {{ page + 1 }} de {{ totalPages }}</span>
+            <button [disabled]="page >= totalPages - 1" (click)="changePage(1)">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

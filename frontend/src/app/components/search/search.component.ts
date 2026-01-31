@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { CardService } from '../../services/card.service';
+import { FilterService } from '../../services/filter.service'; // Import FilterService
 
 @Component({
   selector: 'app-search',
@@ -33,8 +34,11 @@ export class SearchComponent {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private elementRef: ElementRef
+    private elRef: ElementRef,
+    private filterService: FilterService // Inject
   ) {
+    // ... constructor body ...
+
     // Setup Debounce
     this.searchSubject.pipe(
       debounceTime(300),
@@ -54,6 +58,8 @@ export class SearchComponent {
       this.cdr.detectChanges();
     });
   }
+
+  // ... (methods kept same until onDocumentClick) ...
 
   onSearchInput() {
     this.searchSubject.next(this.searchTerm);
@@ -114,8 +120,17 @@ export class SearchComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     // Fecha sugestões ao clicar fora
-    if (!this.elementRef.nativeElement.contains(event.target)) {
+    if (!this.elRef.nativeElement.contains(event.target)) {
       this.suggestions = [];
     }
+  }
+
+  toggleFilters() {
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']);
+    }
+    // Small delay to ensure navigation started/completed or just rely on service state
+    // Service state is reactive, so Dashboard will pick it up on init.
+    this.filterService.toggleFilters();
   }
 }

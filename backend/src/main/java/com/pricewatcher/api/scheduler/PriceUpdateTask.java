@@ -19,9 +19,10 @@ public class PriceUpdateTask {
     private ScryfallService scryfallService;
 
     // Configuração do Agendamento
-    // initialDelay = 10000 (10 segundos após ligar o servidor, ele roda a primeira vez)
-    // fixedRate = 60000 (Roda a cada 60 segundos - PARA TESTE)
-    @Scheduled(initialDelay = 10000, fixedRate = 60000)
+    // initialDelay = 10000 (10 segundos após ligar o servidor, ele roda a primeira
+    // vez)
+    // fixedRate = 21600000 (Roda a cada 6 horas)
+    @Scheduled(initialDelay = 10000, fixedRate = 21600000)
     public void runPriceUpdate() {
         System.out.println("--- INICIANDO ROBÔ DE ATUALIZAÇÃO DE PREÇOS ---");
 

@@ -14,7 +14,11 @@
       <input matInput placeholder="Digite o nome da carta (ex: Sol Ring)..." [(ngModel)]="searchTerm"
         (keyup.enter)="buscar()" (input)="onSearchInput()" autocomplete="off">
 
-      <button mat-icon-button matSuffix type="button" (click)="buscar()">
+      <button mat-icon-button matSuffix type="button" (click)="toggleFilters()" title="Filtros Avançados">
+        <mat-icon>tune</mat-icon>
+      </button>
+
+      <button mat-icon-button matSuffix type="button" (click)="buscar()" title="Buscar">
         <mat-icon>search</mat-icon>
       </button>
     </mat-form-field>

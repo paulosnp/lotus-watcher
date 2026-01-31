@@ -283,4 +283,69 @@ public class ScryfallService {
         // Salva novamente (agora com o histórico atualizado)
         return cardRepository.save(card);
     }
+
+    // --- SYNC STATUS MONITORING ---
+    public static class SyncStatus {
+        public boolean isRunning = false;
+        public int total = 0;
+        public int current = 0;
+        public int percent = 0;
+    }
+
+    private final SyncStatus syncStatus = new SyncStatus();
+
+    public SyncStatus getSyncStatus() {
+        return syncStatus;
+    }
+
+    // Sincroniza TODAS as cartas do banco (pode demorar)
+    public void syncAllCards() {
+        if (syncStatus.isRunning) {
+            System.out.println("⚠️ [ScryfallSync] Sincronização já está em andamento.");
+            return;
+        }
+
+        new Thread(() -> {
+            System.out.println("🔄 [ScryfallSync] Iniciando sincronização em massa...");
+            syncStatus.isRunning = true;
+
+            java.util.List<Card> allCards = cardRepository.findAll();
+            syncStatus.total = allCards.size();
+            syncStatus.current = 0;
+            syncStatus.percent = 0;
+
+            int updated = 0;
+            for (Card card : allCards) {
+                try {
+                    updateCardPrice(card);
+                    updated++;
+
+                    // Update Status
+                    syncStatus.current = updated;
+                    if (syncStatus.total > 0) {
+                        syncStatus.percent = (int) ((updated / (double) syncStatus.total) * 100);
+                    }
+
+                    if (updated % 10 == 0) {
+                        System.out.println("🔄 [ScryfallSync] Atualizadas " + updated + "/" + allCards.size());
+                    }
+                    Thread.sleep(100); // 100ms
+                } catch (Exception e) {
+                    System.err.println("❌ Falha ao atualizar " + card.getName() + ": " + e.getMessage());
+                }
+            }
+            System.out.println("✅ [ScryfallSync] Sincronização concluída! Total: " + updated);
+
+            // Clean up status after small delay
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+            }
+            syncStatus.isRunning = false;
+            syncStatus.total = 0;
+            syncStatus.current = 0;
+            syncStatus.percent = 0;
+
+        }).start();
+    }
 }

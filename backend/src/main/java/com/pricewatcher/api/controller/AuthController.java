@@ -104,4 +104,27 @@ public class AuthController {
                     .body(java.util.Collections.singletonMap("error", "Token inválido ou expirado."));
         }
     }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody java.util.Map<String, String> request) {
+        String password = request.get("password");
+        if (password == null || password.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(java.util.Collections.singletonMap("error", "Password is required"));
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        java.util.Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return ResponseEntity.ok(java.util.Collections.singletonMap("valid", true));
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(java.util.Collections.singletonMap("error", "Invalid password"));
+    }
 }

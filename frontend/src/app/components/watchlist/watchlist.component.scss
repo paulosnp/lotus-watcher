@@ -1,162 +1,140 @@
 .watchlist-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 40px 20px;
-    color: white;
+    padding: 20px;
 
-    .page-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+    .header {
         margin-bottom: 30px;
+        text-align: center;
 
         h1 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 2rem;
-            margin: 0;
-            font-weight: 300;
-
-            mat-icon {
-                color: #ff6b6b;
-            }
-        }
-
-        .back-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
             color: white;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
 
-            &:hover {
-                background: rgba(255, 255, 255, 0.2);
-                transform: translateX(-3px);
-            }
-
-            mat-icon {
-                font-size: 24px;
-                width: 24px;
-                height: 24px;
-            }
+        p {
+            color: #8f98a0;
         }
     }
 
-    .cards-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+    .table-wrapper {
+        border-radius: 8px;
+        overflow: hidden;
+        background: #1b2838;
     }
 
-    .mini-card {
-        display: flex;
-        align-items: center;
-        background: rgba(22, 32, 45, 0.6);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: all 0.2s ease;
-        cursor: pointer;
-        position: relative;
+    table {
+        width: 100%;
+        background: transparent;
 
-        &:hover {
-            background: rgba(30, 45, 60, 0.8);
-            transform: translateX(5px);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        th {
+            background: #101822; // Dark header
+            color: #66c0f4;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .card-thumb img {
+        td {
+            color: #c7d5e0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            padding: 16px;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-thumb {
             width: 50px;
             border-radius: 4px;
-            margin-right: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
-        .card-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-
-            .name {
-                font-size: 1.1rem;
-                font-weight: 500;
-                color: #c7d5e0;
-            }
-
-            .set {
-                font-size: 0.8rem;
-                color: #718ba5;
-            }
-        }
-
-        .price-block {
-            margin-right: 20px;
-
-            .price {
-                font-weight: bold;
-                color: #4caf50;
-                font-size: 1.2rem;
-            }
-        }
-
-        .remove-btn {
-            background: transparent;
-            border: none;
-            color: #8b9bb4;
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            border-radius: 50%;
-            transition: all 0.2s;
+        .card-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
 
             &:hover {
-                background: rgba(255, 0, 0, 0.1);
-                color: #ff6b6b;
+                text-decoration: underline;
+                color: #66c0f4;
             }
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #8f98a0;
+        }
+
+        .price-cell {
+            font-weight: bold;
+            color: #a3cfec;
+        }
+
+        .target-cell {
+            .hit {
+                color: #a3f7bf; // Green for hit
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .alert-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        .tag-badge {
+            background: rgba(102, 192, 244, 0.2);
+            color: #66c0f4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .no-data {
+            color: rgba(255, 255, 255, 0.2);
         }
     }
 
     .empty-state {
         text-align: center;
-        margin-top: 80px;
-        color: #718ba5;
+        padding: 60px 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
 
         mat-icon {
-            font-size: 4rem;
-            width: 4rem;
-            height: 4rem;
+            font-size: 64px;
+            width: 64px;
+            height: 64px;
+            color: rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
-            opacity: 0.5;
+        }
+
+        h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         p {
-            font-size: 1.2rem;
+            color: #8f98a0;
             margin-bottom: 30px;
         }
+    }
 
-        .go-home-btn {
-            background: var(--steam-accent);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            transition: background 0.2s;
-
-            &:hover {
-                background: #4a90e2; // Lighter blue
-            }
+    @media (max-width: 768px) {
+        .hide-mobile {
+            display: none;
         }
     }
 }

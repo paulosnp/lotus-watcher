@@ -9,6 +9,8 @@ import { CardService } from '../../services/card.service';
 import { Card } from '../../models/card.model';
 import { WatchlistService } from '../../services/watchlist.service';
 import { AuthService } from '../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { WatchlistDialogComponent } from '../watchlist/watchlist-dialog.component';
 
 @Component({
   selector: 'app-card-details',
@@ -84,6 +86,9 @@ export class CardDetailsComponent implements OnInit {
 
   isLoggedIn: boolean = false;
 
+  // ... imports
+
+
   constructor(
     private route: ActivatedRoute,
     private cardService: CardService,
@@ -91,7 +96,8 @@ export class CardDetailsComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private location: Location // Inject Location
+    private location: Location,
+    private dialog: MatDialog // Inject MatDialog
   ) {
     Chart.register(...registerables);
   }
@@ -100,11 +106,25 @@ export class CardDetailsComponent implements OnInit {
     if (!this.card) return;
 
     if (this.isFavorite) {
-      this.watchlistService.removeFromWatchlist(this.card.id).subscribe();
-      this.isFavorite = false;
+      if (confirm('Remover da Watchlist?')) {
+        this.watchlistService.removeFromWatchlist(this.card.id).subscribe(() => {
+          this.isFavorite = false;
+          this.cdr.detectChanges();
+        });
+      }
     } else {
-      this.watchlistService.addToWatchlist(this.card).subscribe();
-      this.isFavorite = true;
+      // Open Dialog
+      const dialogRef = this.dialog.open(WatchlistDialogComponent, {
+        width: '400px',
+        data: { card: this.card }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.isFavorite = true;
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 

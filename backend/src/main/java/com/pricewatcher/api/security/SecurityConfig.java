@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Login, Registro, Verify
                         .requestMatchers("/api/cards/**").permitAll() // Busca de cartas pública
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // PROTEÇÃO ADMIN
                         .requestMatchers("/error").permitAll() // Libera erros para vermos o motivo real
                         .anyRequest().authenticated());
 

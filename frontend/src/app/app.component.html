@@ -16,8 +16,9 @@
       </a>
 
       <!-- Random -->
-      <button class="nav-btn" (click)="onRandomCard()" title="Carta Aleatória">
-        <mat-icon>shuffle</mat-icon>
+      <!-- Random -->
+      <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom" title="Carta Aleatória">
+        <mat-icon [class.spin]="isLoadingRandom">shuffle</mat-icon>
         <span>Random</span>
       </button>
 
@@ -36,6 +37,11 @@
 
           @if (isLoggedIn) {
           <a routerLink="/account" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+
+          @if (isAdmin) {
+          <a routerLink="/admin" class="menu-item admin-link"><mat-icon>security</mat-icon> Admin Panel</a>
+          }
+
           <a routerLink="/watchlist" class="menu-item"><mat-icon>favorite</mat-icon> Watchlist</a>
           <div class="menu-divider"></div>
           <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> Sair</button>

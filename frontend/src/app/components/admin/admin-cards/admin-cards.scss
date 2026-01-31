@@ -1,0 +1,186 @@
+.admin-cards-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: var(--steam-text-main);
+}
+
+.page-header {
+    margin-bottom: 30px;
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 10px;
+
+        h1 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            color: var(--steam-blue-light);
+        }
+    }
+
+    .back-btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--steam-text-light);
+        padding: 5px 12px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            border-color: #66c0f4;
+            color: #66c0f4;
+        }
+
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    p {
+        margin-left: 100px;
+        /* Alimenta com o titulo */
+        color: var(--steam-text-light);
+    }
+}
+
+.cards-table-container {
+    background: rgba(22, 32, 45, 0.4);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    min-height: 400px;
+    position: relative;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th,
+        td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--steam-text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .card-thumb {
+            width: 40px;
+            height: 56px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .card-name {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .set-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--steam-text-light);
+        }
+
+        .price {
+            color: #a3e38e;
+            font-weight: 600;
+
+            &.no-price {
+                color: var(--steam-text-light);
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+
+    button {
+        background: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        &:disabled {
+            color: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+        }
+
+        &:hover:not(:disabled) {
+            color: #66c0f4;
+        }
+    }
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    color: var(--steam-text-light);
+    gap: 15px;
+
+    .spin {
+        animation: spin 1.5s linear infinite;
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-sm.view {
+    padding: 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    cursor: pointer;
+    color: var(--steam-text-light);
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(102, 192, 244, 0.2);
+        color: #66c0f4;
+    }
+}

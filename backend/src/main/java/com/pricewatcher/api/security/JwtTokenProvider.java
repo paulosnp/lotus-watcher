@@ -33,11 +33,18 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
+
+        // Obter roles
+        String role = authentication.getAuthorities().stream()
+                .findFirst().map(r -> r.getAuthority().replace("ROLE_", ""))
+                .orElse("USER");
+
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)

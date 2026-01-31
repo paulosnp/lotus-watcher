@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
@@ -19,6 +19,7 @@ export class AppComponent {
 
   isHomePage: boolean = true;
   isLoggedIn: boolean = false;
+  isAdmin: boolean = false;
   isAuthPage: boolean = false;
   isMenuOpen: boolean = false;
 
@@ -35,10 +36,16 @@ export class AppComponent {
     }
   }
 
-  constructor(private router: Router, private cardService: CardService, private authService: AuthService) {
+  constructor(
+    private router: Router,
+    private cardService: CardService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {
     // Monitora autenticação
     this.authService.currentUser$.subscribe(user => {
       this.isLoggedIn = !!user;
+      this.isAdmin = this.authService.isAdmin();
     });
 
     // Monitora cada troca de página
@@ -57,10 +64,23 @@ export class AppComponent {
     this.authService.logout();
   }
 
+  isLoadingRandom: boolean = false;
+
   onRandomCard() {
-    this.cardService.getRandomCard().subscribe(card => {
-      if (card && card.id) {
-        this.router.navigate(['/card', card.id]);
+    if (this.isLoadingRandom) return;
+
+    this.isLoadingRandom = true;
+    this.cardService.getRandomCard().subscribe({
+      next: (card) => {
+        this.isLoadingRandom = false;
+        if (card && card.id) {
+          this.router.navigate(['/card', card.id]);
+        }
+        this.cdr.detectChanges(); // Force update
+      },
+      error: () => {
+        this.isLoadingRandom = false;
+        this.cdr.detectChanges(); // Force update
       }
     });
   }

@@ -22,6 +22,8 @@ public class Card {
 
     private LocalDateTime lastUpdate;
 
+    // CAMPOS NOVOS PARA LIGAMAGIC
+
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PriceHistory> priceHistory = new ArrayList<>();
 

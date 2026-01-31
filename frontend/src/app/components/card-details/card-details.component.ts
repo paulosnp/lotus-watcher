@@ -40,11 +40,44 @@ export class CardDetailsComponent implements OnInit {
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      x: { ticks: { color: '#8b9bb4' }, grid: { color: '#2a3545' } },
-      y: { ticks: { color: '#4caf50' }, grid: { color: '#2a3545' } }
+    elements: {
+      line: { tension: 0.4, borderWidth: 3 },
+      point: { radius: 4, hoverRadius: 6, backgroundColor: '#66c0f4' }
     },
-    plugins: { legend: { labels: { color: 'white' } } }
+    scales: {
+      x: {
+        ticks: { color: '#8b9bb4', font: { size: 10 } },
+        grid: { color: 'rgba(42, 53, 69, 0.5)', display: true }
+      },
+      y: {
+        ticks: {
+          color: '#4caf50',
+          callback: (value) => {
+            if (typeof value === 'number') {
+              return '$' + value.toFixed(2);
+            }
+            return value;
+          }
+        },
+        grid: { color: 'rgba(42, 53, 69, 0.5)' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(27, 40, 56, 0.9)',
+        titleColor: '#fff',
+        bodyColor: '#66c0f4',
+        borderColor: '#66c0f4',
+        borderWidth: 1,
+        callbacks: {
+          label: (context) => {
+            const val = context.parsed?.y;
+            return val !== null && val !== undefined ? ' $' + val.toFixed(2) : '';
+          }
+        }
+      }
+    }
   };
 
   constructor(
@@ -86,12 +119,10 @@ export class CardDetailsComponent implements OnInit {
     this.cardService.getCardById(id).subscribe({
       next: (c) => {
         this.card = c;
-        this.isFavorite = this.watchlistService.isWatched(c.id); // Check status
+        this.isFavorite = this.watchlistService.isWatched(c.id);
         this.cdr.detectChanges();
 
-        // ... rest of loading logic
-
-        // Carrega Prints com um pequeno delay para garantir renderização
+        // Carrega Prints
         this.cardService.getCardPrints(c.name).subscribe(resp => {
           setTimeout(() => {
             this.prints = resp.data || [];
@@ -103,10 +134,23 @@ export class CardDetailsComponent implements OnInit {
         this.cardService.getCardHistory(id).subscribe(hist => {
           setTimeout(() => {
             if (hist && hist.length > 0) {
-              this.lineChartData.labels = hist.map(h => new Date(h.timestamp).toLocaleDateString());
-              this.lineChartData.datasets[0].data = hist.map(h => h.priceUsd);
 
-              // Força atualização do gráfico
+              // LÓGICA: Se tiver apenas 1 ponto (preço constante/novo), duplica para criar uma linha reta
+              if (hist.length === 1) {
+                const p = hist[0];
+                this.lineChartData.labels = ['Começo', 'Atual'];
+                this.lineChartData.datasets[0].data = [p.priceUsd, p.priceUsd];
+              } else {
+                this.lineChartData.labels = hist.map(h => new Date(h.timestamp).toLocaleDateString());
+                this.lineChartData.datasets[0].data = hist.map(h => h.priceUsd);
+              }
+
+              // Estilo do Dataset
+              this.lineChartData.datasets[0].borderColor = '#4caf50'; // Verde Money
+              this.lineChartData.datasets[0].backgroundColor = 'rgba(76, 175, 80, 0.1)'; // Verde suave
+              this.lineChartData.datasets[0].pointBackgroundColor = '#4caf50';
+              this.lineChartData.datasets[0].label = 'Valor de Mercado';
+
               this.lineChartData = { ...this.lineChartData };
             }
 
@@ -123,8 +167,21 @@ export class CardDetailsComponent implements OnInit {
     });
   }
 
+  getLastUpdateText(): string {
+    if (!this.card || !this.card.lastUpdate) return 'Desconhecido';
+    return new Date(this.card.lastUpdate).toLocaleString();
+  }
+
   voltar() {
     this.router.navigate(['/']);
+  }
+
+  selecionarEdicao(id: string) {
+    if (this.card && this.card.id === id) return; // Evita recarregar a mesma carta
+
+    // Navega para a mesma rota mas com ID diferente
+    // O ngOnInit detecta a mudança e recarrega tudo
+    this.router.navigate(['/card', id]);
   }
 
   getLigaMagicLink(): string {

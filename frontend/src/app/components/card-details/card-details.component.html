@@ -35,7 +35,12 @@
     </div>
 
     <div class="chart-panel">
-      <h3>Histórico de Preço</h3>
+      <div class="chart-header">
+        <h3>Histórico de Preço</h3>
+        <span class="last-update" *ngIf="card.lastUpdate">
+          <mat-icon>update</mat-icon> Atualizado em: {{ getLastUpdateText() }}
+        </span>
+      </div>
       <div class="chart-wrapper">
         <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'">
         </canvas>
@@ -50,7 +55,7 @@
     <h2>Outras Versões & Edições</h2>
     <div class="prints-grid">
       @for (print of prints; track print.id) {
-      <div class="print-item">
+      <div class="print-item" (click)="selecionarEdicao(print.id)" [class.active]="card.id === print.id">
         <img [src]="print.image_uris?.normal || print.card_faces?.[0]?.image_uris?.normal" [title]="print.set_name">
         <span class="print-set">{{ print.set_name }}</span>
         <span class="print-price">

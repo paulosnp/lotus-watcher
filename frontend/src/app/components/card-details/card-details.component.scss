@@ -69,48 +69,60 @@
       }
 
       .favorite-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: transparent;
+        border: none;
         cursor: pointer;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
+        width: 50px;
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        outline: none;
+        position: relative;
 
         mat-icon {
-          color: #8b9bb4;
-          font-size: 28px;
-          width: 28px;
-          height: 28px;
-          transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          color: #4b6175;
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+          transition: all 0.3s ease;
+          /* Sombra interna leve para dar profundidade */
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         &:hover {
-          background: rgba(255, 255, 255, 0.15);
-          transform: scale(1.1);
+          background: rgba(255, 107, 107, 0.1);
+          transform: translateY(-2px) scale(1.1);
 
           mat-icon {
             color: #ff6b6b;
+            filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.6));
           }
         }
 
         &.active {
-          background: rgba(255, 107, 107, 0.15);
-          border-color: #ff6b6b;
-
           mat-icon {
-            color: #ff6b6b;
-            icon-variation: 'FILL' 1;
-            /* Se usar Material Symbols */
+            color: #ff4757;
+            /* Vermelho mais vibrante */
+            filter: drop-shadow(0 0 12px rgba(255, 71, 87, 0.8));
+            animation: heartBeat 0.4s forwards;
           }
         }
+      }
 
-        &:active {
-          transform: scale(0.95);
+      @keyframes heartBeat {
+        0% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.3);
+        }
+
+        100% {
+          transform: scale(1);
         }
       }
     }
@@ -179,12 +191,33 @@
   justify-content: center;
   /* Centraliza verticalmente */
 
-  h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #8b9bb4;
-    font-weight: normal;
-    font-size: 1rem;
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0;
+      color: #8b9bb4;
+      font-weight: normal;
+      font-size: 1.1rem;
+    }
+
+    .last-update {
+      font-size: 0.85rem;
+      color: #556677;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-style: italic;
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+      }
+    }
   }
 
   .chart-wrapper {
@@ -212,13 +245,25 @@
     border-radius: 8px;
     text-align: center;
     position: relative;
-    transition: background 0.2s;
-    cursor: default;
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+    border: 2px solid transparent;
 
     /* A mágica acontece aqui: o container sobe o z-index para não ser tapado */
     &:hover {
       z-index: 1000;
       background: #2a3545;
+      transform: translateY(-5px);
+    }
+
+    &.active {
+      border-color: #4caf50;
+      background: rgba(76, 175, 80, 0.1);
+
+      img {
+        /* Borda brilhante na carta selecionada */
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+      }
     }
 
     img {
@@ -292,18 +337,15 @@
   }
 }
 
-/* Botão da LigaMagic */
+/* Botão da LigaMagic (Restaurado) */
 .ligamagic-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  /* Espaço entre ícone e texto */
 
   margin-top: 15px;
-  /* Descola da caixa de preço */
   width: 250px;
-  /* Ocupa a largura toda da coluna */
   padding: 12px;
 
   background-color: #f37021;
@@ -311,13 +353,11 @@
   color: white;
   font-weight: bold;
   text-decoration: none;
-  /* Tira o sublinhado de link */
   border-radius: 8px;
 
   transition: background 0.2s, transform 0.2s;
   cursor: pointer;
 
-  /* Ícone um pouco menor */
   mat-icon {
     font-size: 1.2rem;
     width: 1.2rem;
@@ -326,8 +366,6 @@
 
   &:hover {
     background-color: #d65a10;
-    /* Laranja mais escuro ao passar o mouse */
     transform: translateY(-2px);
-    /* Efeito de "levantar" */
   }
 }

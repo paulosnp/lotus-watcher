@@ -7,18 +7,29 @@
 }
 
 .back-btn {
-  background: none;
-  border: 1px solid #4b6175;
-  color: #66c0f4;
-  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
   cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
+  margin-bottom: 20px;
+  width: 44px;
+  height: 44px;
 
   &:hover {
-    background: #2a475e;
-    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-3px);
+  }
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
   }
 }
 

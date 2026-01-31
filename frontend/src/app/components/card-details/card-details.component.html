@@ -4,7 +4,9 @@
 
 <div class="details-container" *ngIf="!isLoading && card">
 
-  <button class="back-btn" (click)="voltar()">← Voltar</button>
+  <button class="back-btn" (click)="voltar()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
 
   <div class="top-deck">
 

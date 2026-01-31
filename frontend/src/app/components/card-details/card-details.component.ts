@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common'; // Import Location
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CardDetailsComponent implements OnInit {
 
+  // ... (previous properties)
   card: Card | null = null;
   prints: any[] = [];
   isLoading: boolean = true;
@@ -89,7 +90,8 @@ export class CardDetailsComponent implements OnInit {
     private watchlistService: WatchlistService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location // Inject Location
   ) {
     Chart.register(...registerables);
   }
@@ -183,7 +185,7 @@ export class CardDetailsComponent implements OnInit {
   }
 
   voltar() {
-    this.router.navigate(['/']);
+    this.location.back();
   }
 
   selecionarEdicao(id: string) {

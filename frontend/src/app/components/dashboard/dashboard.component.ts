@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common'; // Import Location
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SearchComponent } from '../search/search.component';
@@ -15,6 +15,7 @@ import { CardService } from '../../services/card.service';
 })
 export class DashboardComponent implements OnInit {
 
+  // ... (previous properties)
   topRisers: any[] = [];
   topFallers: any[] = [];
   isLoading: boolean = true;
@@ -30,7 +31,8 @@ export class DashboardComponent implements OnInit {
     private route: ActivatedRoute,
     private cardService: CardService,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location // Inject Location
   ) { }
 
   ngOnInit(): void {
@@ -119,5 +121,9 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/card', card.id]);
       }
     });
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

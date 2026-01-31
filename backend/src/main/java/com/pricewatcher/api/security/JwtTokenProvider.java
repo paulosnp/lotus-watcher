@@ -11,11 +11,21 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // Em produção, isso deve vir de variáveis de ambiente!
-    // Gera uma chave segura para HS512 automaticamente a cada reinício (para dev)
-    // Em produção, você deve gerar uma e salvar em variável de ambiente.
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @org.springframework.beans.factory.annotation.Value("${app.jwt-secret}")
+    private String jwtSecret;
+
+    private Key key;
     private static final long JWT_EXPIRATION_MS = 86400000; // 1 dia
+
+    @javax.annotation.PostConstruct
+    public void init() {
+        if (jwtSecret != null && jwtSecret.length() >= 64) {
+            this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        } else {
+            // Fallback para dev se não tiver config
+            this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        }
+    }
 
     private Key getSigningKey() {
         return key;

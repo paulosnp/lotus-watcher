@@ -1,5 +1,10 @@
 <div class="watchlist-container">
-    <h1>Minha Watchlist <mat-icon>favorite</mat-icon></h1>
+    <div class="page-header">
+        <button class="back-btn" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Minha Watchlist <mat-icon>favorite</mat-icon></h1>
+    </div>
 
     @if (watchlist.length > 0) {
     <div class="cards-grid">

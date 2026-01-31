@@ -1,5 +1,10 @@
 <div class="sets-container">
-    <h1>Expansões de Magic</h1>
+    <div class="page-header">
+        <button class="back-btn" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Expansões de Magic</h1>
+    </div>
 
     @if (isLoading) {
     <p class="loading">Carregando expansões...</p>

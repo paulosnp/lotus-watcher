@@ -1,12 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common'; // Import Location
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
 import { SetService } from '../../services/set.service';
 
 @Component({
     selector: 'app-sets',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, MatIconModule], // Add MatIconModule
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss']
 })
@@ -19,7 +20,8 @@ export class SetsComponent implements OnInit {
     constructor(
         private setService: SetService,
         private router: Router,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private location: Location // Inject Location
     ) { }
 
     ngOnInit(): void {
@@ -46,5 +48,9 @@ export class SetsComponent implements OnInit {
 
     goToSet(setCode: string) {
         this.router.navigate(['/'], { queryParams: { q: 'set:' + setCode } });
+    }
+
+    goBack() {
+        this.location.back();
     }
 }

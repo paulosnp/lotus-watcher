@@ -42,7 +42,10 @@ public class CardController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(results.toString());
         }
-        return ResponseEntity.notFound().build();
+        // Retorna lista vazia em vez de 404 para evitar erro no console
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("{\"object\": " + "\"list\", \"data\": []}");
     }
 
     @GetMapping("/autocomplete")

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common'; // Import Location
 import { Router, RouterModule } from '@angular/router';
 import { WatchlistService } from '../../services/watchlist.service';
 import { Card } from '../../models/card.model';
@@ -16,10 +16,18 @@ export class WatchlistComponent implements OnInit {
 
     watchlist: Card[] = [];
 
-    constructor(private watchlistService: WatchlistService, private router: Router) { }
+    constructor(
+        private watchlistService: WatchlistService,
+        private router: Router,
+        private location: Location // Inject Location
+    ) { }
 
     ngOnInit(): void {
         this.loadWatchlist();
+    }
+
+    goBack() {
+        this.location.back();
     }
 
     loadWatchlist() {

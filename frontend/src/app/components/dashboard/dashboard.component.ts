@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SearchComponent } from '../search/search.component';
+import { AuthService } from '../../services/auth.service';
 import { CardService } from '../../services/card.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
   isSearching: boolean = false;
   searchResults: any[] = [];
   searchQuery: string = '';
+  isLoggedIn: boolean = false;
 
   cardBackUrl = 'https://upload.wikimedia.org/wikipedia/en/a/a4/Magic_the_gathering-card_back.jpg';
 
@@ -27,11 +29,16 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cardService: CardService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.authService.currentUser$.subscribe((user: any) => {
+      this.isLoggedIn = !!user;
+    });
+
+    this.route.queryParams.subscribe((params: any) => {
       this.searchQuery = params['q'];
       if (this.searchQuery) {
         this.isSearching = true;
@@ -49,7 +56,7 @@ export class DashboardComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.cardService.searchCards(query).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response && response.data) {
           this.searchResults = response.data.map((card: any) => ({
             id: card.id,
@@ -63,7 +70,7 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro na busca:', err);
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -76,7 +83,7 @@ export class DashboardComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.cardService.getMarketOverview().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         if (data && data.risers) {
           this.topRisers = data.risers;
         } else {
@@ -92,7 +99,7 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Erro ao carregar mercado:', err);
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -107,7 +114,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onRandomCard() {
-    this.cardService.getRandomCard().subscribe(card => {
+    this.cardService.getRandomCard().subscribe((card: any) => {
       if (card && card.id) {
         this.router.navigate(['/card', card.id]);
       }

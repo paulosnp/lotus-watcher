@@ -1,0 +1,140 @@
+.verify-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+    background: radial-gradient(circle at center, #1b2838 0%, #0d1219 100%);
+}
+
+.verify-box {
+    background: #16202d;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #2a3545;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+    .icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 20px;
+
+        &.spinning {
+            animation: spin 1s linear infinite;
+            color: #66c0f4;
+        }
+
+        &.success {
+            color: #2ecc71;
+        }
+
+        &.error {
+            color: #e74c3c;
+        }
+    }
+
+    h2 {
+        color: #fff;
+        margin-bottom: 5px;
+        font-size: 1.5rem;
+    }
+
+    p {
+        color: #8b9bb4;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        background: #0d1219;
+        border: 1px solid #2a3545;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1.2rem;
+        text-align: center;
+        letter-spacing: 5px; // Espaçamento para parecer código
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: #66c0f4;
+            box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.2);
+        }
+
+        &::placeholder {
+            letter-spacing: normal;
+            font-size: 1rem;
+            color: #4a5a70;
+        }
+    }
+
+    .error-msg {
+        color: #e74c3c;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .action-btn {
+        display: block; // Change from inline-block to block
+        margin: 0 auto; // Ensure margin auto for centering if width < 100% (though width is 100%)
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.2s;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 100%; // Botão full width
+        text-align: center; // Garante texto centralizado em tags <a>
+        box-sizing: border-box; // Evita que padding estoure a largura
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        &.success-btn {
+            background: #2ecc71;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        &.error-btn {
+            background: #2a3545;
+            color: #fff;
+            border: 1px solid #3a4b60;
+
+            &:hover {
+                background: #3a4b60;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,36 @@
+<div class="verify-container">
+    <div class="verify-box">
+
+        <!-- Initial Verification Form -->
+        @if (!success) {
+        <mat-icon class="icon spinning">mark_email_unread</mat-icon>
+        <h2>Verifique seu Email</h2>
+        <p>Enviamos um código de 6 dígitos para seu email. Insira-o abaixo para ativar sua conta.</p>
+
+        <form (ngSubmit)="onSubmit()" class="verify-form">
+            <div class="form-group">
+                <input type="text" [(ngModel)]="code" name="code" placeholder="Código de 6 dígitos" maxlength="6"
+                    required>
+            </div>
+
+            <button type="submit" class="action-btn success-btn" [disabled]="isLoading || code.length < 6">
+                <!-- Mostra Loading ou Texto -->
+                @if(isLoading) { Verificando... } @else { Confirmar Código }
+            </button>
+        </form>
+
+        @if (message) {
+        <p class="error-msg">{{ message }}</p>
+        }
+        }
+
+        <!-- Success State -->
+        @if (success) {
+        <mat-icon class="icon success">check_circle</mat-icon>
+        <h2>Conta Ativada!</h2>
+        <p>{{ message }}</p>
+        <a routerLink="/login" class="action-btn success-btn">Ir para Login</a>
+        }
+
+    </div>
+</div>

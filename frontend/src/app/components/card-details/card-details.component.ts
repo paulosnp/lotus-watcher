@@ -8,6 +8,7 @@ import { Chart, registerables, ChartConfiguration, ChartOptions } from 'chart.js
 import { CardService } from '../../services/card.service';
 import { Card } from '../../models/card.model';
 import { WatchlistService } from '../../services/watchlist.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-card-details',
@@ -80,12 +81,15 @@ export class CardDetailsComponent implements OnInit {
     }
   };
 
+  isLoggedIn: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private cardService: CardService,
     private watchlistService: WatchlistService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {
     Chart.register(...registerables);
   }
@@ -103,6 +107,12 @@ export class CardDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Monitora status de login
+    this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user;
+      this.cdr.detectChanges();
+    });
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {

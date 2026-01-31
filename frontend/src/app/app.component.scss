@@ -43,6 +43,13 @@
     align-items: center;
     gap: 5px;
 
+    .v-divider {
+      width: 1px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0 10px;
+    }
+
     .random-btn {
       background: transparent;
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73,6 +80,17 @@
         color: white;
         border-color: var(--steam-accent);
         transform: translateY(-2px);
+      }
+
+      &.login-highlight {
+        background: rgba(102, 192, 244, 0.1);
+        border-color: #66c0f4;
+        color: #66c0f4;
+
+        &:hover {
+          background: #66c0f4;
+          color: #fff;
+        }
       }
     }
   }

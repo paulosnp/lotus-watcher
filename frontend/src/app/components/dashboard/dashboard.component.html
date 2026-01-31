@@ -15,6 +15,11 @@
       </div>
 
       <div class="quick-links">
+        @if (!isLoggedIn) {
+        <a routerLink="/login" class="quick-btn highlight-btn">
+          <mat-icon>login</mat-icon> Entrar
+        </a>
+        }
         <a routerLink="/sets" class="quick-btn">
           <mat-icon>view_module</mat-icon> Sets
         </a>

@@ -135,6 +135,17 @@
         color: white;
         transform: translateY(-2px);
       }
+
+      &.highlight-btn {
+        background: rgba(46, 204, 113, 0.2); // Verde suave
+        border-color: rgba(46, 204, 113, 0.4);
+        color: #2ecc71;
+
+        &:hover {
+          background: rgba(46, 204, 113, 0.4);
+          color: white;
+        }
+      }
     }
   }
 }

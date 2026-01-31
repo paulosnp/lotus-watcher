@@ -1,6 +1,6 @@
 <div class="main-layout">
 
-  <nav class="navbar" *ngIf="!isHomePage">
+  <nav class="navbar" *ngIf="!isHomePage && !isAuthPage">
 
     <!-- 1. Busca Central (Agora contém a Logo) -->
     <div class="nav-search-box">
@@ -14,7 +14,8 @@
         <span class="text">Sets</span>
       </button>
 
-      <button class="random-btn" routerLink="/watchlist" title="Minha Watchlist">
+      <!-- Botão da Watchlist (Somente se logado) -->
+      <button class="random-btn" routerLink="/watchlist" title="Minha Watchlist" *ngIf="isLoggedIn">
         <mat-icon>favorite</mat-icon>
         <span class="text">Watchlist</span>
       </button>
@@ -22,6 +23,19 @@
       <button class="random-btn" (click)="onRandomCard()" title="Random Card">
         <mat-icon>shuffle</mat-icon>
         <span class="text">Random Card</span>
+      </button>
+
+      <!-- Divisor Vertical -->
+      <div class="v-divider"></div>
+
+      <!-- Auth Botoes -->
+      <button class="random-btn login-highlight" routerLink="/login" *ngIf="!isLoggedIn">
+        <mat-icon>login</mat-icon>
+        <span class="text">Login</span>
+      </button>
+
+      <button class="random-btn" (click)="logout()" *ngIf="isLoggedIn" title="Sair">
+        <mat-icon>logout</mat-icon>
       </button>
     </div>
   </nav>

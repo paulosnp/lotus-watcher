@@ -154,6 +154,7 @@ public class ScryfallService {
         }
     }
 
+    @Transactional
     public Card updateCardPrice(Card card) {
         String url = "https://api.scryfall.com/cards/" + card.getId();
         JsonNode root = fetchJson(url);

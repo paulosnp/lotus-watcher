@@ -6,6 +6,7 @@ import { SearchComponent } from './components/search/search.component';
 import { Footer } from './components/footer/footer';
 import { filter } from 'rxjs/operators';
 import { CardService } from './services/card.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,15 +18,29 @@ import { CardService } from './services/card.service';
 export class AppComponent {
 
   isHomePage: boolean = true;
+  isLoggedIn: boolean = false;
+  isAuthPage: boolean = false;
 
-  constructor(private router: Router, private cardService: CardService) {
+  constructor(private router: Router, private cardService: CardService, private authService: AuthService) {
+    // Monitora autenticação
+    this.authService.currentUser$.subscribe(user => {
+      this.isLoggedIn = !!user;
+    });
+
     // Monitora cada troca de página
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
+      const url = event.urlAfterRedirects || event.url;
       // Se a URL for '/', estamos na Home
-      this.isHomePage = (event.url === '/' || event.urlAfterRedirects === '/');
+      this.isHomePage = (url === '/');
+      // Verifica se é pagina de auth
+      this.isAuthPage = (url.startsWith('/login') || url.startsWith('/register') || url.startsWith('/verify'));
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   onRandomCard() {

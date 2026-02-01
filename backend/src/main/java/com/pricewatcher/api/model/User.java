@@ -27,6 +27,8 @@ public class User {
 
     private String name;
 
+    private String avatar; // URL or ID of the avatar
+
     private String role; // "USER", "ADMIN"
 
     @Column(nullable = false)

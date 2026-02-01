@@ -16,7 +16,6 @@
       </a>
 
       <!-- Random -->
-      <!-- Random -->
       <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom" title="Carta Aleatória">
         <mat-icon [class.spin]="isLoadingRandom">shuffle</mat-icon>
         <span>Random</span>
@@ -68,10 +67,20 @@
       </div>
       }
 
-      <!-- Menu Hamburger -->
+      <!-- Menu Hamburger / Avatar Trigger -->
       <div class="header-menu-wrapper">
         <button class="nav-btn menu-toggle" (click)="toggleMenu()">
-          <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+          <!-- Logged In: Show Avatar -->
+          <ng-container *ngIf="isLoggedIn; else guestMenu">
+            <div class="avatar-trigger">
+              <img [src]="userAvatar || '/assets/default-avatar.png'" class="user-avatar" alt="Avatar">
+            </div>
+          </ng-container>
+
+          <!-- Guest: Show Hamburger -->
+          <ng-template #guestMenu>
+            <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+          </ng-template>
         </button>
 
         @if (isMenuOpen) {
@@ -82,7 +91,7 @@
           }
 
           @if (isLoggedIn) {
-          <a routerLink="/account" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+          <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> Meu Perfil</a>
 
           @if (isAdmin) {
           <a routerLink="/admin" class="menu-item admin-link"><mat-icon>security</mat-icon> Admin Panel</a>

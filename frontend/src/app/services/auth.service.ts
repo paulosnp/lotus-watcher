@@ -25,9 +25,14 @@ export class AuthService {
     private checkToken() {
         const token = localStorage.getItem('token');
         if (token) {
-            // Aqui poderíamos decodificar o token para pegar o nome do usuário
-            // Por enquanto, vamos assumir que se tem token, está logado
-            this.currentUserSubject.next({ token });
+            this.currentUserSubject.next({ token }); // Restore basic state
+            this.getMe().subscribe({
+                next: (user) => {
+                    // Merge with token info just in case, but usually backend returns full user
+                    this.currentUserSubject.next({ ...user, token });
+                },
+                error: () => this.logout() // If token invalid, logout
+            });
         }
     }
 
@@ -45,6 +50,11 @@ export class AuthService {
                 if (response.accessToken) {
                     localStorage.setItem('token', response.accessToken);
                     this.currentUserSubject.next({ token: response.accessToken });
+
+                    // Fetch full profile immediately
+                    this.getMe().subscribe(user => {
+                        this.currentUserSubject.next({ ...user, token: response.accessToken });
+                    });
                 }
             })
         );
@@ -79,8 +89,16 @@ export class AuthService {
         return this.http.get(`${this.userApiUrl}/me`);
     }
 
-    updateProfile(data: { name: string }): Observable<any> {
-        return this.http.put(`${this.userApiUrl}/update`, data);
+    updateProfile(data: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/profile`, data).pipe(
+            tap((updatedUser: any) => {
+                // Atualiza o estado local do usuário sem precisar relogar
+                const currentUser = this.currentUserSubject.value;
+                if (currentUser) {
+                    this.currentUserSubject.next({ ...currentUser, ...updatedUser });
+                }
+            })
+        );
     }
 
     changePassword(data: any): Observable<any> {

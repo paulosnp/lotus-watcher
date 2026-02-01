@@ -76,3 +76,37 @@ body {
 .lotus-dialog-container .mat-mdc-form-field-input-control {
   color: white !important;
 }
+
+/* --- GLOBAL MATERIAL DARK MODE FIXES (STEAM THEME) --- */
+.mat-mdc-form-field {
+  /* Default State */
+  --mdc-outlined-text-field-label-text-color: rgba(199, 213, 224, 0.7);
+  /* steam-text-main faded */
+  --mdc-outlined-text-field-outline-color: rgba(102, 192, 244, 0.3);
+  /* steam-accent faded */
+
+  /* Focus State */
+  --mdc-outlined-text-field-focus-label-text-color: #66c0f4;
+  /* steam-accent */
+  --mdc-outlined-text-field-focus-outline-color: #66c0f4;
+
+  /* Input Text */
+  --mdc-outlined-text-field-input-text-color: #ffffff;
+  --mdc-outlined-text-field-caret-color: #66c0f4;
+
+  /* Force Colors (just in case variables are ignored) */
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: rgba(102, 192, 244, 0.3) !important;
+  }
+
+  &.mat-focused {
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #66c0f4 !important;
+    }
+  }
+}

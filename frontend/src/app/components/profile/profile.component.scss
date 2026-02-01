@@ -1,0 +1,303 @@
+.profile-container {
+    padding: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .header-avatar-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+
+        .header-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #66c0f4;
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.3);
+            object-fit: cover;
+        }
+
+        .header-edit-icon {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            background: #66c0f4;
+            color: #1b2838;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1b2838;
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+
+            mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+                background-color: #fff;
+                color: #66c0f4;
+            }
+        }
+    }
+
+    .header-info {
+        flex-grow: 1;
+
+        h1 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 4px 0 0;
+            color: #8b9bb4;
+        }
+
+        .role-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 2px 8px;
+            background: rgba(255, 76, 76, 0.2);
+            color: #ff4c4c;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 76, 76, 0.3);
+        }
+    }
+}
+
+.profile-card {
+    padding: 24px;
+    background-color: #1b2838;
+    color: #c7d5e0;
+
+    h3 {
+        color: #66c0f4;
+        margin-bottom: 16px;
+        margin-top: 0;
+    }
+
+    .hint {
+        color: #8b9bb4;
+        font-size: 0.9em;
+        margin-bottom: 16px;
+    }
+}
+
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.avatar-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+
+    .avatar-item {
+        cursor: pointer;
+        transition: all 0.2s;
+        border-radius: 50%;
+        padding: 4px;
+        border: 2px solid transparent;
+        position: relative;
+
+        img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        &:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        &.selected {
+            border-color: #66c0f4;
+            transform: scale(1.1);
+
+            img {
+                box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+            }
+        }
+    }
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h3 {
+        margin: 0;
+    }
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        color: #8b9bb4;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-left: 4px;
+        /* Align slightly with background box */
+        text-transform: uppercase;
+    }
+
+    .display-value {
+        font-size: 1.1rem;
+        color: #fff;
+        padding: 12px 16px;
+        /* Bigger touch target */
+        background: rgba(255, 255, 255, 0.05);
+        /* Box style instead of line */
+        border-radius: 8px;
+        /* Rounded corners */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &.locked {
+            color: #586575;
+            background: rgba(0, 0, 0, 0.2);
+
+            mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        &.highlight {
+            color: #66c0f4;
+            border-color: rgba(102, 192, 244, 0.3);
+        }
+    }
+}
+
+// Transparent container
+.password-form-container {
+    margin-top: 16px;
+    padding: 0;
+    // Removed background and border based on user feedback
+
+    .hint {
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+
+    // Custom Steam Inputs (Native HTML)
+    .custom-input-group {
+        margin-bottom: 20px;
+
+        label {
+            display: block;
+            color: #8b9bb4; // Steam silver
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .steam-input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: rgba(0, 0, 0, 0.2); // Darker box
+            border: 1px solid rgba(102, 192, 244, 0.3); // Blue-ish hint
+            border-radius: 4px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            &:focus {
+                border-color: #66c0f4; // Bright Blue focus
+                background-color: rgba(102, 192, 244, 0.05);
+                box-shadow: 0 0 10px rgba(102, 192, 244, 0.1);
+            }
+        }
+    }
+}
+
+// Inline Name Editor
+.edit-name-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    mat-form-field {
+        flex-grow: 1;
+        margin-bottom: 0 !important;
+    }
+
+    .action-btn {
+        box-shadow: none !important; // Flat look for cleanliness
+        transform: scale(0.9); // Slightly smaller
+
+        &.save-btn {
+            background-color: #66c0f4; // Steam Blue
+            color: #1b2838;
+        }
+    }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+
+    button[color="primary"] {
+        background-color: #007bff !important;
+        /* Blue for Save */
+        color: white !important;
+    }
+}

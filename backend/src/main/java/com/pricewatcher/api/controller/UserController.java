@@ -39,7 +39,12 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserDataDto> getCurrentUser() {
         User user = getAuthenticatedUser();
-        return ResponseEntity.ok(new UserDataDto(user.getId().toString(), user.getName(), user.getEmail()));
+        return ResponseEntity.ok(new UserDataDto(
+                user.getId().toString(),
+                user.getName(),
+                user.getEmail(),
+                user.getAvatar(),
+                user.getRole()));
     }
 
     @PutMapping("/update")

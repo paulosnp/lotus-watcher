@@ -21,7 +21,6 @@ import { Observable } from 'rxjs'; // Import Observable
 })
 export class DashboardComponent implements OnInit {
 
-  // ... (previous properties)
   topRisers: any[] = [];
   topFallers: any[] = [];
   isLoading: boolean = true;
@@ -30,10 +29,15 @@ export class DashboardComponent implements OnInit {
   searchQuery: string = '';
   isLoggedIn: boolean = false;
   isAdmin: boolean = false; // Admin flag
+  userAvatar: string | null = null; // Fix TS2339
 
   cardBackUrl = 'https://upload.wikimedia.org/wikipedia/en/a/a4/Magic_the_gathering-card_back.jpg';
 
-  // ... (previous properties)
+  // Notification State
+  isNotificationsOpen = false;
+  unreadCount$: Observable<number>;
+  notifications$: Observable<Notification[]>;
+  isMenuOpen: boolean = false;
 
   constructor(
     private router: Router,
@@ -43,19 +47,12 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private location: Location,
     private filterService: FilterService,
-    private notificationService: NotificationService // Inject Service
+    private notificationService: NotificationService
   ) {
     // Initialize Observables
     this.unreadCount$ = this.notificationService.unreadCount$;
     this.notifications$ = this.notificationService.notifications$;
   }
-
-  isMenuOpen: boolean = false;
-
-  // Notification State
-  isNotificationsOpen = false;
-  unreadCount$: Observable<number>;
-  notifications$: Observable<Notification[]>;
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -100,6 +97,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user: any) => {
       this.isLoggedIn = !!user;
+      this.userAvatar = user ? user.avatar : null;
       this.isAdmin = this.authService.isAdmin();
     });
 
@@ -134,7 +132,7 @@ export class DashboardComponent implements OnInit {
             name: card.name,
             setName: card.set_name,
             priceUsd: card.prices?.usd || '0.00',
-            priceChangePercentage: 0, // Search results don't usually have 24h change data in this endpoint
+            priceChangePercentage: 0,
             imageUrl: card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal || 'https://i.imgur.com/LdOBU1I.jpg'
           }));
         }
@@ -230,17 +228,6 @@ export class DashboardComponent implements OnInit {
     if (this.filterState.colors.c) colorQuery.push('c');
 
     if (colorQuery.length > 0) {
-      // id: identity (commander color), c: color.
-      // Generic usage usually means "color includes". id: is stricter for commander.
-      // Scryfall: c=w means exactly white. c>=w means white plus others. 
-      // Let's use simple inclusive 'c:' logic joined.
-      // Actually, user often wants logic OR or AND.
-      // Standard advanced search: "c:w or c:u" vs "c:wu".
-      // Let's go with "Identity includes selected" -> id>=...
-      // Or simply append them. c:w c:u implies AND (must be both).
-      // Let's construct a "c:" param. 
-      // Using 'id' is often safer for "I want a deck with these colors".
-      // But for searching a specific card, let's just append the string.
       queryParts.push('c:' + colorQuery.join(''));
     }
 
@@ -266,19 +253,10 @@ export class DashboardComponent implements OnInit {
     if (this.filterState.types.land) typeQuery.push('t:land');
 
     if (typeQuery.length > 0) {
-      // Usually types are AND? "Creature Artifact"? Or OR?
-      // Checkboxes usually imply OR for categories, but AND for combination.
-      // Let's assume user wants ANY of the selected types.
       queryParts.push('(' + typeQuery.join(' or ') + ')');
     }
 
     const finalQuery = queryParts.join(' ');
-    console.log('Query construída:', finalQuery);
-
-    // We execute search directly, effectively bypassing the simple "q=" URL parameter for filter nuance,
-    // OR we update the URL. Updating URL is better for shareability.
-    // But our search component binds to queryParams 'q'. 
-    // If we update 'q' with complex syntax, it works!
 
     if (finalQuery.trim() === '') return;
 

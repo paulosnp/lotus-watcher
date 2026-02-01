@@ -89,6 +89,14 @@
         padding: 0;
         /* Square shape matches other buttons */
       }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid #66c0f4;
+        object-fit: cover;
+      }
     }
 
     /* --- SHARED DROPDOWN STYLES --- */
@@ -295,6 +303,31 @@
     /* --- MENU DROPDOWN (HEADER) --- */
     .header-menu-wrapper {
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .avatar-trigger {
+        cursor: pointer;
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    /* Move user-avatar style out of .nav-btn to be shared */
+    .user-avatar {
+      width: 38px;
+      /* Slightly larger for better visibility */
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid #66c0f4;
+      object-fit: cover;
+      box-shadow: 0 0 8px rgba(102, 192, 244, 0.3);
     }
   }
 }

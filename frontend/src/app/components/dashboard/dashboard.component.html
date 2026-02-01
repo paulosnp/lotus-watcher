@@ -1,7 +1,6 @@
 <div class="dashboard-container">
 
   <!-- MENU HAMBURGUER RESTAURADO (FIXED TOP-RIGHT) -->
-  <!-- MENU HAMBURGUER RESTAURADO (FIXED TOP-RIGHT) -->
   @if (!isSearching) {
   <div class="home-menu-wrapper">
 
@@ -58,8 +57,18 @@
       </div>
       }
 
+      <!-- ONE BUTTON to rule them all -->
       <button class="menu-btn" (click)="toggleMenu()">
-        <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        <!-- Logged In: Show Avatar -->
+        <ng-container *ngIf="isLoggedIn; else guestIcon">
+          <img [src]="userAvatar || '/assets/default-avatar.png'" class="user-avatar" alt="Avatar"
+            style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid #66c0f4; object-fit: cover;">
+        </ng-container>
+
+        <!-- Guest: Show Menu Icon -->
+        <ng-template #guestIcon>
+          <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </ng-template>
       </button>
     </div>
 
@@ -71,7 +80,7 @@
       }
 
       @if (isLoggedIn) {
-      <a routerLink="/account" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+      <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
       @if (isAdmin) {
       <a routerLink="/admin" class="menu-item"><mat-icon>security</mat-icon> Admin Panel</a>
       }

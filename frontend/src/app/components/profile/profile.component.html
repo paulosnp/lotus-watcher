@@ -1,0 +1,124 @@
+<div class="profile-container">
+
+    <!-- Profile Header (Preview) -->
+    <div class="profile-header">
+        <div class="header-avatar-wrapper">
+            <img [src]="selectedAvatar || '/assets/default-avatar.png'" class="header-avatar" alt="Avatar Atual"
+                onerror="this.src='/assets/default-avatar.png'">
+
+            <!-- BUTTON: Upload Icon overlaps avatar -->
+            <div class="header-edit-icon" (click)="triggerFileInput()" matTooltip="Fazer Upload de Imagem">
+                <mat-icon [class.spin]="isUploading">{{ isUploading ? 'sync' : 'cloud_upload' }}</mat-icon>
+            </div>
+            <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept="image/*" hidden>
+        </div>
+
+        <div class="header-info">
+            <!-- Show current name (live preview if editing) -->
+            <h1>{{ (isEditingName ? newName : user?.name) || 'Usuário' }}</h1>
+            <p>{{ user?.email }}</p>
+            <span class="role-badge" *ngIf="user?.role === 'ADMIN'">ADMIN</span>
+        </div>
+    </div>
+
+    <mat-card class="profile-card">
+        <h3>Escolha seu Avatar</h3>
+
+        <div class="avatar-section">
+            <div class="avatar-grid">
+                <div *ngFor="let avatar of avatars" class="avatar-item" [class.selected]="selectedAvatar === avatar"
+                    (click)="selectAvatar(avatar)">
+                    <img [src]="avatar" alt="Avatar">
+                </div>
+            </div>
+        </div>
+
+        <mat-divider style="margin: 30px 0;"></mat-divider>
+
+        <!-- Informações Pessoais -->
+        <div class="section-header">
+            <h3>Informações Pessoais</h3>
+            <button mat-icon-button (click)="toggleEditName()" matTooltip="Editar Nome">
+                <mat-icon>{{ isEditingName ? 'close' : 'edit' }}</mat-icon>
+            </button>
+        </div>
+
+        <div class="info-row">
+            <div class="info-group">
+                <label>Email</label>
+                <span class="display-value locked"><mat-icon>lock</mat-icon> {{ user?.email }}</span>
+            </div>
+
+            <div class="info-group">
+                <label>Nome de Exibição</label>
+                <span *ngIf="!isEditingName" class="display-value highlight">{{ user?.name || 'Sem nome' }}</span>
+
+                <div *ngIf="isEditingName" class="edit-name-inline">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <!-- Input override handled globally now, but keeping class just in case -->
+                        <input matInput [(ngModel)]="newName" placeholder="Seu nick">
+                    </mat-form-field>
+
+                    <button mat-mini-fab class="action-btn save-btn" (click)="saveName()" [disabled]="isLoading"
+                        matTooltip="Salvar Nome">
+                        <mat-icon>check</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab color="warn" class="action-btn cancel-btn" (click)="toggleEditName()"
+                        matTooltip="Cancelar">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <mat-divider style="margin: 30px 0;"></mat-divider>
+
+        <!-- Segurança -->
+        <div class="section-header">
+            <h3>Segurança</h3>
+            <button mat-stroked-button (click)="toggleChangePassword()" *ngIf="!isChangingPassword"
+                class="change-pass-btn">
+                <mat-icon>vpn_key</mat-icon> Alterar Senha
+            </button>
+            <button mat-icon-button (click)="toggleChangePassword()" *ngIf="isChangingPassword">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div *ngIf="isChangingPassword" class="password-form-container">
+            <p class="hint">Preencha os campos para alterar sua senha.</p>
+
+            <div class="custom-input-group">
+                <label>Senha Atual</label>
+                <input type="password" [(ngModel)]="oldPassword" class="steam-input"
+                    placeholder="Digite sua senha atual">
+            </div>
+
+            <div class="custom-input-group">
+                <label>Nova Senha</label>
+                <input type="password" [(ngModel)]="password" class="steam-input" placeholder="Digite a nova senha">
+            </div>
+
+            <div class="custom-input-group">
+                <label>Confirmar Nova Senha</label>
+                <input type="password" [(ngModel)]="confirmPassword" class="steam-input"
+                    placeholder="Confirme a nova senha">
+            </div>
+
+            <div class="actions" style="margin-top: 16px;">
+                <button mat-raised-button color="primary" (click)="savePassword()" [disabled]="isLoading">
+                    Confirmar Nova Senha
+                </button>
+            </div>
+        </div>
+
+        <div class="actions" *ngIf="!isEditingName && !isChangingPassword">
+            <!-- Global Action mainly for Avatar now -->
+            <button mat-raised-button color="primary" (click)="saveAvatar()"
+                [disabled]="isLoading || selectedAvatar === user?.avatar">
+                <mat-icon>save</mat-icon> Salvar Avatar
+            </button>
+        </div>
+    </mat-card>
+</div>

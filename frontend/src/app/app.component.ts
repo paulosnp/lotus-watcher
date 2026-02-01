@@ -25,6 +25,7 @@ export class AppComponent {
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
   isAuthPage: boolean = false;
+  userAvatar: string | null = null;
 
   // Menu States
   isMenuOpen: boolean = false;
@@ -79,11 +80,16 @@ export class AppComponent {
 
     // Monitora autenticação
     this.authService.currentUser$.subscribe(user => {
-      this.isLoggedIn = !!user;
-      this.isAdmin = this.authService.isAdmin();
-      if (this.isLoggedIn) {
-        this.notificationService.refresh(); // Fetch on login
-      }
+      // Fix NG0100: Defer update to avoid "ExpressionChanged" if child triggers this update during check
+      setTimeout(() => {
+        this.isLoggedIn = !!user;
+        this.isAdmin = this.authService.isAdmin();
+        this.userAvatar = user ? user.avatar : null;
+        if (this.isLoggedIn) {
+          this.notificationService.refresh(); // Fetch on login
+        }
+        this.cdr.detectChanges(); // Ensure view updates after delay
+      }, 0);
     });
 
     // Monitora cada troca de página

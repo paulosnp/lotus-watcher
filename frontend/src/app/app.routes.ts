@@ -9,9 +9,9 @@ import { VerifyEmailComponent } from './components/auth/verify-email/verify-emai
 import { AdminGuard } from './guards/admin.guard';
 import { AdminSudoGuard } from './guards/admin-sudo.guard';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard';
-import { AccountSettingsComponent } from './components/auth/account-settings/account-settings.component';
 import { SudoLoginComponent } from './components/admin/sudo-login/sudo-login';
 import { AdminCardsComponent } from './components/admin/admin-cards/admin-cards';
+import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent }, // Home
@@ -25,7 +25,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'verify', component: VerifyEmailComponent }, // Verificação de Email
-  { path: 'account', component: AccountSettingsComponent }, // Configurações da Conta
+  { path: 'profile', component: ProfileComponent }, // Meu Perfil
   { path: 'sets', component: SetsComponent }, // Expansões
   { path: 'watchlist', component: WatchlistComponent }, // Minha Lista
   { path: 'card/:id', component: CardDetailsComponent }, // Página da Carta

@@ -127,4 +127,42 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(java.util.Collections.singletonMap("error", "Invalid password"));
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody com.pricewatcher.api.dto.UpdateProfileDto dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        java.util.Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // Update Password if provided
+            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            }
+
+            // Update Name if provided
+            if (dto.getName() != null && !dto.getName().isEmpty()) {
+                user.setName(dto.getName());
+            }
+
+            // Update Avatar if provided
+            if (dto.getAvatar() != null) {
+                user.setAvatar(dto.getAvatar());
+            }
+
+            userRepository.save(user);
+
+            // Return updated info (sanitized)
+            java.util.Map<String, Object> response = new java.util.HashMap<>();
+            response.put("name", user.getName());
+            response.put("email", user.getEmail());
+            response.put("role", user.getRole());
+            response.put("avatar", user.getAvatar());
+
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }

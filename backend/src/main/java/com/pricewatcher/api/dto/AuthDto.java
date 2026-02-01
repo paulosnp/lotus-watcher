@@ -34,6 +34,8 @@ public class AuthDto {
         private String id;
         private String name;
         private String email;
+        private String avatar;
+        private String role;
     }
 
     @Data

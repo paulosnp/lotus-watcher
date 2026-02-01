@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Login, Registro, Verify
                         .requestMatchers("/api/cards/**").permitAll() // Busca de cartas pública
+                        .requestMatchers("/uploads/**").permitAll() // Imagens de Upload
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // PROTEÇÃO ADMIN
                         .requestMatchers("/api/notifications/test-monitor").permitAll() // DEV ONLY: Test Trigger
                         .requestMatchers("/error").permitAll() // Libera erros para vermos o motivo real

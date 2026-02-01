@@ -2,6 +2,7 @@
 
   <!-- MENU HAMBURGUER RESTAURADO (FIXED TOP-RIGHT) -->
   <!-- MENU HAMBURGUER RESTAURADO (FIXED TOP-RIGHT) -->
+  @if (!isSearching) {
   <div class="home-menu-wrapper">
 
     <div class="menu-controls" style="display: flex; gap: 10px;">
@@ -81,13 +82,15 @@
     </div>
     }
   </div>
+  }
 
 
 
   @if (!isSearching) {
   <section class="hero-section">
     <div class="hero-content">
-      <h1>Bem-vindo ao <span class="highlight">Lotus Watcher</span></h1>
+      <h1>Bem-vindo ao <br class="mobile-break"> <img src="assets/logo.svg" alt="Logo" class="hero-logo"> <span
+          class="highlight">Lotus Watcher</span></h1>
       <p>Monitore preços, descubra tendências e proteja sua coleção.</p>
 
       <div class="hero-search-wrapper">

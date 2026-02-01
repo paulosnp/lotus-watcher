@@ -354,6 +354,30 @@
             background: rgba(255, 215, 0, 0.2);
         }
     }
+
+    &.delete {
+        background: rgba(255, 76, 76, 0.1);
+        color: #ff4c4c;
+        border: 1px solid rgba(255, 76, 76, 0.3);
+        padding: 4px 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        vertical-align: bottom;
+        margin-left: 5px;
+
+        &:hover {
+            background: rgba(255, 76, 76, 0.2);
+            transform: scale(1.05);
+        }
+
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+        }
+    }
 }
 
 .empty-state {

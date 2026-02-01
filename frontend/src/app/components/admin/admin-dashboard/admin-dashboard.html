@@ -79,8 +79,14 @@
 
                             <button class="btn-sm role-btn" *ngIf="user.id !== currentUserId"
                                 [class.promote]="user.role !== 'ADMIN'" [class.demote]="user.role === 'ADMIN'"
-                                (click)="toggleUserRole(user)" style="margin-left: 5px;">
+                                (click)="toggleUserRole(user)" style="margin-left: 5px;"
+                                title="{{ user.role === 'ADMIN' ? 'Rebaixar' : 'Promover' }}">
                                 <mat-icon>{{ user.role === 'ADMIN' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+                            </button>
+
+                            <button class="btn-sm delete" *ngIf="user.id !== currentUserId" (click)="deleteUser(user)"
+                                title="Excluir Usuário">
+                                <mat-icon>delete</mat-icon>
                             </button>
                         </td>
                     </tr>

@@ -36,7 +36,12 @@ export class AdminService {
         return this.http.post(`${this.apiUrl}/users/${userId}/toggle-status`, {});
     }
 
+
     toggleUserRole(userId: string): Observable<any> {
         return this.http.post(`${this.apiUrl}/users/${userId}/toggle-role`, {});
+    }
+
+    deleteUser(userId: string): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/users/${userId}`);
     }
 }

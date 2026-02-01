@@ -53,7 +53,7 @@
       gap: 8px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: none !important;
       color: var(--steam-text-main);
       cursor: pointer;
       display: flex;
@@ -78,7 +78,6 @@
       &:hover {
         background: rgba(255, 255, 255, 0.15);
         color: white;
-        border-color: #66c0f4;
 
         mat-icon {
           transform: scale(1.1);
@@ -89,7 +88,6 @@
         width: 44px;
         padding: 0;
         /* Square shape matches other buttons */
-        border-color: rgba(102, 192, 244, 0.3);
       }
     }
 

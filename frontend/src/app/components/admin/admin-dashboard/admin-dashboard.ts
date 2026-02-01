@@ -159,4 +159,22 @@ export class AdminDashboardComponent implements OnInit {
       });
     }
   }
+
+  deleteUser(user: any) {
+    if (confirm(`ATENÇÃO: Você está prestes a EXCLUIR PERMANENTEMENTE o usuário ${user.name}.\nIsso não pode ser desfeito. Continuar?`)) {
+      this.adminService.deleteUser(user.id).subscribe({
+        next: () => {
+          // Refresh list from server to ensure sync and update pagination
+          this.loadUsers();
+          // Force update stats too if needed
+          this.loadStats();
+          alert('Usuário excluído com sucesso.');
+        },
+        error: (err: any) => {
+          console.error(err);
+          alert('Erro ao excluir usuário.');
+        }
+      });
+    }
+  }
 }

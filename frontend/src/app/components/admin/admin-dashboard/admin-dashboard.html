@@ -63,7 +63,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of users">
+                    <tr *ngFor="let user of users; trackBy: trackByUserId">
                         <td>{{ user.name }} <span *ngIf="user.role === 'ADMIN'" class="badge admin">ADMIN</span></td>
                         <td>{{ user.email }}</td>
                         <td>

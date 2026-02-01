@@ -11,6 +11,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void sendVerificationEmail(String to, String code) {
         try {
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
@@ -28,6 +29,7 @@ public class EmailService {
         }
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void sendPriceAlert(String to, String cardName, Double currentPrice, Double targetPrice) {
         try {
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();

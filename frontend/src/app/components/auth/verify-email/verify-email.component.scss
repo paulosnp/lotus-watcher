@@ -50,12 +50,20 @@
         line-height: 1.4;
     }
 
+    .verify-form {
+        width: 100%;
+    }
+
     .form-group {
         margin-bottom: 20px;
+        width: 100%;
     }
 
     input {
         width: 100%;
+        max-width: 250px; // Limit width for 6 digits
+        display: block;
+        margin: 0 auto; // Center input
         padding: 12px;
         background: #0d1219;
         border: 1px solid #2a3545;
@@ -96,7 +104,7 @@
         border: none;
         cursor: pointer;
         font-size: 1rem;
-        width: 100%; // Botão full width
+        width: 100% !important; // Botão full width
         text-align: center; // Garante texto centralizado em tags <a>
         box-sizing: border-box; // Evita que padding estoure a largura
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AdminService } from '../../../services/admin.service';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -12,12 +12,13 @@ import { RouterModule } from '@angular/router';
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   stats: any = null;
   isLoading: boolean = false;
   isSyncing: boolean = false;
   syncMessage: string = '';
+  refreshInterval: any;
 
   // User Management
   users: any[] = [];
@@ -36,6 +37,34 @@ export class AdminDashboardComponent implements OnInit {
     this.loadCurrentUser();
     this.loadStats();
     this.loadUsers();
+
+    // Polling de 5 segundos para atualizações em tempo real
+    this.refreshInterval = setInterval(() => {
+      if (!this.isSyncing) { // Evita conflito se estiver sincronizando
+        this.loadStats();
+        // Recarrega usuários silenciosamente (sem loading spinner)
+        this.adminService.getUsers(this.usersPage).subscribe({
+          next: (res: any) => {
+            if (res && res.content) {
+              this.users = res.content;
+              this.usersTotal = res.totalElements;
+              this.cdr.detectChanges();
+            }
+          },
+          error: () => { } // Ignora erros silenciosos no polling
+        });
+      }
+    }, 5000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
+  }
+
+  trackByUserId(index: number, user: any): string {
+    return user.id;
   }
 
   loadCurrentUser() {

@@ -26,25 +26,39 @@ export class WatchlistDialogComponent {
     public dialogRef: MatDialogRef<WatchlistDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private watchlistService: WatchlistService
-  ) { }
+  ) {
+    if (data.item) {
+      this.targetPrice = data.item.targetPrice;
+      this.notes = data.item.notes;
+      this.tag = data.item.tag;
+    }
+  }
 
   save() {
     this.isLoading = true;
     const dto = {
-      cardId: this.data.card.id,
+      cardId: this.data.item ? this.data.item.card.id : this.data.card.id,
       targetPrice: this.targetPrice || undefined,
       notes: this.notes,
       tag: this.tag
     };
 
-    this.watchlistService.addToWatchlist(dto).subscribe({
-      next: () => {
-        this.dialogRef.close(true);
-      },
-      error: (err: any) => {
-        console.error(err);
-        this.isLoading = false;
-      }
-    });
+    if (this.data.item) {
+      this.watchlistService.updateItem(this.data.item.id, dto).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          console.error(err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.watchlistService.addToWatchlist(dto).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          console.error(err);
+          this.isLoading = false;
+        }
+      });
+    }
   }
 }

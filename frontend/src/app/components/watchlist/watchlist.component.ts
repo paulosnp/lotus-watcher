@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { WatchlistService } from '../../services/watchlist.service';
+import { MatDialog } from '@angular/material/dialog';
+import { WatchlistDialogComponent } from './watchlist-dialog.component';
 
 @Component({
     selector: 'app-watchlist',
@@ -21,7 +23,8 @@ export class WatchlistComponent implements OnInit {
 
     constructor(
         private watchlistService: WatchlistService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -35,6 +38,20 @@ export class WatchlistComponent implements OnInit {
                 this.cdr.detectChanges();
             },
             error: (err) => console.error('Error loading watchlist', err)
+        });
+    }
+
+    editItem(item: any) {
+        const dialogRef = this.dialog.open(WatchlistDialogComponent, {
+            width: '450px',
+            panelClass: 'lotus-dialog-container',
+            data: { item: item }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadWatchlist();
+            }
         });
     }
 

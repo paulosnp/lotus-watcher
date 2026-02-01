@@ -23,6 +23,7 @@ export class CardDetailsComponent implements OnInit {
 
   // ... (previous properties)
   card: Card | null = null;
+  watchlistItemId: string | null = null; // Store the Item ID for removal
   prints: any[] = [];
   isLoading: boolean = true;
   isFavorite: boolean = false;
@@ -106,9 +107,15 @@ export class CardDetailsComponent implements OnInit {
     if (!this.card) return;
 
     if (this.isFavorite) {
+      if (!this.watchlistItemId) {
+        console.error("Erro: ID do item da watchlist não encontrado");
+        return;
+      }
+
       if (confirm('Remover da Watchlist?')) {
-        this.watchlistService.removeFromWatchlist(this.card.id).subscribe(() => {
+        this.watchlistService.removeFromWatchlist(this.watchlistItemId).subscribe(() => {
           this.isFavorite = false;
+          this.watchlistItemId = null;
           this.cdr.detectChanges();
         });
       }
@@ -142,7 +149,9 @@ export class CardDetailsComponent implements OnInit {
     // Monitora lista para atualizar status do botão
     this.watchlistService.watchlist$.subscribe(list => {
       if (this.card) {
-        this.isFavorite = !!list.find(c => c.id === this.card?.id);
+        const item = list.find(c => c.card.id === this.card?.id);
+        this.isFavorite = !!item;
+        this.watchlistItemId = item ? item.id : null;
         this.cdr.detectChanges();
       }
     });

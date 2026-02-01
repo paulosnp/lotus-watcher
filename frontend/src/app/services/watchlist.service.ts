@@ -41,6 +41,10 @@ export class WatchlistService {
         return this.http.delete(`${this.apiUrl}/${itemId}`);
     }
 
+    updateItem(itemId: string, item: WatchlistItemDto): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/${itemId}`, item);
+    }
+
     loadWatchlist() {
         this.getWatchlist().subscribe(list => {
             this._watchlist = list;

@@ -92,4 +92,24 @@ public class WatchlistController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{itemId}")
+    public ResponseEntity<?> updateWatchlistItem(@PathVariable UUID itemId, @RequestBody WatchlistItemDto dto) {
+        User user = getAuthenticatedUser();
+        Optional<WatchlistItem> itemOpt = watchlistRepository.findById(itemId);
+
+        if (itemOpt.isPresent()) {
+            WatchlistItem item = itemOpt.get();
+            if (!item.getUser().getId().equals(user.getId())) {
+                return ResponseEntity.status(403).body("Not authorized");
+            }
+
+            item.setNotes(dto.getNotes());
+            item.setTargetPrice(dto.getTargetPrice());
+            item.setTag(dto.getTag());
+            watchlistRepository.save(item);
+            return ResponseEntity.ok(item);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

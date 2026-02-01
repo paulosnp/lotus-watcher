@@ -21,13 +21,14 @@
 
     .table-wrapper {
         border-radius: 8px;
-        overflow: hidden;
+        overflow: visible !important; // FORÇA VISIBILIDADE PARA O ZOOM SAIR
         background: #1b2838;
     }
 
     table {
         width: 100%;
         background: transparent;
+        overflow: visible !important;
 
         th {
             background: #101822; // Dark header
@@ -43,15 +44,66 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             vertical-align: middle;
             padding: 16px;
+            overflow: visible !important;
+        }
+
+        .image-cell {
+            position: relative;
+            z-index: 100; // Garante que a célula da imagem fique ACIMA das outras (Nome, Preço)
+            overflow: visible !important;
         }
 
         tr:hover {
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .card-thumb {
-            width: 50px;
-            border-radius: 4px;
+        .image-wrapper {
+            position: relative;
+            width: 50px; // Thumbnail size
+
+            .card-thumb {
+                width: 100%;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+            .card-zoom {
+                display: none;
+                position: absolute;
+                top: -90px; // Center vertically relative to 50px thumb (approx)
+                left: 60px;
+                width: 240px; // Big Zoom
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+                z-index: 9999;
+                pointer-events: none;
+                animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            &:hover {
+                .card-thumb {
+                    transform: scale(1.1);
+                    filter: brightness(1.2);
+                }
+
+                .card-zoom {
+                    display: block;
+                }
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .card-link {
@@ -135,6 +187,14 @@
     @media (max-width: 768px) {
         .hide-mobile {
             display: none;
+        }
+    }
+
+    .edit-btn {
+        color: #66c0f4; // Azul Steam para o botão de edição
+
+        &:hover {
+            background-color: rgba(102, 192, 244, 0.1);
         }
     }
 }

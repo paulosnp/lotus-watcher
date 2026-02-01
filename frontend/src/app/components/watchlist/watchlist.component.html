@@ -40,7 +40,7 @@
             <ng-container matColumnDef="price">
                 <th mat-header-cell *matHeaderCellDef> Preço Atual </th>
                 <td mat-cell *matCellDef="let item" class="price-cell">
-                    ${{ item.card.currentPriceUsd}}
+                    ${{ item.card.priceUsd}}
                 </td>
             </ng-container>
 
@@ -48,9 +48,9 @@
             <ng-container matColumnDef="target">
                 <th mat-header-cell *matHeaderCellDef> Alvo </th>
                 <td mat-cell *matCellDef="let item" class="target-cell">
-                    <span *ngIf="item.targetPrice" [class.hit]="item.card.currentPriceUsd <= item.targetPrice">
+                    <span *ngIf="item.targetPrice" [class.hit]="item.card.priceUsd <= item.targetPrice">
                         ${{ item.targetPrice }}
-                        <mat-icon *ngIf="item.card.currentPriceUsd <= item.targetPrice"
+                        <mat-icon *ngIf="item.card.priceUsd <= item.targetPrice"
                             class="alert-icon">notifications_active</mat-icon>
                     </span>
                     <span class="no-data" *ngIf="!item.targetPrice">-</span>

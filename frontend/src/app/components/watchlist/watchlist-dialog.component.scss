@@ -1,0 +1,255 @@
+// Variables imported handled locally below
+
+
+// Core Colors (Matching Dashboard)
+$bg-dark: #1b2838;
+$bg-darker: #101822;
+$text-primary: #ecf0f1;
+$text-secondary: #8f98a0;
+$accent-blue: #66c0f4;
+$accent-green: #4caf50;
+$border-color: rgba(255, 255, 255, 0.1);
+
+:host {
+    display: block;
+    background: $bg-dark;
+    color: $text-primary;
+    // Material Dialog container style override is usually needed globally, 
+    // but we can style the contents here.
+}
+
+.dialog-header {
+    background: $bg-darker;
+    padding: 20px 24px;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: $text-primary;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        mat-icon {
+            color: $accent-blue;
+        }
+    }
+
+    .card-preview {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid $border-color;
+
+        .card-thumb {
+            width: 40px;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+
+            .card-name {
+                font-weight: 600;
+                font-size: 0.95rem;
+            }
+
+            .card-set {
+                font-size: 0.8rem;
+                color: $text-secondary;
+            }
+        }
+
+        .current-price {
+            text-align: right;
+
+            .label {
+                display: block;
+                font-size: 0.7rem;
+                color: $text-secondary;
+                text-transform: uppercase;
+            }
+
+            .value {
+                font-size: 1.1rem;
+                font-weight: bold;
+                color: $accent-green;
+            }
+        }
+    }
+}
+
+mat-dialog-content {
+    background: $bg-dark;
+    padding: 24px !important; // Override Material padding
+    margin: 0;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            font-size: 0.85rem;
+            color: $text-secondary;
+            font-weight: 500;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-left: 4px;
+        }
+
+        .custom-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0 12px;
+            transition: all 0.2s ease;
+
+            &:focus-within {
+                border-color: $accent-blue;
+                box-shadow: 0 0 0 2px rgba(102, 192, 244, 0.2);
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            .prefix {
+                color: $text-secondary;
+                font-family: inherit;
+                margin-right: 4px;
+            }
+
+            .prefix-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+                color: $text-secondary;
+                margin-right: 8px;
+            }
+
+            input,
+            textarea {
+                flex: 1;
+                background: transparent;
+                border: none;
+                color: $text-primary;
+                padding: 12px 0;
+                font-family: inherit;
+                font-size: 0.95rem;
+                outline: none;
+
+                &::placeholder {
+                    color: rgba(255, 255, 255, 0.2);
+                }
+
+                /* Remove Number Spinners */
+                &::-webkit-outer-spin-button,
+                &::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                &[type=number] {
+                    -moz-appearance: textfield;
+                    /* Firefox */
+                }
+            }
+
+            &.textarea-wrapper {
+                padding: 0 12px;
+
+                textarea {
+                    resize: none;
+                    /* User requested removal */
+                    overflow: hidden;
+                    min-height: 24px;
+                    /* let cdkAutosize handle it */
+                }
+            }
+        }
+    }
+}
+
+.dialog-actions {
+    background: $bg-darker;
+    padding: 16px 24px;
+    border-top: 1px solid $border-color;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .btn-cancel {
+        color: $text-secondary;
+        font-weight: 500;
+        border: 1px solid transparent;
+
+        &:hover {
+            color: $text-primary;
+            background: rgba(255, 255, 255, 0.05);
+        }
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, $accent-blue, #4a90e2);
+        color: #fff;
+        border: none;
+        padding: 0 24px;
+        height: 40px;
+        border-radius: 4px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.1s ease;
+
+        &:hover:not([disabled]) {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        &:active:not([disabled]) {
+            transform: translateY(0);
+        }
+
+        &[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

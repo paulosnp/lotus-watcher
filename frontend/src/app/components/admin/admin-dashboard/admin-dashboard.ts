@@ -88,7 +88,8 @@ export class AdminDashboardComponent implements OnInit {
   pollSyncStatus() {
     this.adminService.getSyncStatus().subscribe({
       next: (status: any) => {
-        if (status.running) {
+        // Backend sends "isRunning", so checking both just in case
+        if (status.isRunning || status.running) {
           this.syncMessage = `Sincronizando: ${status.current}/${status.total} (${status.percent}%)`;
           this.isSyncing = true;
           this.cdr.detectChanges();

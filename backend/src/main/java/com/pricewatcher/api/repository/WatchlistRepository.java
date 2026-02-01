@@ -10,4 +10,6 @@ public interface WatchlistRepository extends JpaRepository<WatchlistItem, UUID> 
     List<WatchlistItem> findByUserId(UUID userId);
 
     Optional<WatchlistItem> findByUserIdAndCardId(UUID userId, String cardId); // Card ID is String from Scryfall
+
+    List<WatchlistItem> findByTargetPriceIsNotNull();
 }

@@ -105,6 +105,184 @@
       margin: 5px 0;
     }
   }
+
+  /* --- NOTIFICATIONS (Copied & Adapted from App Component) --- */
+  .notification-wrapper {
+    position: relative;
+
+    .notification-btn {
+      /* Inherits menu-btn styles, just adding relative for badge */
+      position: relative;
+
+      .badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background-color: #ff4c4c;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(22, 32, 45, 0.9);
+      }
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      /* Fix layout shift */
+      width: 320px !important;
+      padding: 0 !important;
+      overflow: hidden;
+      right: 0;
+      top: 100%;
+      /* Ensure it sits below */
+      margin-top: 10px;
+      z-index: 3000;
+
+      .dropdown-header {
+        padding: 12px 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span {
+          color: #fff;
+          font-weight: 600;
+          font-size: 0.95rem;
+        }
+
+        .count {
+          color: #8f98a0;
+          font-size: 0.8rem;
+          font-weight: normal;
+        }
+      }
+
+      .notification-list {
+        max-height: 400px;
+        overflow-y: auto;
+
+        .notification-item {
+          display: flex;
+          gap: 12px;
+          padding: 12px 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          cursor: pointer;
+          transition: background 0.2s;
+          position: relative;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.05);
+          }
+
+          &.unread {
+            background: rgba(102, 192, 244, 0.1);
+
+            &:hover {
+              background: rgba(102, 192, 244, 0.15);
+            }
+          }
+
+          .notif-icon {
+            color: #66c0f4;
+            margin-top: 2px;
+          }
+
+          .notif-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .notif-title {
+              color: #fff;
+              font-size: 0.9rem;
+              font-weight: 500;
+            }
+
+            .notif-msg {
+              color: #c7d5e0;
+              font-size: 0.85rem;
+              line-height: 1.3;
+            }
+
+            .notif-time {
+              color: #8f98a0;
+              font-size: 0.75rem;
+              margin-top: 4px;
+            }
+          }
+
+          .unread-dot {
+            position: absolute;
+            top: 16px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #66c0f4;
+          }
+
+          .delete-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #ef4444; // Red color
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; // Hide by default
+            transition: opacity 0.2s;
+            pointer-events: none; // Prevent accidental clicks
+
+            &:hover {
+              opacity: 1;
+              filter: brightness(1.2);
+            }
+
+            mat-icon {
+              font-size: 18px;
+              width: 18px;
+              height: 18px;
+            }
+          }
+
+          &:hover .delete-btn {
+            opacity: 1;
+            pointer-events: auto;
+          }
+        }
+
+        .empty-notif {
+          padding: 30px;
+          text-align: center;
+          color: #8f98a0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+
+          mat-icon {
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+  }
 }
 
 /* --- HERO SECTION --- */
@@ -530,7 +708,7 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 2px solid transparent;
+      border: none;
       cursor: pointer;
       transition: all 0.2s;
       background-size: cover;
@@ -547,7 +725,6 @@
 
       &.active {
         opacity: 1;
-        border-color: #fff;
         box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
         transform: scale(1.1);
       }

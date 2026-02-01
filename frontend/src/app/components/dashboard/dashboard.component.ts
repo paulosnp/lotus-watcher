@@ -8,6 +8,10 @@ import { AuthService } from '../../services/auth.service';
 import { CardService } from '../../services/card.service';
 import { FilterService } from '../../services/filter.service';
 
+import { NotificationService } from '../../services/notification.service'; // Import NotificationService
+import { Notification } from '../../models/notification.model'; // Import Notification Model
+import { Observable } from 'rxjs'; // Import Observable
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -38,13 +42,44 @@ export class DashboardComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private location: Location,
-    private filterService: FilterService // Inject FilterService
-  ) { }
+    private filterService: FilterService,
+    private notificationService: NotificationService // Inject Service
+  ) {
+    // Initialize Observables
+    this.unreadCount$ = this.notificationService.unreadCount$;
+    this.notifications$ = this.notificationService.notifications$;
+  }
 
   isMenuOpen: boolean = false;
 
+  // Notification State
+  isNotificationsOpen = false;
+  unreadCount$: Observable<number>;
+  notifications$: Observable<Notification[]>;
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) this.isNotificationsOpen = false;
+  }
+
+  toggleNotifications() {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+    if (this.isNotificationsOpen) {
+      this.isMenuOpen = false;
+      this.notificationService.refresh();
+      // Mark all as read when opening
+      this.notificationService.markAllAsRead().subscribe();
+    }
+  }
+
+  markAsRead(id: string, event?: Event) {
+    if (event) event.stopPropagation();
+    this.notificationService.markAsRead(id).subscribe();
+  }
+
+  deleteNotification(id: string, event: Event) {
+    event.stopPropagation(); // Prevent triggering markAsRead or other clicks
+    this.notificationService.delete(id).subscribe();
   }
 
   logout() {
@@ -54,9 +89,11 @@ export class DashboardComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const clickedInside = target.closest('.header-menu-wrapper');
-    if (!clickedInside && this.isMenuOpen) {
+    const clickedInside = target.closest('.home-menu-wrapper');
+    // If clicked OUTSIDE the whole wrapper
+    if (!clickedInside) {
       this.isMenuOpen = false;
+      this.isNotificationsOpen = false;
     }
   }
 

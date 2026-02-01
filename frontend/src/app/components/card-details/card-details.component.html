@@ -21,7 +21,7 @@
           @if (isLoggedIn) {
           <button class="favorite-btn" (click)="toggleFavorite()" [class.active]="isFavorite"
             title="Adicionar aos Favoritos">
-            <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+            <mat-icon>{{ isFavorite ? 'bookmark' : 'bookmark_add' }}</mat-icon>
           </button>
           }
         </div>

@@ -37,6 +37,9 @@ public class WatchlistItem {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    private LocalDateTime lastNotifiedAt;
+    private Double lastNotifiedPrice;
+
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();

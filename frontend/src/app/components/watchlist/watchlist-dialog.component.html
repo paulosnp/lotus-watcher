@@ -1,0 +1,58 @@
+<div class="dialog-header">
+    <h2 mat-dialog-title>
+        <mat-icon>bookmark_add</mat-icon>
+        Adicionar à Watchlist
+    </h2>
+    <div class="card-preview" *ngIf="data.card">
+        <img [src]="data.card.imageUrl" class="card-thumb" alt="card art">
+        <div class="card-meta">
+            <span class="card-name">{{ data.card.name }}</span>
+            <span class="card-set">{{ data.card.setName }}</span>
+        </div>
+        <div class="current-price">
+            <span class="label">Atual:</span>
+            <span class="value">${{ data.card.priceUsd | number:'1.2-2' }}</span>
+        </div>
+    </div>
+</div>
+
+<mat-dialog-content>
+    <div class="form-container">
+
+        <div class="input-group">
+            <label>Preço Alvo (USD)</label>
+            <div class="custom-input-wrapper">
+                <span class="prefix">$</span>
+                <input type="number" [(ngModel)]="targetPrice" placeholder="5.00">
+            </div>
+            <span class="hint">Avise-me se cair abaixo disso.</span>
+        </div>
+
+        <div class="input-group">
+            <label>Tag / Grupo</label>
+            <div class="custom-input-wrapper">
+                <mat-icon class="prefix-icon">label</mat-icon>
+                <input type="text" [(ngModel)]="tag" placeholder="Ex: Commander, Foil, Spec">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Notas Pessoais</label>
+            <div class="custom-input-wrapper textarea-wrapper">
+                <textarea [(ngModel)]="notes" cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="8"
+                    placeholder="Ex: Comprar para o deck X...">
+                </textarea>
+            </div>
+        </div>
+
+    </div>
+</mat-dialog-content>
+
+<div class="dialog-actions">
+    <button mat-button class="btn-cancel" mat-dialog-close>Cancelar</button>
+    <button mat-raised-button class="btn-save" (click)="save()" [disabled]="isLoading">
+        <mat-icon *ngIf="!isLoading">save</mat-icon>
+        <span *ngIf="isLoading" class="spinner"></span>
+        {{ isLoading ? 'Salvando...' : 'Salvar' }}
+    </button>
+</div>

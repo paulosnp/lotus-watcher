@@ -21,10 +21,29 @@ public class EmailService {
                     + "\n\nInsira este código no site para ativar sua conta.");
 
             mailSender.send(message);
-            System.out.println("📧 [EmailService] Email enviado com sucesso para: " + to);
+            System.out.println("📧 [EmailService] Verificação enviada para: " + to);
         } catch (Exception e) {
             System.err.println("❌ [EmailService] Erro ao enviar email: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public void sendPriceAlert(String to, String cardName, Double currentPrice, Double targetPrice) {
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setFrom("alertas@lotuswatcher.com");
+            message.setTo(to);
+            message.setSubject("📉 Alerta de Preço: " + cardName + " caiu!");
+            message.setText("Boas notícias! \n\n"
+                    + "A carta '" + cardName + "' atingiu seu preço alvo.\n"
+                    + "Preço Atual: $" + String.format("%.2f", currentPrice) + "\n"
+                    + "Seu Alvo: $" + String.format("%.2f", targetPrice) + "\n\n"
+                    + "Acesse o Lotus Watcher agora para conferir!");
+
+            mailSender.send(message);
+            System.out.println("📧 [EmailService] Alerta de preço enviado para: " + to);
+        } catch (Exception e) {
+            System.err.println("❌ [EmailService] Erro ao enviar alerta: " + e.getMessage());
         }
     }
 }

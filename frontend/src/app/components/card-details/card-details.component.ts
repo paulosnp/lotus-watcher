@@ -115,7 +115,8 @@ export class CardDetailsComponent implements OnInit {
     } else {
       // Open Dialog
       const dialogRef = this.dialog.open(WatchlistDialogComponent, {
-        width: '400px',
+        width: '450px',
+        panelClass: 'lotus-dialog-container',
         data: { card: this.card }
       });
 

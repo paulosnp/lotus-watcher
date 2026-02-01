@@ -286,10 +286,10 @@ public class ScryfallService {
 
     // --- SYNC STATUS MONITORING ---
     public static class SyncStatus {
-        public boolean isRunning = false;
-        public int total = 0;
-        public int current = 0;
-        public int percent = 0;
+        public volatile boolean isRunning = false;
+        public volatile int total = 0;
+        public volatile int current = 0;
+        public volatile int percent = 0;
     }
 
     private final SyncStatus syncStatus = new SyncStatus();
@@ -305,47 +305,56 @@ public class ScryfallService {
             return;
         }
 
+        // Set running to true BEFORE starting the thread to avoid race condition
+        syncStatus.isRunning = true;
+        syncStatus.total = 0;
+        syncStatus.current = 0;
+        syncStatus.percent = 0;
+
         new Thread(() -> {
             System.out.println("🔄 [ScryfallSync] Iniciando sincronização em massa...");
-            syncStatus.isRunning = true;
 
-            java.util.List<Card> allCards = cardRepository.findAll();
-            syncStatus.total = allCards.size();
-            syncStatus.current = 0;
-            syncStatus.percent = 0;
-
-            int updated = 0;
-            for (Card card : allCards) {
-                try {
-                    updateCardPrice(card);
-                    updated++;
-
-                    // Update Status
-                    syncStatus.current = updated;
-                    if (syncStatus.total > 0) {
-                        syncStatus.percent = (int) ((updated / (double) syncStatus.total) * 100);
-                    }
-
-                    if (updated % 10 == 0) {
-                        System.out.println("🔄 [ScryfallSync] Atualizadas " + updated + "/" + allCards.size());
-                    }
-                    Thread.sleep(100); // 100ms
-                } catch (Exception e) {
-                    System.err.println("❌ Falha ao atualizar " + card.getName() + ": " + e.getMessage());
-                }
-            }
-            System.out.println("✅ [ScryfallSync] Sincronização concluída! Total: " + updated);
-
-            // Clean up status after small delay
             try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-            }
-            syncStatus.isRunning = false;
-            syncStatus.total = 0;
-            syncStatus.current = 0;
-            syncStatus.percent = 0;
+                java.util.List<Card> allCards = cardRepository.findAll();
+                syncStatus.total = allCards.size();
+                syncStatus.current = 0;
+                syncStatus.percent = 0;
 
+                int updated = 0;
+                for (Card card : allCards) {
+                    try {
+                        updateCardPrice(card);
+                        updated++;
+
+                        // Update Status
+                        syncStatus.current = updated;
+                        if (syncStatus.total > 0) {
+                            syncStatus.percent = (int) ((updated / (double) syncStatus.total) * 100);
+                        }
+
+                        if (updated % 10 == 0) {
+                            System.out.println("🔄 [ScryfallSync] Atualizadas " + updated + "/" + allCards.size());
+                        }
+                        Thread.sleep(100); // 100ms delay to be gentle on API
+                    } catch (Exception e) {
+                        System.err.println("❌ Falha ao atualizar " + card.getName() + ": " + e.getMessage());
+                    }
+                }
+                System.out.println("✅ [ScryfallSync] Sincronização concluída! Total: " + updated);
+            } catch (Exception e) {
+                System.err.println("❌ Erro fatal na sincronização: " + e.getMessage());
+            } finally {
+                // Clean up status after small delay
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                syncStatus.isRunning = false;
+                syncStatus.total = 0;
+                syncStatus.current = 0;
+                syncStatus.percent = 0;
+            }
         }).start();
     }
 }

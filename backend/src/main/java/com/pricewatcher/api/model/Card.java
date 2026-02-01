@@ -27,8 +27,8 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PriceHistory> priceHistory = new ArrayList<>();
 
-    @Transient
-    private Double priceChangePercentage;
+    // PERSISTIDO PARA ORDENAÇÃO NO BANCO
+    private Double priceChangePercentage = 0.0;
 
     public Card() {
     }

@@ -169,6 +169,21 @@
                 cursor: not-allowed;
             }
         }
+
+        &.bulk {
+            background: rgba(163, 227, 142, 0.1);
+            color: #a3e38e;
+            border: 1px solid rgba(163, 227, 142, 0.3);
+
+            &:hover:not(:disabled) {
+                background: rgba(163, 227, 142, 0.2);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
     }
 }
 

@@ -12,4 +12,7 @@ public interface WatchlistRepository extends JpaRepository<WatchlistItem, UUID> 
     Optional<WatchlistItem> findByUserIdAndCardId(UUID userId, String cardId); // Card ID is String from Scryfall
 
     List<WatchlistItem> findByTargetPriceIsNotNull();
+
+    @org.springframework.data.jpa.repository.Query("SELECT DISTINCT w.card FROM WatchlistItem w")
+    List<com.pricewatcher.api.model.Card> findDistinctCardsInWatchlists();
 }

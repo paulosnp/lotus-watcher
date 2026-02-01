@@ -170,6 +170,28 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  triggerBulkImport() {
+    if (confirm('ATENÇÃO: Importação em Massa (Bulk) 🚀\n\nIsso irá baixar um arquivo da Scryfall (~500MB) e importar cartas que NÃO estão no seu banco.\n\nPode demorar vários minutos. O servidor cuidará disso em segundo plano.\n\nDeseja iniciar?')) {
+      this.isSyncing = true;
+      this.syncMessage = 'Iniciando Bulk Import...';
+      this.cdr.detectChanges();
+
+      this.adminService.triggerBulkImport().subscribe({
+        next: (res: any) => {
+          this.syncMessage = res.message || 'Bulk Import iniciado!';
+          this.cdr.detectChanges();
+          this.pollSyncStatus(); // Reutiliza o mesmo polling de status
+        },
+        error: (err: any) => {
+          console.error(err);
+          this.syncMessage = 'Erro ao iniciar Bulk Import.';
+          this.isSyncing = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
   toggleUserRole(user: any) {
     if (user.role === 'ADMIN' && !confirm('ATENÇÃO: Rebaixar um Admin pode remover seu próprio acesso se for você mesmo. Continuar?')) {
       return;

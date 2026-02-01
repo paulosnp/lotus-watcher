@@ -35,6 +35,12 @@
                 <mat-icon [class.spin]="isSyncing">sync</mat-icon>
                 {{ isSyncing ? 'Sincronizando...' : 'Sincronizar Agora' }}
             </button>
+
+            <button class="action-btn bulk" (click)="triggerBulkImport()" [disabled]="isSyncing"
+                style="margin-left: 10px;">
+                <mat-icon>cloud_download</mat-icon>
+                Bulk Import (Novo)
+            </button>
         </div>
 
         <div *ngIf="isSyncing" class="progress-wrapper">

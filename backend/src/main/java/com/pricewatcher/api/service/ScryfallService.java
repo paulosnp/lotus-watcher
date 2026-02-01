@@ -29,6 +29,20 @@ public class ScryfallService {
         this.objectMapper = new ObjectMapper();
     }
 
+    // 🕒 MEGA VERIFICAÇÃO: Todos os dias às 03:00 da manhã (Horário de Brasília)
+    @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
+    public void nightlyMegaSync() {
+        System.out.println("🌙 [NightlySync] Iniciando Mega Verificação Noturna...");
+
+        // 1. Importa cartas novas (Bulk)
+        importViaBulkData();
+
+        // 2. Atualiza preços das cartas existentes (pode demorar horas)
+        // Usamos uma nova thread para não bloquear o Scheduler se syncAllCards não for
+        // async
+        new Thread(this::syncAllCards).start();
+    }
+
     public Card searchCard(String name) {
         Optional<Card> localCard = cardRepository.findByNameIgnoreCase(name);
         if (localCard.isPresent()) {
@@ -280,6 +294,8 @@ public class ScryfallService {
 
         card.setLastUpdate(LocalDateTime.now());
 
+        recalculateVariation(card);
+
         // Salva novamente (agora com o histórico atualizado)
         return cardRepository.save(card);
     }
@@ -356,5 +372,161 @@ public class ScryfallService {
                 syncStatus.percent = 0;
             }
         }).start();
+    }
+
+    // --- BULK IMPORT (STREAMING) ---
+    public void importViaBulkData() {
+        if (syncStatus.isRunning) {
+            System.out.println("⚠️ [ScryfallImport] Processo já está em andamento.");
+            return;
+        }
+
+        syncStatus.isRunning = true;
+        syncStatus.total = 0; // Unknown initially
+        syncStatus.current = 0;
+        syncStatus.percent = 0;
+
+        new Thread(() -> {
+            System.out.println("🚀 [ScryfallImport] Iniciando importação em massa (Bulk Import)...");
+            long startTime = System.currentTimeMillis();
+
+            try {
+                // 1. Get Bulk Data URL for "default_cards" (English + Unique)
+                String bulkUrl = getBulkDataUrl("default_cards");
+                if (bulkUrl == null) {
+                    throw new RuntimeException("Não foi possível obter a URL do Bulk Data.");
+                }
+                System.out.println("📥 [ScryfallImport] Baixando de: " + bulkUrl);
+
+                // 2. Load existing IDs to memory (Quick Lookup)
+                System.out.println("💾 [ScryfallImport] Carregando IDs existentes...");
+                java.util.Set<String> existingIds = cardRepository.findAllIds();
+                System.out.println("💾 [ScryfallImport] " + existingIds.size() + " cartas já no banco.");
+
+                // 3. Stream & Process
+                java.net.URL url = java.net.URI.create(bulkUrl).toURL();
+                try (java.io.InputStream is = url.openStream();
+                        com.fasterxml.jackson.core.JsonParser parser = new com.fasterxml.jackson.core.JsonFactory()
+                                .createParser(is)) {
+
+                    if (parser.nextToken() != com.fasterxml.jackson.core.JsonToken.START_ARRAY) {
+                        throw new IllegalStateException("Expected content to be an array");
+                    }
+
+                    java.util.List<Card> batch = new java.util.ArrayList<>();
+                    int processed = 0;
+                    int added = 0;
+
+                    while (parser.nextToken() != com.fasterxml.jackson.core.JsonToken.END_ARRAY) {
+                        // Parse JSON Object to Node
+                        JsonNode root = objectMapper.readTree(parser);
+                        String id = root.get("id").asText();
+
+                        // Filter: Import ONLY if NOT exists
+                        if (!existingIds.contains(id)) {
+                            Card card = convertJsonToCard(root);
+                            batch.add(card);
+                            added++;
+                        }
+
+                        processed++;
+                        syncStatus.current = added; // Track ADDED cards
+
+                        // Update approximate percent (assuming ~90k cards for progress bar visual only)
+                        syncStatus.percent = (int) Math.min(99, (processed / 90000.0) * 100);
+
+                        // Batch Save (Chunk size: 1000)
+                        if (batch.size() >= 1000) {
+                            cardRepository.saveAll(batch);
+                            cardRepository.flush();
+                            batch.clear();
+                            System.out.println("📦 [ScryfallImport] Lote salvo. Total adicionado: " + added);
+                        }
+                    }
+
+                    // Save remaining
+                    if (!batch.isEmpty()) {
+                        cardRepository.saveAll(batch);
+                        cardRepository.flush();
+                    }
+
+                    long duration = (System.currentTimeMillis() - startTime) / 1000;
+                    System.out
+                            .println("✅ [ScryfallImport] Concluído! " + added + " novas cartas em " + duration + "s.");
+                }
+
+            } catch (Exception e) {
+                System.err.println("❌ [ScryfallImport] Erro fatal: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                syncStatus.isRunning = false;
+                syncStatus.percent = 100;
+            }
+        }).start();
+    }
+
+    private String getBulkDataUrl(String type) {
+        JsonNode root = fetchJson("https://api.scryfall.com/bulk-data");
+        if (root != null && root.has("data")) {
+            for (JsonNode item : root.get("data")) {
+                if (item.get("type").asText().equals(type)) {
+                    return item.get("download_uri").asText();
+                }
+            }
+        }
+        return null;
+    }
+
+    private Card convertJsonToCard(JsonNode root) {
+        Card card = new Card();
+        card.setId(root.get("id").asText());
+        card.setName(root.get("name").asText());
+        card.setSetName(root.get("set_name").asText());
+
+        if (root.has("collector_number"))
+            card.setCollectorNumber(root.get("collector_number").asText());
+
+        if (root.has("image_uris") && root.get("image_uris").has("normal")) {
+            card.setImageUrl(root.get("image_uris").get("normal").asText());
+        } else if (root.has("card_faces") && root.get("card_faces").get(0).has("image_uris")) {
+            card.setImageUrl(root.get("card_faces").get(0).get("image_uris").get("normal").asText());
+        }
+
+        Double price = 0.0;
+        if (root.has("prices") && root.get("prices").has("usd") && !root.get("prices").get("usd").isNull()) {
+            price = root.get("prices").get("usd").asDouble();
+        }
+        card.setPriceUsd(price);
+        card.setLastUpdate(LocalDateTime.now());
+
+        // Init history for new card
+        PriceHistory history = new PriceHistory();
+        history.setPriceUsd(price);
+        history.setTimestamp(LocalDateTime.now());
+        history.setCard(card);
+        card.getPriceHistory().add(history);
+
+        // Como é nova, variação é zero
+        card.setPriceChangePercentage(0.0);
+
+        return card;
+    }
+
+    private void recalculateVariation(Card card) {
+        if (card.getPriceHistory().isEmpty() || card.getPriceUsd() == null) {
+            card.setPriceChangePercentage(0.0);
+            return;
+        }
+
+        // Pega o histórico mais antigo (o primeiro inserido)
+        Double oldPrice = card.getPriceHistory().get(0).getPriceUsd();
+        Double currentPrice = card.getPriceUsd();
+
+        if (oldPrice == 0) {
+            card.setPriceChangePercentage(0.0);
+        } else {
+            double change = ((currentPrice - oldPrice) / oldPrice) * 100;
+            card.setPriceChangePercentage(change);
+        }
     }
 }

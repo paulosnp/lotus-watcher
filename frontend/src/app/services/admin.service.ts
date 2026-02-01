@@ -19,6 +19,10 @@ export class AdminService {
         return this.http.post(`${this.apiUrl}/scryfall/sync`, {});
     }
 
+    triggerBulkImport(): Observable<any> {
+        return this.http.post(`${this.apiUrl}/scryfall/bulk-import`, {});
+    }
+
     getSyncStatus(): Observable<any> {
         return this.http.get(`${this.apiUrl}/scryfall/status`);
     }

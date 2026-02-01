@@ -105,24 +105,9 @@ public class CardController {
 
     @GetMapping("/market")
     public Map<String, List<Card>> getMarketOverview() {
-        List<Card> allCards = cardRepository.findAll();
-
-        // Calcula a porcentagem para cada carta
-        for (Card card : allCards) {
-            card.setPriceChangePercentage(calcularVariacao(card));
-        }
-
-        // Ordena os Vencedores
-        List<Card> risers = allCards.stream()
-                .sorted(Comparator.comparing(Card::getPriceChangePercentage).reversed())
-                .limit(5)
-                .toList();
-
-        // Ordena os Perdedores
-        List<Card> fallers = allCards.stream()
-                .sorted(Comparator.comparing(Card::getPriceChangePercentage))
-                .limit(5)
-                .toList();
+        // Agora usamos o banco para ordenar, evitando carregar 90k cartas na memória
+        List<Card> risers = cardRepository.findTop5ByOrderByPriceChangePercentageDesc();
+        List<Card> fallers = cardRepository.findTop5ByOrderByPriceChangePercentageAsc();
 
         Map<String, List<Card>> marketData = new HashMap<>();
         marketData.put("risers", risers);
@@ -140,18 +125,4 @@ public class CardController {
         return ResponseEntity.notFound().build();
     }
 
-    private double calcularVariacao(Card card) {
-        if (card.getPriceUsd() == null || card.getPriceHistory().isEmpty()) {
-            return 0.0;
-        }
-
-        double currentPrice = card.getPriceUsd();
-        // Pega o preço mais antigo disponível para comparar
-        double oldPrice = card.getPriceHistory().get(0).getPriceUsd();
-
-        if (oldPrice == 0)
-            return 0.0;
-
-        return ((currentPrice - oldPrice) / oldPrice) * 100;
-    }
 }

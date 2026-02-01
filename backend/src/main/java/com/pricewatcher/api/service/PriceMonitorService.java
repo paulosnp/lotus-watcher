@@ -11,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import com.pricewatcher.api.service.ScryfallService;
 
 @Service
 public class PriceMonitorService {
@@ -19,13 +22,16 @@ public class PriceMonitorService {
     private final WatchlistRepository watchlistRepository;
     private final NotificationRepository notificationRepository;
     private final EmailService emailService;
+    private final ScryfallService scryfallService;
 
     public PriceMonitorService(WatchlistRepository watchlistRepository,
             NotificationRepository notificationRepository,
-            EmailService emailService) {
+            EmailService emailService,
+            ScryfallService scryfallService) {
         this.watchlistRepository = watchlistRepository;
         this.notificationRepository = notificationRepository;
         this.emailService = emailService;
+        this.scryfallService = scryfallService;
     }
 
     // Cron every 30 minutes: 0 0/30 * * * *
@@ -33,8 +39,25 @@ public class PriceMonitorService {
     @Scheduled(cron = "0 */30 * * * *")
     @Transactional
     public void checkPriceAlerts() {
-        System.out.println("⏰ [PriceMonitor] Verificando alertas de preço...");
+        System.out.println("⏰ [PriceMonitor] Iniciando ciclo de monitoramento VIP...");
 
+        // 1. ATUALIZAÇÃO VIP: Busca cartas que estão em watchlists e atualiza preço
+        // AGORA
+        List<Card> watchedCards = watchlistRepository.findDistinctCardsInWatchlists();
+        System.out
+                .println("💎 [PriceMonitor] Atualizando " + watchedCards.size() + " cartas monitoradas na Scryfall...");
+
+        for (Card card : watchedCards) {
+            try {
+                scryfallService.updateCardPrice(card);
+                Thread.sleep(100); // Delay suave para não tomar Rate Limit
+            } catch (Exception e) {
+                System.err.println("⚠️ Erro ao atualizar preço da carta " + card.getName() + ": " + e.getMessage());
+            }
+        }
+        System.out.println("✅ [PriceMonitor] Preços atualizados! Verificando disparos de alerta...");
+
+        // 2. VERIFICAÇÃO DE ALERTAS (Lógica original)
         // Fetch items with a set target price
         List<WatchlistItem> items = watchlistRepository.findByTargetPriceIsNotNull();
 

@@ -59,6 +59,15 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    @org.springframework.web.bind.annotation.PostMapping("/scryfall/bulk-import")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> triggerBulkImport() {
+        scryfallService.importViaBulkData();
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Bulk Import started in background.");
+        return ResponseEntity.ok(response);
+    }
+
     @org.springframework.web.bind.annotation.GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<org.springframework.data.domain.Page<com.pricewatcher.api.dto.UserDTO>> listUsers(

@@ -9,4 +9,10 @@ public interface CardRepository extends JpaRepository<Card, String> {
     // Esse é o método que estava faltando:
     Optional<Card> findByNameIgnoreCase(String name);
 
+    @org.springframework.data.jpa.repository.Query("SELECT c.id FROM Card c")
+    java.util.Set<String> findAllIds();
+
+    java.util.List<Card> findTop5ByOrderByPriceChangePercentageDesc();
+
+    java.util.List<Card> findTop5ByOrderByPriceChangePercentageAsc();
 }

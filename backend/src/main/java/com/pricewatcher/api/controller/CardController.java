@@ -8,12 +8,13 @@ import com.pricewatcher.api.service.ScryfallService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
 @RestController
 @RequestMapping("/api/cards")
-@CrossOrigin(origins = "http://localhost:4200")
+@Slf4j
 public class CardController {
 
     private final CardRepository cardRepository;
@@ -22,7 +23,7 @@ public class CardController {
     public CardController(CardRepository cardRepository, ScryfallService scryfallService) {
         this.cardRepository = cardRepository;
         this.scryfallService = scryfallService;
-        System.out.println(">>> CARD CONTROLLER INICIALIZADO COM AUTOCOMPLETE! <<<");
+        log.info(">>> CARD CONTROLLER INICIALIZADO COM AUTOCOMPLETE! <<<");
     }
 
     @GetMapping("/search")
@@ -42,15 +43,15 @@ public class CardController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(results.toString());
         }
-        // Retorna lista vazia em vez de 404 para evitar erro no console
+        // Return empty list safely
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("{\"object\": " + "\"list\", \"data\": []}");
+                .body("{\"object\": \"list\", \"data\": []}");
     }
 
     @GetMapping("/autocomplete")
     public ResponseEntity<String> params(@RequestParam String q) {
-        System.out.println(">>> REQUEST RECEBIDO: " + q);
+        log.info(">>> REQUEST RECEBIDO: {}", q);
         JsonNode results = scryfallService.getAutocompleteSuggestions(q);
         if (results != null) {
             return ResponseEntity.ok()

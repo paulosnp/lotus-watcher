@@ -15,8 +15,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.pricewatcher.api.service.ScryfallService;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class PriceMonitorService {
 
     private final WatchlistRepository watchlistRepository;
@@ -39,23 +41,22 @@ public class PriceMonitorService {
     @Scheduled(cron = "0 */30 * * * *")
     @Transactional
     public void checkPriceAlerts() {
-        System.out.println("⏰ [PriceMonitor] Iniciando ciclo de monitoramento VIP...");
+        log.info("⏰ [PriceMonitor] Iniciando ciclo de monitoramento VIP...");
 
         // 1. ATUALIZAÇÃO VIP: Busca cartas que estão em watchlists e atualiza preço
         // AGORA
         List<Card> watchedCards = watchlistRepository.findDistinctCardsInWatchlists();
-        System.out
-                .println("💎 [PriceMonitor] Atualizando " + watchedCards.size() + " cartas monitoradas na Scryfall...");
+        log.info("💎 [PriceMonitor] Atualizando {} cartas monitoradas na Scryfall...", watchedCards.size());
 
         for (Card card : watchedCards) {
             try {
                 scryfallService.updateCardPrice(card);
                 Thread.sleep(100); // Delay suave para não tomar Rate Limit
             } catch (Exception e) {
-                System.err.println("⚠️ Erro ao atualizar preço da carta " + card.getName() + ": " + e.getMessage());
+                log.error("⚠️ Erro ao atualizar preço da carta {}: {}", card.getName(), e.getMessage());
             }
         }
-        System.out.println("✅ [PriceMonitor] Preços atualizados! Verificando disparos de alerta...");
+        log.info("✅ [PriceMonitor] Preços atualizados! Verificando disparos de alerta...");
 
         // 2. VERIFICAÇÃO DE ALERTAS (Lógica original)
         // Fetch items with a set target price
@@ -128,8 +129,8 @@ public class PriceMonitorService {
         // but explicit save is safer/clearer
         watchlistRepository.save(item);
 
-        System.out.println("✅ [PriceMonitor] Alerta enviado para " + item.getUser().getEmail() + " sobre "
-                + item.getCard().getName());
+        log.info("✅ [PriceMonitor] Alerta enviado para {} sobre {}", item.getUser().getEmail(),
+                item.getCard().getName());
     }
 
     // Helper for manual trigger/testing

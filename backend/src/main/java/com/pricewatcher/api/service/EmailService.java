@@ -1,8 +1,10 @@
 package com.pricewatcher.api.service;
 
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class EmailService {
 
     private final org.springframework.mail.javamail.JavaMailSender mailSender;
@@ -22,9 +24,9 @@ public class EmailService {
                     + "\n\nInsira este código no site para ativar sua conta.");
 
             mailSender.send(message);
-            System.out.println("📧 [EmailService] Verificação enviada para: " + to);
+            log.info("📧 [EmailService] Verificação enviada para: {}", to);
         } catch (Exception e) {
-            System.err.println("❌ [EmailService] Erro ao enviar email: " + e.getMessage());
+            log.error("❌ [EmailService] Erro ao enviar email: {}", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -43,9 +45,9 @@ public class EmailService {
                     + "Acesse o Lotus Watcher agora para conferir!");
 
             mailSender.send(message);
-            System.out.println("📧 [EmailService] Alerta de preço enviado para: " + to);
+            log.info("📧 [EmailService] Alerta de preço enviado para: {}", to);
         } catch (Exception e) {
-            System.err.println("❌ [EmailService] Erro ao enviar alerta: " + e.getMessage());
+            log.error("❌ [EmailService] Erro ao enviar alerta: {}", e.getMessage());
         }
     }
 }

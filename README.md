@@ -5,7 +5,7 @@
   <p>
     <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java" alt="Java 21">
     <img src="https://img.shields.io/badge/Spring%20Boot-3.2.2-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
-    <img src="https://img.shields.io/badge/Angular-18-red?style=for-the-badge&logo=angular" alt="Angular">
+    <img src="https://img.shields.io/badge/Angular-21-red?style=for-the-badge&logo=angular" alt="Angular">
     <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql" alt="Database">
     <img src="https://img.shields.io/badge/i18n-PT%2FEN-purple?style=for-the-badge&logo=google-translate" alt="i18n">
   </p>
@@ -76,7 +76,7 @@ Agora conta com um sistema completo de **Autenticação**, **Painel Administrati
 * **Maven**: Gerenciamento de dependências.
 
 ### Frontend (SPA)
-* **Angular 18+**: Standalone Components (sem NgModules).
+* **Angular 21+**: Standalone Components (sem NgModules).
 * **TypeScript**: Tipagem estática.
 * **Angular Material**: UI Kit moderno.
 * **Chart.js**: Visualização de dados.

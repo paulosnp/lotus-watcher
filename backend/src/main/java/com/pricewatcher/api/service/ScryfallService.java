@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class ScryfallService {
 
     private final CardRepository cardRepository;
@@ -32,7 +33,7 @@ public class ScryfallService {
     // 🕒 MEGA VERIFICAÇÃO: Todos os dias às 03:00 da manhã (Horário de Brasília)
     @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void nightlyMegaSync() {
-        System.out.println("🌙 [NightlySync] Iniciando Mega Verificação Noturna...");
+        log.info("🌙 [NightlySync] Iniciando Mega Verificação Noturna...");
 
         // 1. Importa cartas novas (Bulk)
         importViaBulkData();
@@ -52,8 +53,8 @@ public class ScryfallService {
             }
             // Se o preço for zero/nulo, removemos a carta "ruim" do banco e deixamos o
             // código buscar uma nova
-            System.out.println("♻️ Carta local '" + name + "' está sem preço ($" + existing.getPriceUsd()
-                    + "). Substituindo por melhor versão...");
+            log.info("♻️ Carta local '{}' está sem preço ($ {}). Substituindo por melhor versão...", name,
+                    existing.getPriceUsd());
             cardRepository.delete(existing);
         }
 
@@ -66,12 +67,12 @@ public class ScryfallService {
 
         // SE NÃO TIVER PREÇO, TENTA ACHAR UMA VERSÃO QUE TENHA
         if (!hasValidPrice(root)) {
-            System.out.println("⚠️ A versão padrão de " + name + " não tem preço. Buscando alternativas...");
+            log.warn("⚠️ A versão padrão de {} não tem preço. Buscando alternativas...", name);
             JsonNode betterVersion = findBestPrint(name);
             if (betterVersion != null) {
                 root = betterVersion;
-                System.out.println("✅ Versão alternativa encontrada: " + root.get("set_name").asText() + " ($"
-                        + root.get("prices").get("usd").asText() + ")");
+                log.info("✅ Versão alternativa encontrada: {} ( $ {} )", root.get("set_name").asText(),
+                        root.get("prices").get("usd").asText());
             }
         }
 
@@ -121,7 +122,7 @@ public class ScryfallService {
             String url = "https://api.scryfall.com/cards/search?q=" + encodedFullQuery
                     + "&unique=cards&order=edhrec&page=1";
 
-            System.out.println(">>> AUTOCOMPLETE URL: " + url); // DEBUG LOG
+            log.debug(">>> AUTOCOMPLETE URL: {}", url); // DEBUG LOG
 
             JsonNode searchResult = fetchJson(url);
 
@@ -183,7 +184,7 @@ public class ScryfallService {
             String query = "!\"" + name + "\"";
             String encodedQuery = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
             String url = "https://api.scryfall.com/cards/search?q=" + encodedQuery + "&unique=prints";
-            System.out.println(">>> PRINTS SEARCH URL: " + url);
+            log.debug(">>> PRINTS SEARCH URL: {}", url);
             return fetchJson(url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,12 +232,12 @@ public class ScryfallService {
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(">>> FETCH STATUS: " + response.statusCode() + " for URL: " + url);
+            log.debug(">>> FETCH STATUS: {} for URL: {}", response.statusCode(), url);
 
             if (response.statusCode() == 200) {
                 return objectMapper.readTree(response.body());
             } else {
-                System.out.println(">>> FETCH ERROR BODY: " + response.body());
+                log.error(">>> FETCH ERROR BODY: {}", response.body());
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -318,7 +319,7 @@ public class ScryfallService {
     // Sincroniza TODAS as cartas do banco (pode demorar)
     public void syncAllCards() {
         if (syncStatus.isRunning) {
-            System.out.println("⚠️ [ScryfallSync] Sincronização já está em andamento.");
+            log.warn("⚠️ [ScryfallSync] Sincronização já está em andamento.");
             return;
         }
 
@@ -329,7 +330,7 @@ public class ScryfallService {
         syncStatus.percent = 0;
 
         new Thread(() -> {
-            System.out.println("🔄 [ScryfallSync] Iniciando sincronização em massa...");
+            log.info("🔄 [ScryfallSync] Iniciando sincronização em massa...");
 
             try {
                 java.util.List<Card> allCards = cardRepository.findAll();
@@ -350,16 +351,16 @@ public class ScryfallService {
                         }
 
                         if (updated % 10 == 0) {
-                            System.out.println("🔄 [ScryfallSync] Atualizadas " + updated + "/" + allCards.size());
+                            log.info("🔄 [ScryfallSync] Atualizadas {}/{}", updated, allCards.size());
                         }
                         Thread.sleep(100); // 100ms delay to be gentle on API
                     } catch (Exception e) {
-                        System.err.println("❌ Falha ao atualizar " + card.getName() + ": " + e.getMessage());
+                        log.error("❌ Falha ao atualizar {}: {}", card.getName(), e.getMessage());
                     }
                 }
-                System.out.println("✅ [ScryfallSync] Sincronização concluída! Total: " + updated);
+                log.info("✅ [ScryfallSync] Sincronização concluída! Total: {}", updated);
             } catch (Exception e) {
-                System.err.println("❌ Erro fatal na sincronização: " + e.getMessage());
+                log.error("❌ Erro fatal na sincronização: {}", e.getMessage());
             } finally {
                 // Clean up status after small delay
                 try {
@@ -378,7 +379,7 @@ public class ScryfallService {
     // --- BULK IMPORT (STREAMING) ---
     public void importViaBulkData() {
         if (syncStatus.isRunning) {
-            System.out.println("⚠️ [ScryfallImport] Processo já está em andamento.");
+            log.warn("⚠️ [ScryfallImport] Processo já está em andamento.");
             return;
         }
 
@@ -388,7 +389,7 @@ public class ScryfallService {
         syncStatus.percent = 0;
 
         new Thread(() -> {
-            System.out.println("🚀 [ScryfallImport] Iniciando importação em massa (Bulk Import)...");
+            log.info("🚀 [ScryfallImport] Iniciando importação em massa (Bulk Import)...");
             long startTime = System.currentTimeMillis();
 
             try {
@@ -397,12 +398,12 @@ public class ScryfallService {
                 if (bulkUrl == null) {
                     throw new RuntimeException("Não foi possível obter a URL do Bulk Data.");
                 }
-                System.out.println("📥 [ScryfallImport] Baixando de: " + bulkUrl);
+                log.info("📥 [ScryfallImport] Baixando de: {}", bulkUrl);
 
                 // 2. Load existing IDs to memory (Quick Lookup)
-                System.out.println("💾 [ScryfallImport] Carregando IDs existentes...");
+                log.info("💾 [ScryfallImport] Carregando IDs existentes...");
                 java.util.Set<String> existingIds = cardRepository.findAllIds();
-                System.out.println("💾 [ScryfallImport] " + existingIds.size() + " cartas já no banco.");
+                log.info("💾 [ScryfallImport] {} cartas já no banco.", existingIds.size());
 
                 // 3. Stream & Process
                 java.net.URL url = java.net.URI.create(bulkUrl).toURL();
@@ -441,7 +442,7 @@ public class ScryfallService {
                             cardRepository.saveAll(batch);
                             cardRepository.flush();
                             batch.clear();
-                            System.out.println("📦 [ScryfallImport] Lote salvo. Total adicionado: " + added);
+                            log.info("📦 [ScryfallImport] Lote salvo. Total adicionado: {}", added);
                         }
                     }
 
@@ -452,12 +453,11 @@ public class ScryfallService {
                     }
 
                     long duration = (System.currentTimeMillis() - startTime) / 1000;
-                    System.out
-                            .println("✅ [ScryfallImport] Concluído! " + added + " novas cartas em " + duration + "s.");
+                    log.info("✅ [ScryfallImport] Concluído! {} novas cartas em {}s.", added, duration);
                 }
 
             } catch (Exception e) {
-                System.err.println("❌ [ScryfallImport] Erro fatal: " + e.getMessage());
+                log.error("❌ [ScryfallImport] Erro fatal: {}", e.getMessage());
                 e.printStackTrace();
             } finally {
                 syncStatus.isRunning = false;

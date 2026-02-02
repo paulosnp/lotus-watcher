@@ -44,7 +44,7 @@ public class ScryfallService {
     }
 
     public Card searchCard(String name) {
-        Optional<Card> localCard = cardRepository.findByNameIgnoreCase(name);
+        Optional<Card> localCard = cardRepository.findFirstByNameIgnoreCase(name);
         if (localCard.isPresent()) {
             Card existing = localCard.get();
             if (existing.getPriceUsd() != null && existing.getPriceUsd() > 0) {

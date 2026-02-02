@@ -41,6 +41,10 @@ export class WatchlistService {
         return this.http.delete(`${this.apiUrl}/${itemId}`);
     }
 
+    batchImport(cardNames: string[]): Observable<any> {
+        return this.http.post(`${this.apiUrl}/batch`, { cardNames });
+    }
+
     updateItem(itemId: string, item: WatchlistItemDto): Observable<any> {
         return this.http.put<any>(`${this.apiUrl}/${itemId}`, item);
     }

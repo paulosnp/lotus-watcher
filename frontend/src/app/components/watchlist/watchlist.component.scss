@@ -16,6 +16,48 @@
 
         p {
             color: #8f98a0;
+            margin-bottom: 20px;
+        }
+
+        .import-btn {
+            background-color: rgba(102, 192, 244, 0.1);
+            color: #66c0f4;
+            border: 1px solid rgba(102, 192, 244, 0.3);
+
+            &:hover {
+                background-color: rgba(102, 192, 244, 0.2);
+            }
+        }
+    }
+
+    .import-panel {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+
+        textarea {
+            width: 100%;
+            background: #101822;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 12px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+
+            &:focus {
+                outline: none;
+                border-color: #66c0f4;
+            }
+        }
+
+        .import-actions {
+            display: flex;
+            justify-content: flex-end;
         }
     }
 

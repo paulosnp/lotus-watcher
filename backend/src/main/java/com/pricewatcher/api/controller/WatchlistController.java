@@ -112,4 +112,47 @@ public class WatchlistController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/batch")
+    public ResponseEntity<com.pricewatcher.api.dto.BatchImportResultDto> batchImport(
+            @RequestBody com.pricewatcher.api.dto.BatchImportDto dto) {
+        User user = getAuthenticatedUser();
+
+        List<String> added = new java.util.ArrayList<>();
+        List<String> notFound = new java.util.ArrayList<>();
+
+        for (String rawName : dto.getCardNames()) {
+            if (rawName == null || rawName.trim().isEmpty())
+                continue;
+
+            // Basic cleaning: remove quantity like "1x " or "4 " at start
+            String name = rawName.trim().replaceAll("^\\d+\\s*[xX]?\\s*", "");
+
+            Optional<Card> cardOpt = cardRepository.findFirstByNameIgnoreCase(name);
+
+            if (cardOpt.isPresent()) {
+                Card card = cardOpt.get();
+                // Check duplicate
+                Optional<WatchlistItem> existing = watchlistRepository.findByUserIdAndCardId(user.getId(),
+                        card.getId());
+                if (existing.isEmpty()) {
+                    WatchlistItem item = new WatchlistItem();
+                    item.setUser(user);
+                    item.setCard(card);
+                    item.setNotes("Imported");
+                    item.setCreatedAt(java.time.LocalDateTime.now());
+                    watchlistRepository.save(item);
+                    added.add(card.getName());
+                } else {
+                    // Already exists, treat as "added" (or maybe ignored, but let's confirm
+                    // success)
+                    added.add(card.getName() + " (Já existe)");
+                }
+            } else {
+                notFound.add(name);
+            }
+        }
+
+        return ResponseEntity.ok(new com.pricewatcher.api.dto.BatchImportResultDto(added, notFound));
+    }
 }

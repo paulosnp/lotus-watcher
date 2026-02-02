@@ -2,6 +2,22 @@
     <div class="header">
         <h1>Minha Watchlist</h1>
         <p>Acompanhe o preço das cartas que você quer comprar.</p>
+
+        <button mat-flat-button color="accent" (click)="toggleImportPanel()" class="import-btn">
+            <mat-icon>playlist_add</mat-icon> {{ isImporting ? 'Fechar Importação' : 'Importar Lista' }}
+        </button>
+    </div>
+
+    <!-- Import Panel -->
+    <div *ngIf="isImporting" class="import-panel">
+        <textarea [(ngModel)]="importText"
+            placeholder="Cole sua lista aqui...&#10;Exemplo:&#10;1 Black Lotus&#10;4 Sol Ring" rows="6"></textarea>
+        <div class="import-actions">
+            <button mat-raised-button color="primary" (click)="processImport()"
+                [disabled]="!importText.trim() || isProcessingImport">
+                <mat-icon>cloud_upload</mat-icon> Processar Lista
+            </button>
+        </div>
     </div>
 
     @if (watchlist.length > 0) {

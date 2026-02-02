@@ -7,7 +7,7 @@ import java.util.Optional; // <--- OBRIGATÓRIO
 public interface CardRepository extends JpaRepository<Card, String> {
 
     // Esse é o método que estava faltando:
-    Optional<Card> findByNameIgnoreCase(String name);
+    Optional<Card> findFirstByNameIgnoreCase(String name);
 
     @org.springframework.data.jpa.repository.Query("SELECT c.id FROM Card c")
     java.util.Set<String> findAllIds();

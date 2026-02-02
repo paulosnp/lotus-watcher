@@ -43,7 +43,7 @@ public class CardController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(results.toString());
         }
-        // Return empty list safely
+        // Return empty list for UI consistency
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{\"object\": \"list\", \"data\": []}");
@@ -72,7 +72,7 @@ public class CardController {
 
     @GetMapping("/sets")
     public ResponseEntity<String> getSets() {
-        // Retorna o JSON direto do Scryfall (proxy simples)
+        // Scryfall Proxy
         JsonNode sets = scryfallService.getSets();
         if (sets != null) {
             return ResponseEntity.ok()
@@ -84,11 +84,10 @@ public class CardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCardById(@PathVariable String id) {
-        // Tenta buscar no banco local
+        // Fetch-and-Save Strategy
         return cardRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> {
-                    // Se não achar, busca na API do Scryfall e salva no banco
                     Card apiCard = scryfallService.getCardById(id);
                     if (apiCard != null) {
                         return ResponseEntity.ok(apiCard);
@@ -106,7 +105,6 @@ public class CardController {
 
     @GetMapping("/market")
     public Map<String, List<Card>> getMarketOverview() {
-        // Agora usamos o banco para ordenar, evitando carregar 90k cartas na memória
         List<Card> risers = cardRepository.findTop5ByOrderByPriceChangePercentageDesc();
         List<Card> fallers = cardRepository.findTop5ByOrderByPriceChangePercentageAsc();
 

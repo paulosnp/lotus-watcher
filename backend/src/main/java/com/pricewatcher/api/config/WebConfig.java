@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Mapeia URL /uploads/** para a pasta física uploads/ na raiz do projeto
+        // Map /uploads/** URL to the uploads/ directory in the project root
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/");
     }

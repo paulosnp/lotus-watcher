@@ -36,29 +36,27 @@ public class PriceMonitorService {
         this.scryfallService = scryfallService;
     }
 
-    // Cron every 30 minutes: 0 0/30 * * * *
-    // For Dev/Testing, we can use fixedRate = 60000 (1 minute) if needed
+    // Cron every 30 minutes
     @Scheduled(cron = "0 */30 * * * *")
     @Transactional
     public void checkPriceAlerts() {
         log.info("⏰ [PriceMonitor] Iniciando ciclo de monitoramento VIP...");
 
-        // 1. ATUALIZAÇÃO VIP: Busca cartas que estão em watchlists e atualiza preço
-        // AGORA
+        // 1. Refresh prices for monitored cards
         List<Card> watchedCards = watchlistRepository.findDistinctCardsInWatchlists();
         log.info("💎 [PriceMonitor] Atualizando {} cartas monitoradas na Scryfall...", watchedCards.size());
 
         for (Card card : watchedCards) {
             try {
                 scryfallService.updateCardPrice(card);
-                Thread.sleep(100); // Delay suave para não tomar Rate Limit
+                Thread.sleep(100); // Rate limit protection
             } catch (Exception e) {
                 log.error("⚠️ Erro ao atualizar preço da carta {}: {}", card.getName(), e.getMessage());
             }
         }
         log.info("✅ [PriceMonitor] Preços atualizados! Verificando disparos de alerta...");
 
-        // 2. VERIFICAÇÃO DE ALERTAS (Lógica original)
+        // 2. Alert Checks
         // Fetch items with a set target price
         List<WatchlistItem> items = watchlistRepository.findByTargetPriceIsNotNull();
 
@@ -87,8 +85,7 @@ public class PriceMonitorService {
                 if (item.getLastNotifiedAt().isBefore(yesterday)) {
                     shouldNotify = true;
                 } else if (item.getLastNotifiedPrice() != null) {
-                    // Notify again if price dropped MORE since last notification
-                    // e.g. Dropped from $10 to $9 (Notified), then to $5 (Notify again!)
+                    // Notify again if price dropped significantly since last notification
                     BigDecimal lastPrice = BigDecimal.valueOf(item.getLastNotifiedPrice());
                     // If current price is at least 1% lower than last notified price
                     if (price.compareTo(lastPrice) < 0) {
@@ -124,9 +121,7 @@ public class PriceMonitorService {
         item.setLastNotifiedAt(LocalDateTime.now());
         item.setLastNotifiedPrice(currentPrice.doubleValue());
 
-        // As we are in a Transactional method (checkPriceAlerts), managed entities are
-        // auto-saved,
-        // but explicit save is safer/clearer
+        // Explicit save for clarity
         watchlistRepository.save(item);
 
         log.info("✅ [PriceMonitor] Alerta enviado para {} sobre {}", item.getUser().getEmail(),

@@ -30,17 +30,15 @@ public class ScryfallService {
         this.objectMapper = new ObjectMapper();
     }
 
-    // 🕒 MEGA VERIFICAÇÃO: Todos os dias às 03:00 da manhã (Horário de Brasília)
+    // Scheduled daily sync at 03:00 AM (America/Sao_Paulo)
     @org.springframework.scheduling.annotation.Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void nightlyMegaSync() {
         log.info("🌙 [NightlySync] Iniciando Mega Verificação Noturna...");
 
-        // 1. Importa cartas novas (Bulk)
+        // 1. Import new cards (Bulk)
         importViaBulkData();
 
-        // 2. Atualiza preços das cartas existentes (pode demorar horas)
-        // Usamos uma nova thread para não bloquear o Scheduler se syncAllCards não for
-        // async
+        // 2. Update existing card prices (Async)
         new Thread(this::syncAllCards).start();
     }
 
@@ -51,8 +49,7 @@ public class ScryfallService {
             if (existing.getPriceUsd() != null && existing.getPriceUsd() > 0) {
                 return updateCardPrice(existing);
             }
-            // Se o preço for zero/nulo, removemos a carta "ruim" do banco e deixamos o
-            // código buscar uma nova
+            // Remove entries with invalid prices to trigger re-fetch
             log.info("♻️ Carta local '{}' está sem preço ($ {}). Substituindo por melhor versão...", name,
                     existing.getPriceUsd());
             cardRepository.delete(existing);
@@ -65,7 +62,7 @@ public class ScryfallService {
         if (root == null)
             return null;
 
-        // SE NÃO TIVER PREÇO, TENTA ACHAR UMA VERSÃO QUE TENHA
+        // Fallback: If default version has no price, search for alternative prints
         if (!hasValidPrice(root)) {
             log.warn("⚠️ A versão padrão de {} não tem preço. Buscando alternativas...", name);
             JsonNode betterVersion = findBestPrint(name);
@@ -80,13 +77,13 @@ public class ScryfallService {
     }
 
     public Card getRandomCard() {
-        String url = "https://api.scryfall.com/cards/random?q=lang:en"; // Garante cartas em inglês
+        String url = "https://api.scryfall.com/cards/random?q=lang:en";
         JsonNode root = fetchJson(url);
 
         if (root != null && hasValidPrice(root)) {
             return saveCardFromScryfall(root);
         } else {
-            // Se cair numa carta sem preço (ex: token), tenta de novo (recursivo simples)
+            // Retry if card has no price (e.g. tokens)
             return getRandomCard();
         }
     }
@@ -110,10 +107,7 @@ public class ScryfallService {
 
     public JsonNode getAutocompleteSuggestions(String query) {
         try {
-            // Usamos busca normal com wildcard para 'simular' autocomplete mas trazendo
-            // objetos completos (com imagens)
-            // auto: prefixo para forçar busca por nome parcial inteligente
-            // Construímos a query "bruta" primeiro: name:/^query/
+            // Simulate autocomplete using partial match on name
             String rawQuery = "name:/^" + query + "/";
 
             // Encodamos TUDO para garantir que ^, /, : sejam passados corretamente
@@ -142,7 +136,7 @@ public class ScryfallService {
 
                     simpleCard.put("name", card.get("name").asText());
 
-                    // Lógica segura para pegar imagem
+                    // Image URL Resolution
                     String img = "https://i.imgur.com/LdOBU1I.jpg"; // Fallback
                     if (card.has("image_uris") && card.get("image_uris").has("small")) {
                         img = card.get("image_uris").get("small").asText();
@@ -201,7 +195,7 @@ public class ScryfallService {
         return null;
     }
 
-    // Método auxiliar para buscar prints e escolher o melhor
+    // Helper: Find best print with valid price
     private JsonNode findBestPrint(String name) {
         JsonNode prints = findPrintsByName(name);
         if (prints != null && prints.has("data")) {
@@ -214,7 +208,7 @@ public class ScryfallService {
         return null;
     }
 
-    // Verifica se o JSON da carta tem preço válido
+    // Validate price availability in JSON
     private boolean hasValidPrice(JsonNode root) {
         return root.has("prices")
                 && root.get("prices").has("usd")
@@ -226,7 +220,7 @@ public class ScryfallService {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("User-Agent", "LotusWatcher/1.0 (Java HttpClient)") // Scryfall pede User-Agent
+                    .header("User-Agent", "LotusWatcher/1.0 (Java HttpClient)")
                     .header("Accept", "application/json")
                     .GET()
                     .build();
@@ -249,9 +243,9 @@ public class ScryfallService {
     public Card saveCardFromScryfall(JsonNode root) {
         String id = root.get("id").asText();
 
-        // Verifica se a carta já existe ou cria uma nova
+        // Check existence
         Card card = cardRepository.findById(id).orElse(new Card());
-        boolean isNew = (card.getId() == null); // Marca se é uma carta nova
+        boolean isNew = (card.getId() == null);
 
         // PREENCHE OS DADOS BÁSICOS
         card.setId(id);
@@ -270,9 +264,9 @@ public class ScryfallService {
             card.setImageUrl(root.get("card_faces").get(0).get("image_uris").get("normal").asText());
         }
 
-        // Salva a carta imediatamente se for nova para garantir o ID
+        // Persist immediately if new to ensure ID exists for foreign keys
         if (isNew) {
-            card = cardRepository.saveAndFlush(card); // saveAndFlush força a ida ao banco imediatamente
+            card = cardRepository.saveAndFlush(card);
         }
 
         // TRATAMENTO DE PREÇO E HISTÓRICO
@@ -283,7 +277,7 @@ public class ScryfallService {
 
         Double currentDbPrice = card.getPriceUsd();
 
-        // Se o preço mudou OU se é carta nova, adiciona histórico
+        // Update history if price changed or is new
         if (currentDbPrice == null || !currentDbPrice.equals(newPrice)) {
             PriceHistory history = new PriceHistory();
             history.setPriceUsd(newPrice);
@@ -298,7 +292,6 @@ public class ScryfallService {
 
         recalculateVariation(card);
 
-        // Salva novamente (agora com o histórico atualizado)
         return cardRepository.save(card);
     }
 
@@ -316,7 +309,7 @@ public class ScryfallService {
         return syncStatus;
     }
 
-    // Sincroniza TODAS as cartas do banco (pode demorar)
+    // Full Database Sync
     public void syncAllCards() {
         if (syncStatus.isRunning) {
             log.warn("⚠️ [ScryfallSync] Sincronização já está em andamento.");
@@ -353,7 +346,7 @@ public class ScryfallService {
                         if (updated % 10 == 0) {
                             log.info("🔄 [ScryfallSync] Atualizadas {}/{}", updated, allCards.size());
                         }
-                        Thread.sleep(100); // 100ms delay to be gentle on API
+                        Thread.sleep(100);
                     } catch (Exception e) {
                         log.error("❌ Falha ao atualizar {}: {}", card.getName(), e.getMessage());
                     }
@@ -400,7 +393,7 @@ public class ScryfallService {
                 }
                 log.info("📥 [ScryfallImport] Baixando de: {}", bulkUrl);
 
-                // 2. Load existing IDs to memory (Quick Lookup)
+                // 2. Load existing IDs to memory
                 log.info("💾 [ScryfallImport] Carregando IDs existentes...");
                 java.util.Set<String> existingIds = cardRepository.findAllIds();
                 log.info("💾 [ScryfallImport] {} cartas já no banco.", existingIds.size());
@@ -507,7 +500,6 @@ public class ScryfallService {
         history.setCard(card);
         card.getPriceHistory().add(history);
 
-        // Como é nova, variação é zero
         card.setPriceChangePercentage(0.0);
 
         return card;
@@ -519,7 +511,7 @@ public class ScryfallService {
             return;
         }
 
-        // Pega o histórico mais antigo (o primeiro inserido)
+        // Calculate variation against oldest record
         Double oldPrice = card.getPriceHistory().get(0).getPriceUsd();
         Double currentPrice = card.getPriceUsd();
 

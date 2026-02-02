@@ -3,16 +3,16 @@
         <button class="back-btn" (click)="goBack()">
             <mat-icon>arrow_back</mat-icon>
         </button>
-        <h1>Expansões de Magic</h1>
+        <h1>{{ 'SETS.TITLE' | translate }}</h1>
     </div>
 
     @if (isLoading) {
-    <p class="loading">Carregando expansões...</p>
+    <p class="loading">{{ 'SETS.LOADING' | translate }}</p>
     } @else {
     @if (errorMessage) {
     <p class="error">{{ errorMessage }}</p>
     } @else if (sets.length === 0) {
-    <p class="empty">Nenhuma expansão encontrada.</p>
+    <p class="empty">{{ 'SETS.EMPTY' | translate }}</p>
     } @else {
     <div class="sets-grid">
         @for (set of sets; track set.code) {

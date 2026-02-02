@@ -11,11 +11,13 @@ import { AuthService } from './services/auth.service';
 
 import { NotificationService } from './services/notification.service'; // Import NotificationService
 import { Notification } from './models/notification.model'; // Import Notification Model
+import { TranslatePipe } from './pipes/translate.pipe'; // Import Pipe
+import { LanguageService } from './services/language.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, SearchComponent, CommonModule, Footer, MatIconModule],
+  imports: [RouterOutlet, RouterModule, SearchComponent, CommonModule, Footer, MatIconModule, TranslatePipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -70,13 +72,23 @@ export class AppComponent {
     }
   }
 
+  // Language
+  currentLang;
+
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+  }
+
   constructor(
     private router: Router,
     private cardService: CardService,
     private authService: AuthService,
-    private notificationService: NotificationService, // Inject Service
+    public notificationService: NotificationService,
+    private languageService: LanguageService, // Inject Language Service
     private cdr: ChangeDetectorRef
   ) {
+    this.currentLang = this.languageService.currentLang;
+
     // Initialize Observables
     this.unreadCount$ = this.notificationService.unreadCount$;
     this.notifications$ = this.notificationService.notifications$;
@@ -117,15 +129,20 @@ export class AppComponent {
     this.isLoadingRandom = true;
     this.cardService.getRandomCard().subscribe({
       next: (card) => {
-        this.isLoadingRandom = false;
         if (card && card.id) {
           this.router.navigate(['/card', card.id]);
         }
-        this.cdr.detectChanges(); // Force update
+        // Fix NG0100: Wrap in setTimeout to ensure it doesn't conflict with current check cycle
+        setTimeout(() => {
+          this.isLoadingRandom = false;
+          this.cdr.detectChanges();
+        });
       },
       error: () => {
-        this.isLoadingRandom = false;
-        this.cdr.detectChanges(); // Force update
+        setTimeout(() => {
+          this.isLoadingRandom = false;
+          this.cdr.detectChanges();
+        });
       }
     });
   }

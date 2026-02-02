@@ -4,24 +4,24 @@
 
     <!-- 1. Busca Central (Agora contém a Logo) -->
     <div class="nav-search-box">
-      <app-search [isCompact]="true"></app-search>
+      <app-search [isCompact]="true" [customPlaceholder]="('HOME.SEARCH_PLACEHOLDER' | translate)"></app-search>
     </div>
 
-    <!-- 2. Botões da Direita (Sets + Random) -->
     <!-- 2. Botões da Direita (Sets + Random) -->
     <div class="nav-actions">
       <!-- Desktop Actions Wrapper -->
       <div class="desktop-actions">
         <!-- Sets -->
-        <a routerLink="/sets" class="nav-btn" title="Visualizar Expansões">
+        <a routerLink="/sets" class="nav-btn" title="{{ 'MENU.SETS' | translate }}">
           <mat-icon>style</mat-icon>
-          <span>Expansões</span>
+          <span>{{ 'MENU.SETS' | translate }}</span>
         </a>
 
         <!-- Random -->
-        <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom" title="Carta Aleatória">
+        <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom"
+          title="{{ 'MENU.RANDOM' | translate }}">
           <mat-icon [class.spin]="isLoadingRandom">shuffle</mat-icon>
-          <span>Random</span>
+          <span>{{ 'MENU.RANDOM' | translate }}</span>
         </button>
 
         <!-- Notification Bell -->
@@ -39,8 +39,8 @@
           @if (isNotificationsOpen) {
           <div class="dropdown-menu notification-dropdown">
             <div class="dropdown-header">
-              <span>Notificações</span>
-              <span class="count">{{ (unreadCount$ | async) || 0 }} não lidas</span>
+              <span>{{ 'NOTIF.HEADER' | translate }}</span>
+              <span class="count">{{ (unreadCount$ | async) || 0 }} {{ 'NOTIF.UNREAD' | translate }}</span>
             </div>
 
             <div class="notification-list">
@@ -62,7 +62,7 @@
               } @empty {
               <div class="empty-notif">
                 <mat-icon>notifications_off</mat-icon>
-                <p>Nenhuma notificação.</p>
+                <p>{{ 'NOTIF.EMPTY' | translate }}</p>
               </div>
               }
             </div>
@@ -121,26 +121,39 @@
             }
             }
 
-            <a routerLink="/sets" class="menu-item"><mat-icon>style</mat-icon> Expansões</a>
-            <button (click)="onRandomCard()" class="menu-item"><mat-icon>shuffle</mat-icon> Random</button>
+            <a routerLink="/sets" class="menu-item"><mat-icon>style</mat-icon> {{ 'MENU.SETS' | translate }}</a>
+            <button (click)="onRandomCard()" class="menu-item"><mat-icon>shuffle</mat-icon> {{ 'MENU.RANDOM' | translate
+              }}</button>
             <div class="menu-divider"></div>
           </div>
 
+          <!-- Language Toggle (Visible to All) -->
+          <button class="menu-item" (click)="toggleLanguage()">
+            <mat-icon>language</mat-icon>
+            {{ currentLang() === 'pt' ? 'English' : 'Português' }}
+          </button>
+          <div class="menu-divider"></div>
+
           @if (!isLoggedIn) {
-          <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> Entrar</a>
-          <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> Criar Conta</a>
+          <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> {{ 'MENU.LOGIN' | translate }}</a>
+          <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> {{ 'MENU.REGISTER' | translate
+            }}</a>
           }
 
           @if (isLoggedIn) {
-          <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> Meu Perfil</a>
+          <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> {{ 'MENU.PROFILE' | translate
+            }}</a>
 
           @if (isAdmin) {
-          <a routerLink="/admin" class="menu-item admin-link"><mat-icon>security</mat-icon> Admin Panel</a>
+          <a routerLink="/admin" class="menu-item admin-link"><mat-icon>security</mat-icon> {{ 'MENU.ADMIN' | translate
+            }}</a>
           }
 
-          <a routerLink="/watchlist" class="menu-item"><mat-icon>bookmarks</mat-icon> Watchlist</a>
+          <a routerLink="/watchlist" class="menu-item"><mat-icon>bookmarks</mat-icon> {{ 'MENU.WATCHLIST' | translate
+            }}</a>
           <div class="menu-divider"></div>
-          <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> Sair</button>
+          <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> {{ 'MENU.LOGOUT' | translate
+            }}</button>
           }
         </div>
         }

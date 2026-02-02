@@ -7,7 +7,8 @@
                 onerror="this.src='/assets/default-avatar.png'">
 
             <!-- BUTTON: Upload Icon overlaps avatar -->
-            <div class="header-edit-icon" (click)="triggerFileInput()" matTooltip="Fazer Upload de Imagem">
+            <div class="header-edit-icon" (click)="triggerFileInput()"
+                matTooltip="{{ 'PROFILE.UPLOAD_TOOLTIP' | translate }}">
                 <mat-icon [class.spin]="isUploading">{{ isUploading ? 'sync' : 'cloud_upload' }}</mat-icon>
             </div>
             <input type="file" id="fileUpload" (change)="onFileSelected($event)" accept="image/*" hidden>
@@ -15,14 +16,14 @@
 
         <div class="header-info">
             <!-- Show current name (live preview if editing) -->
-            <h1>{{ (isEditingName ? newName : user?.name) || 'Usuário' }}</h1>
+            <h1>{{ (isEditingName ? newName : user?.name) || ('PROFILE.DEFAULT_USER' | translate) }}</h1>
             <p>{{ user?.email }}</p>
             <span class="role-badge" *ngIf="user?.role === 'ADMIN'">ADMIN</span>
         </div>
     </div>
 
     <mat-card class="profile-card">
-        <h3>Escolha seu Avatar</h3>
+        <h3>{{ 'PROFILE.CHOOSE_AVATAR' | translate }}</h3>
 
         <div class="avatar-section">
             <div class="avatar-grid">
@@ -37,35 +38,38 @@
 
         <!-- Informações Pessoais -->
         <div class="section-header">
-            <h3>Informações Pessoais</h3>
-            <button mat-icon-button (click)="toggleEditName()" matTooltip="Editar Nome">
+            <h3>{{ 'PROFILE.PERSONAL_INFO' | translate }}</h3>
+            <button mat-icon-button (click)="toggleEditName()"
+                matTooltip="{{ 'PROFILE.EDIT_NAME_TOOLTIP' | translate }}">
                 <mat-icon>{{ isEditingName ? 'close' : 'edit' }}</mat-icon>
             </button>
         </div>
 
         <div class="info-row">
             <div class="info-group">
-                <label>Email</label>
+                <label>{{ 'PROFILE.EMAIL_LABEL' | translate }}</label>
                 <span class="display-value locked"><mat-icon>lock</mat-icon> {{ user?.email }}</span>
             </div>
 
             <div class="info-group">
-                <label>Nome de Exibição</label>
-                <span *ngIf="!isEditingName" class="display-value highlight">{{ user?.name || 'Sem nome' }}</span>
+                <label>{{ 'PROFILE.DISPLAY_NAME_LABEL' | translate }}</label>
+                <span *ngIf="!isEditingName" class="display-value highlight">{{ user?.name || ('PROFILE.NO_NAME' |
+                    translate) }}</span>
 
                 <div *ngIf="isEditingName" class="edit-name-inline">
                     <mat-form-field appearance="outline" class="full-width">
                         <!-- Input override handled globally now, but keeping class just in case -->
-                        <input matInput [(ngModel)]="newName" placeholder="Seu nick">
+                        <input matInput [(ngModel)]="newName"
+                            placeholder="{{ 'PROFILE.NICK_PLACEHOLDER' | translate }}">
                     </mat-form-field>
 
                     <button mat-mini-fab class="action-btn save-btn" (click)="saveName()" [disabled]="isLoading"
-                        matTooltip="Salvar Nome">
+                        matTooltip="{{ 'PROFILE.SAVE_NAME_TOOLTIP' | translate }}">
                         <mat-icon>check</mat-icon>
                     </button>
 
                     <button mat-mini-fab color="warn" class="action-btn cancel-btn" (click)="toggleEditName()"
-                        matTooltip="Cancelar">
+                        matTooltip="{{ 'PROFILE.CANCEL_TOOLTIP' | translate }}">
                         <mat-icon>close</mat-icon>
                     </button>
                 </div>
@@ -76,10 +80,10 @@
 
         <!-- Segurança -->
         <div class="section-header">
-            <h3>Segurança</h3>
+            <h3>{{ 'PROFILE.SECURITY_SECTION' | translate }}</h3>
             <button mat-stroked-button (click)="toggleChangePassword()" *ngIf="!isChangingPassword"
                 class="change-pass-btn">
-                <mat-icon>vpn_key</mat-icon> Alterar Senha
+                <mat-icon>vpn_key</mat-icon> {{ 'PROFILE.CHANGE_PASS_BTN' | translate }}
             </button>
             <button mat-icon-button (click)="toggleChangePassword()" *ngIf="isChangingPassword">
                 <mat-icon>close</mat-icon>
@@ -87,28 +91,29 @@
         </div>
 
         <div *ngIf="isChangingPassword" class="password-form-container">
-            <p class="hint">Preencha os campos para alterar sua senha.</p>
+            <p class="hint">{{ 'PROFILE.CHANGE_PASS_HINT' | translate }}</p>
 
             <div class="custom-input-group">
-                <label>Senha Atual</label>
+                <label>{{ 'PROFILE.CURRENT_PASS_LABEL' | translate }}</label>
                 <input type="password" [(ngModel)]="oldPassword" class="steam-input"
-                    placeholder="Digite sua senha atual">
+                    placeholder="{{ 'PROFILE.CURRENT_PASS_PLACEHOLDER' | translate }}">
             </div>
 
             <div class="custom-input-group">
-                <label>Nova Senha</label>
-                <input type="password" [(ngModel)]="password" class="steam-input" placeholder="Digite a nova senha">
+                <label>{{ 'PROFILE.NEW_PASS_LABEL' | translate }}</label>
+                <input type="password" [(ngModel)]="password" class="steam-input"
+                    placeholder="{{ 'PROFILE.NEW_PASS_PLACEHOLDER' | translate }}">
             </div>
 
             <div class="custom-input-group">
-                <label>Confirmar Nova Senha</label>
+                <label>{{ 'PROFILE.CONFIRM_PASS_LABEL' | translate }}</label>
                 <input type="password" [(ngModel)]="confirmPassword" class="steam-input"
-                    placeholder="Confirme a nova senha">
+                    placeholder="{{ 'PROFILE.CONFIRM_PASS_PLACEHOLDER' | translate }}">
             </div>
 
             <div class="actions" style="margin-top: 16px;">
                 <button mat-raised-button color="primary" (click)="savePassword()" [disabled]="isLoading">
-                    Confirmar Nova Senha
+                    {{ 'PROFILE.CONFIRM_PASS_BTN' | translate }}
                 </button>
             </div>
         </div>
@@ -117,7 +122,7 @@
             <!-- Global Action mainly for Avatar now -->
             <button mat-raised-button color="primary" (click)="saveAvatar()"
                 [disabled]="isLoading || selectedAvatar === user?.avatar">
-                <mat-icon>save</mat-icon> Salvar Avatar
+                <mat-icon>save</mat-icon> {{ 'PROFILE.SAVE_AVATAR_BTN' | translate }}
             </button>
         </div>
     </mat-card>

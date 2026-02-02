@@ -1,14 +1,14 @@
 <div class="admin-dashboard">
     <header class="admin-header">
-        <h1><mat-icon>security</mat-icon> Painel Administrativo</h1>
-        <p>Visão geral do sistema e controles.</p>
+        <h1><mat-icon>security</mat-icon> {{ 'ADMIN.HEADER' | translate }}</h1>
+        <p>{{ 'ADMIN.ELEGANCE' | translate }}</p>
     </header>
 
     <section class="stats-grid">
         <div class="stat-card">
             <div class="icon-box user"><mat-icon>group</mat-icon></div>
             <div class="stat-info">
-                <h3>Usuários</h3>
+                <h3>{{ 'ADMIN.USERS' | translate }}</h3>
                 <p class="value">{{ stats?.totalUsers || 0 }}</p>
             </div>
         </div>
@@ -16,7 +16,7 @@
         <div class="stat-card clickable" routerLink="/admin/cards">
             <div class="icon-box card"><mat-icon>style</mat-icon></div>
             <div class="stat-info">
-                <h3>Cartas no Banco</h3>
+                <h3>{{ 'ADMIN.CARDS_IN_DB' | translate }}</h3>
                 <p class="value">{{ stats?.totalCards || 0 }}</p>
             </div>
             <mat-icon class="arrow-indicator">chevron_right</mat-icon>
@@ -24,22 +24,22 @@
     </section>
 
     <section class="admin-actions">
-        <h2>Ações do Sistema</h2>
+        <h2>{{ 'ADMIN.SYSTEM_ACTIONS' | translate }}</h2>
 
         <div class="action-card">
             <div class="action-info">
-                <h3>Sincronizar Scryfall</h3>
-                <p>Atualiza preços de TODAS as cartas no banco. Processo demorado.</p>
+                <h3>{{ 'ADMIN.SYNC_SCRYFALL' | translate }}</h3>
+                <p>{{ 'ADMIN.SYNC_DESC' | translate }}</p>
             </div>
             <button class="action-btn sync" (click)="triggerSync()" [disabled]="isSyncing">
                 <mat-icon [class.spin]="isSyncing">sync</mat-icon>
-                {{ isSyncing ? 'Sincronizando...' : 'Sincronizar Agora' }}
+                {{ isSyncing ? ('ADMIN.SYNCING_BTN' | translate) : ('ADMIN.SYNC_BTN' | translate) }}
             </button>
 
             <button class="action-btn bulk" (click)="triggerBulkImport()" [disabled]="isSyncing"
                 style="margin-left: 10px;">
                 <mat-icon>cloud_download</mat-icon>
-                Bulk Import (Novo)
+                {{ 'ADMIN.BULK_IMPORT' | translate }}
             </button>
         </div>
 
@@ -56,16 +56,16 @@
     </section>
 
     <section class="user-management">
-        <h2>Gerenciamento de Usuários</h2>
+        <h2>{{ 'ADMIN.USER_MANAGEMENT' | translate }}</h2>
 
         <div class="user-table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th>{{ 'ADMIN.TABLE_NAME' | translate }}</th>
+                        <th>{{ 'ADMIN.TABLE_EMAIL' | translate }}</th>
+                        <th>{{ 'ADMIN.TABLE_STATUS' | translate }}</th>
+                        <th>{{ 'ADMIN.TABLE_ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,24 +74,25 @@
                         <td>{{ user.email }}</td>
                         <td>
                             <span class="badge" [class.active]="user.enabled" [class.banned]="!user.enabled">
-                                {{ user.enabled ? 'Ativo' : 'Bloqueado' }}
+                                {{ user.enabled ? ('ADMIN.STATUS_ACTIVE' | translate) : ('ADMIN.STATUS_BANNED' |
+                                translate) }}
                             </span>
                         </td>
                         <td>
                             <button *ngIf="user.role !== 'ADMIN'" class="btn-sm" [class.unban]="!user.enabled"
                                 [class.ban]="user.enabled" (click)="toggleUserStatus(user)">
-                                {{ user.enabled ? 'Bloquear' : 'Desbloquear' }}
+                                {{ user.enabled ? ('ADMIN.BTN_BLOCK' | translate) : ('ADMIN.BTN_UNBLOCK' | translate) }}
                             </button>
 
                             <button class="btn-sm role-btn" *ngIf="user.id !== currentUserId"
                                 [class.promote]="user.role !== 'ADMIN'" [class.demote]="user.role === 'ADMIN'"
                                 (click)="toggleUserRole(user)" style="margin-left: 5px;"
-                                title="{{ user.role === 'ADMIN' ? 'Rebaixar' : 'Promover' }}">
+                                title="{{ user.role === 'ADMIN' ? ('ADMIN.BTN_DEMOTE_TOOLTIP' | translate) : ('ADMIN.BTN_PROMOTE_TOOLTIP' | translate) }}">
                                 <mat-icon>{{ user.role === 'ADMIN' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
                             </button>
 
                             <button class="btn-sm delete" *ngIf="user.id !== currentUserId" (click)="deleteUser(user)"
-                                title="Excluir Usuário">
+                                title="{{ 'ADMIN.BTN_DELETE_TOOLTIP' | translate }}">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </td>
@@ -100,7 +101,7 @@
             </table>
 
             <div *ngIf="users.length === 0" class="empty-state">
-                Nenhum usuário encontrado.
+                {{ 'ADMIN.EMPTY_USERS' | translate }}
             </div>
         </div>
     </section>

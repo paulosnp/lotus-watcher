@@ -1,5 +1,5 @@
 <div *ngIf="isLoading" class="loading-container">
-  <h2>Acessando os arquivos do multiverso...</h2>
+  <h2>{{ 'CARD.LOADING' | translate }}</h2>
 </div>
 
 <div class="details-container" *ngIf="!isLoading && card">
@@ -28,21 +28,21 @@
         <span class="set-badge">{{ card.setName }}</span>
 
         <div class="price-box">
-          <span class="label">Preço Atual</span>
+          <span class="label">{{ 'CARD.CURRENT_PRICE' | translate }}</span>
           <span class="value">${{ card.priceUsd | number:'1.2-2' }}</span>
         </div>
         <a [href]="getLigaMagicLink()" target="_blank" class="ligamagic-btn">
           <mat-icon>shopping_cart</mat-icon>
-          Ver na LigaMagic
+          {{ 'CARD.SEE_LIGAMAGIC' | translate }}
         </a>
       </div>
     </div>
 
     <div class="chart-panel">
       <div class="chart-header">
-        <h3>Histórico de Preço</h3>
+        <h3>{{ 'CARD.PRICE_HISTORY' | translate }}</h3>
         <span class="last-update" *ngIf="card.lastUpdate">
-          <mat-icon>update</mat-icon> Atualizado em: {{ getLastUpdateText() }}
+          <mat-icon>update</mat-icon> {{ 'CARD.UPDATED_AT' | translate }}: {{ getLastUpdateText() }}
         </span>
       </div>
       <div class="chart-wrapper">
@@ -56,7 +56,7 @@
   <hr class="divider">
 
   <div class="prints-section">
-    <h2>Outras Versões & Edições</h2>
+    <h2>{{ 'CARD.OTHER_VERSIONS' | translate }}</h2>
     <div class="prints-grid">
       @for (print of prints; track print.id) {
       <div class="print-item" (click)="selecionarEdicao(print.id)" [class.active]="card.id === print.id">

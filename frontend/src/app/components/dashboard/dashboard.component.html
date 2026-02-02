@@ -21,8 +21,8 @@
         @if (isNotificationsOpen) {
         <div class="dropdown-menu notification-dropdown">
           <div class="dropdown-header">
-            <span>Notificações</span>
-            <span class="count">{{ (unreadCount$ | async) || 0 }} não lidas</span>
+            <span>{{ 'NOTIF.HEADER' | translate }}</span>
+            <span class="count">{{ (unreadCount$ | async) || 0 }} {{ 'NOTIF.UNREAD' | translate }}</span>
           </div>
 
           <div class="notification-list">
@@ -37,7 +37,8 @@
                 <span class="notif-time">{{ notification.createdAt | date:'short' }}</span>
               </div>
 
-              <button class="delete-btn" (click)="deleteNotification(notification.id, $event)" title="Apagar">
+              <button class="delete-btn" (click)="deleteNotification(notification.id, $event)"
+                title="{{ 'NOTIF.DELETE' | translate }}">
                 <mat-icon>delete</mat-icon>
               </button>
 
@@ -48,7 +49,7 @@
             } @empty {
             <div class="empty-notif">
               <mat-icon>notifications_off</mat-icon>
-              <p>Nenhuma notificação.</p>
+              <p>{{ 'NOTIF.EMPTY' | translate }}</p>
             </div>
             }
           </div>
@@ -74,19 +75,27 @@
 
     @if (isMenuOpen) {
     <div class="dropdown-menu">
+      <button class="menu-item" (click)="toggleLanguage()">
+        <mat-icon>language</mat-icon>
+        {{ currentLang() === 'pt' ? 'English' : 'Português' }}
+      </button>
+      <div class="menu-divider"></div>
+
       @if (!isLoggedIn) {
-      <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> Entrar</a>
-      <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> Criar Conta</a>
+      <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> {{ 'MENU.LOGIN' | translate }}</a>
+      <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> {{ 'MENU.REGISTER' | translate }}</a>
       }
 
       @if (isLoggedIn) {
-      <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> Minha Conta</a>
+      <a routerLink="/profile" class="menu-item"><mat-icon>account_circle</mat-icon> {{ 'MENU.PROFILE' | translate
+        }}</a>
       @if (isAdmin) {
-      <a routerLink="/admin" class="menu-item"><mat-icon>security</mat-icon> Admin Panel</a>
+      <a routerLink="/admin" class="menu-item"><mat-icon>security</mat-icon> {{ 'MENU.ADMIN' | translate }}</a>
       }
-      <a routerLink="/watchlist" class="menu-item"><mat-icon>bookmarks</mat-icon> Watchlist</a>
+      <a routerLink="/watchlist" class="menu-item"><mat-icon>bookmarks</mat-icon> {{ 'MENU.WATCHLIST' | translate }}</a>
       <div class="menu-divider"></div>
-      <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> Sair</button>
+      <button (click)="logout()" class="menu-item logout"><mat-icon>logout</mat-icon> {{ 'MENU.LOGOUT' | translate
+        }}</button>
       }
     </div>
     }
@@ -98,20 +107,20 @@
   @if (!isSearching) {
   <section class="hero-section">
     <div class="hero-content">
-      <h1>Bem-vindo ao <br class="mobile-break"> <img src="assets/logo.svg" alt="Logo" class="hero-logo"> <span
-          class="highlight">Lotus Watcher</span></h1>
-      <p>Monitore preços, descubra tendências e proteja sua coleção.</p>
+      <h1>{{ 'HOME.WELCOME' | translate }} <br class="mobile-break"> <img src="assets/logo.svg" alt="Logo"
+          class="hero-logo"> <span class="highlight">Lotus Watcher</span></h1>
+      <p>{{ 'HOME.SUBTITLE' | translate }}</p>
 
       <div class="hero-search-wrapper">
-        <app-search [isCompact]="true"></app-search>
+        <app-search [isCompact]="true" [customPlaceholder]="('HOME.SEARCH_PLACEHOLDER' | translate)"></app-search>
 
 
 
-        <a routerLink="/sets" class="action-btn-home" title="Expansões (Sets)">
+        <a routerLink="/sets" class="action-btn-home" title="{{ 'MENU.SETS' | translate }}">
           <mat-icon>style</mat-icon>
         </a>
 
-        <button class="action-btn-home" (click)="onRandomCard()" title="Carta Aleatória">
+        <button class="action-btn-home" (click)="onRandomCard()" title="{{ 'MENU.RANDOM' | translate }}">
           <mat-icon>shuffle</mat-icon>
         </button>
       </div>
@@ -119,7 +128,7 @@
       <!-- FILTER PANEL -->
       <div class="filter-panel" *ngIf="showFilters">
         <div class="filter-group">
-          <label>Cores</label>
+          <label>{{ 'FILTER.COLORS' | translate }}</label>
           <div class="color-options">
             <button class="mana-btn w" [class.active]="filterState.colors.w"
               (click)="updateFilter('colors', 'w')"></button>
@@ -137,42 +146,42 @@
         </div>
 
         <div class="filter-group">
-          <label>Raridade</label>
+          <label>{{ 'FILTER.RARITY' | translate }}</label>
           <div class="chip-options">
             <button class="chip" [class.active]="filterState.rarities.common"
-              (click)="updateFilter('rarities', 'common')">Comum</button>
+              (click)="updateFilter('rarities', 'common')">{{ 'FILTER.COMMON' | translate }}</button>
             <button class="chip" [class.active]="filterState.rarities.uncommon"
-              (click)="updateFilter('rarities', 'uncommon')">Incomum</button>
+              (click)="updateFilter('rarities', 'uncommon')">{{ 'FILTER.UNCOMMON' | translate }}</button>
             <button class="chip" [class.active]="filterState.rarities.rare"
-              (click)="updateFilter('rarities', 'rare')">Rara</button>
+              (click)="updateFilter('rarities', 'rare')">{{ 'FILTER.RARE' | translate }}</button>
             <button class="chip" [class.active]="filterState.rarities.mythic"
-              (click)="updateFilter('rarities', 'mythic')">Mítica</button>
+              (click)="updateFilter('rarities', 'mythic')">{{ 'FILTER.MYTHIC' | translate }}</button>
           </div>
         </div>
 
         <div class="filter-group">
-          <label>Tipo</label>
+          <label>{{ 'FILTER.TYPE' | translate }}</label>
           <div class="chip-options wrap">
             <button class="chip" [class.active]="filterState.types.creature"
-              (click)="updateFilter('types', 'creature')">Criatura</button>
+              (click)="updateFilter('types', 'creature')">{{ 'FILTER.CREATURE' | translate }}</button>
             <button class="chip" [class.active]="filterState.types.instant"
-              (click)="updateFilter('types', 'instant')">Mágica Instantânea</button>
+              (click)="updateFilter('types', 'instant')">{{ 'FILTER.INSTANT' | translate }}</button>
             <button class="chip" [class.active]="filterState.types.sorcery"
-              (click)="updateFilter('types', 'sorcery')">Feitiço</button>
+              (click)="updateFilter('types', 'sorcery')">{{ 'FILTER.SORCERY' | translate }}</button>
             <button class="chip" [class.active]="filterState.types.enchantment"
-              (click)="updateFilter('types', 'enchantment')">Encantamento</button>
+              (click)="updateFilter('types', 'enchantment')">{{ 'FILTER.ENCHANTMENT' | translate }}</button>
             <button class="chip" [class.active]="filterState.types.artifact"
-              (click)="updateFilter('types', 'artifact')">Artefato</button>
+              (click)="updateFilter('types', 'artifact')">{{ 'FILTER.ARTIFACT' | translate }}</button>
             <button class="chip" [class.active]="filterState.types.planeswalker"
-              (click)="updateFilter('types', 'planeswalker')">Planeswalker</button>
-            <button class="chip" [class.active]="filterState.types.land"
-              (click)="updateFilter('types', 'land')">Terreno</button>
+              (click)="updateFilter('types', 'planeswalker')">{{ 'FILTER.PLANESWALKER' | translate }}</button>
+            <button class="chip" [class.active]="filterState.types.land" (click)="updateFilter('types', 'land')">{{
+              'FILTER.LAND' | translate }}</button>
           </div>
         </div>
 
         <div class="filter-actions">
           <button class="apply-btn" (click)="applyFilters()">
-            <mat-icon>search</mat-icon> Aplicar Filtros
+            <mat-icon>search</mat-icon> {{ 'FILTER.APPLY' | translate }}
           </button>
         </div>
       </div>
@@ -192,9 +201,9 @@
         <h2>
           <!-- Show specific title if it's a complex query -->
           @if (searchQuery.includes(':')) {
-          Resultados da Pesquisa Avançada
+          {{ 'MARKET.ADVANCED_SEARCH_RESULTS' | translate }}
           } @else {
-          Resultados para "{{ searchQuery }}"
+          {{ 'MARKET.SEARCH_RESULTS' | translate }} "{{ searchQuery }}"
           }
         </h2>
       </div>
@@ -216,9 +225,9 @@
         </div>
         } @empty {
         @if(isLoading) {
-        <p class="empty-msg">Buscando...</p>
+        <p class="empty-msg">{{ 'MARKET.EMPTY' | translate }}</p>
         } @else {
-        <p class="empty-msg">Nenhuma carta encontrada.</p>
+        <p class="empty-msg">{{ 'MARKET.NO_RESULTS' | translate }}</p>
         }
         }
       </div>
@@ -230,7 +239,7 @@
     <div class="market-list winners">
       <div class="list-header">
         <mat-icon>trending_up</mat-icon>
-        <h2>Maiores Altas (24h)</h2>
+        <h2>{{ 'MARKET.RISERS' | translate }}</h2>
       </div>
 
       <div class="cards-grid">
@@ -250,7 +259,7 @@
           </div>
         </div>
         } @empty {
-        <p class="empty-msg">Carregando dados do mercado...</p>
+        <p class="empty-msg">{{ 'MARKET.EMPTY' | translate }}</p>
         }
       </div>
     </div>
@@ -258,7 +267,7 @@
     <div class="market-list losers">
       <div class="list-header">
         <mat-icon>trending_down</mat-icon>
-        <h2>Maiores Quedas (24h)</h2>
+        <h2>{{ 'MARKET.FALLERS' | translate }}</h2>
       </div>
 
       <div class="cards-grid">

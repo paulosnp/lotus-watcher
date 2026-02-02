@@ -2,12 +2,13 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../../pipes/translate.pipe';
 import { AdminService } from '../../../services/admin.service';
 
 @Component({
     selector: 'app-admin-cards',
     standalone: true,
-    imports: [CommonModule, RouterModule, MatIconModule],
+    imports: [CommonModule, RouterModule, MatIconModule, TranslatePipe],
     templateUrl: './admin-cards.html',
     styleUrls: ['./admin-cards.scss']
 })

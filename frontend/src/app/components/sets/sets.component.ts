@@ -3,11 +3,12 @@ import { CommonModule, Location } from '@angular/common'; // Import Location
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
 import { SetService } from '../../services/set.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
     selector: 'app-sets',
     standalone: true,
-    imports: [CommonModule, MatIconModule], // Add MatIconModule
+    imports: [CommonModule, MatIconModule, TranslatePipe], // Add MatIconModule and TranslatePipe
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss']
 })

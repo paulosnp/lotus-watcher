@@ -11,11 +11,13 @@ import { FilterService } from '../../services/filter.service';
 import { NotificationService } from '../../services/notification.service'; // Import NotificationService
 import { Notification } from '../../models/notification.model'; // Import Notification Model
 import { Observable } from 'rxjs'; // Import Observable
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LanguageService } from '../../services/language.service'; // Import LanguageService
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule, SearchComponent, RouterModule, FormsModule],
+  imports: [CommonModule, MatIconModule, SearchComponent, RouterModule, FormsModule, TranslatePipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -39,6 +41,9 @@ export class DashboardComponent implements OnInit {
   notifications$: Observable<Notification[]>;
   isMenuOpen: boolean = false;
 
+  // Language Signal (Delegate to Service)
+  currentLang: any;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -47,16 +52,24 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private location: Location,
     private filterService: FilterService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    public languageService: LanguageService // Inject Service as Public for template access logic if needed, but here simpler.
   ) {
     // Initialize Observables
     this.unreadCount$ = this.notificationService.unreadCount$;
     this.notifications$ = this.notificationService.notifications$;
+    this.currentLang = this.languageService.currentLang;
   }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
     if (this.isMenuOpen) this.isNotificationsOpen = false;
+    this.cdr.detectChanges();
+  }
+
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+    this.cdr.detectChanges(); // Force UI update
   }
 
   toggleNotifications() {

@@ -2,28 +2,28 @@
     <header class="page-header">
         <div class="header-content">
             <button class="back-btn" routerLink="/admin">
-                <mat-icon>arrow_back</mat-icon> Voltar
+                <mat-icon>arrow_back</mat-icon> {{ 'ADMIN.BACK_BTN' | translate }}
             </button>
-            <h1><mat-icon>style</mat-icon> Gerenciamento de Cartas</h1>
+            <h1><mat-icon>style</mat-icon> {{ 'ADMIN.CARDS_TITLE' | translate }}</h1>
         </div>
-        <p>Visualizando todas as cartas monitoradas pelo sistema.</p>
+        <p>{{ 'ADMIN.CARDS_SUBTITLE' | translate }}</p>
     </header>
 
     <div class="cards-table-container">
         <div *ngIf="isLoading" class="loading-state">
             <mat-icon class="spin">sync</mat-icon>
-            <p>Carregando cartas...</p>
+            <p>{{ 'ADMIN.CARDS_LOADING' | translate }}</p>
         </div>
 
         <table *ngIf="!isLoading">
             <thead>
                 <tr>
-                    <th style="width: 60px;">Img</th>
-                    <th>Nome</th>
-                    <th>Set</th>
-                    <th>Preço (USD)</th>
+                    <th style="width: 60px;">{{ 'ADMIN.TH_IMG' | translate }}</th>
+                    <th>{{ 'ADMIN.TH_NAME' | translate }}</th>
+                    <th>{{ 'ADMIN.TH_SET' | translate }}</th>
+                    <th>{{ 'ADMIN.TH_PRICE' | translate }}</th>
                     <!-- <th>Atualizado</th> -->
-                    <th style="text-align: right;">Ações</th>
+                    <th style="text-align: right;">{{ 'ADMIN.TH_ACTIONS' | translate }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,7 +56,7 @@
             <button [disabled]="page === 0" (click)="changePage(-1)">
                 <mat-icon>chevron_left</mat-icon>
             </button>
-            <span>Página {{ page + 1 }} de {{ totalPages }}</span>
+            <span>{{ 'ADMIN.PAGE' | translate }} {{ page + 1 }} {{ 'ADMIN.OF' | translate }} {{ totalPages }}</span>
             <button [disabled]="page >= totalPages - 1" (click)="changePage(1)">
                 <mat-icon>chevron_right</mat-icon>
             </button>

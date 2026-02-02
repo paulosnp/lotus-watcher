@@ -21,6 +21,7 @@ import { FilterService } from '../../services/filter.service'; // Import FilterS
 export class SearchComponent {
 
   @Input() isCompact: boolean = false;
+  @Input() customPlaceholder: string = ''; // New Input for translation
 
   searchTerm: string = '';
   isLoading: boolean = false;

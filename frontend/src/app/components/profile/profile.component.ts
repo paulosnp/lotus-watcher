@@ -12,11 +12,13 @@ import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatInputModule, MatIconModule, MatSnackBarModule, MatDividerModule, MatFormFieldModule, MatProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatInputModule, MatIconModule, MatSnackBarModule, MatDividerModule, MatFormFieldModule, MatProgressSpinnerModule, TranslatePipe, MatTooltipModule],
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.scss']
 })

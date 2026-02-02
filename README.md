@@ -4,9 +4,10 @@
 
   <p>
     <img src="https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java" alt="Java 21">
-    <img src="https://img.shields.io/badge/Spring%20Boot-4.0.2-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
-    <img src="https://img.shields.io/badge/Angular-21-red?style=for-the-badge&logo=angular" alt="Angular">
+    <img src="https://img.shields.io/badge/Spring%20Boot-3.2.2-brightgreen?style=for-the-badge&logo=spring" alt="Spring Boot">
+    <img src="https://img.shields.io/badge/Angular-18-red?style=for-the-badge&logo=angular" alt="Angular">
     <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql" alt="Database">
+    <img src="https://img.shields.io/badge/i18n-PT%2FEN-purple?style=for-the-badge&logo=google-translate" alt="i18n">
   </p>
 
   <p>Uma aplicação Full Stack robusta para acompanhar a flutuação de preços de cartas TCG em tempo real, fornecendo análises de tendências, histórico gráfico e integração com marketplaces.</p>
@@ -27,63 +28,83 @@ O **Lotus Watcher** nasceu da necessidade de centralizar e historicizar informa�
 
 O sistema consome dados da API global **Scryfall**, armazena o histórico de preços em um banco de dados relacional (PostgreSQL) e utiliza algoritmos para identificar oportunidades de compra (Bull Market) ou venda (Bear Market).
 
+Agora conta com um sistema completo de **Autenticação**, **Painel Administrativo** e **Internacionalização (PT/EN)**.
+
 ---
 
 ## ✨ Funcionalidades Principais
 
-* **🔍 Busca Inteligente & Cache:** Integração com Scryfall. O sistema prioriza a busca local (DB) para performance; se não encontrar, busca na API externa e salva automaticamente ("Fetch-and-Save").
-* **📈 Dashboard de Mercado (Algo Trading):** Algoritmo implementado com `Java Streams` que calcula a variação percentual exata (Preço Atual vs. Preço Histórico) para gerar rankings de **Top Risers** e **Top Fallers**.
-* **📊 Gráficos Interativos:** Visualização da evolução de preços utilizando **Chart.js**, permitindo análise temporal da volatilidade.
-* **🛒 Integração com E-commerce:** Botão inteligente que gera links diretos para a **LigaMagic** baseado no nome exato da carta.
-* **🔄 Multiversos (Prints):** Sistema capaz de buscar e listar todas as impressões/versões alternativas de uma mesma carta.
+### 🔒 Autenticação & Segurança
+* **JWT (JSON Web Token):** Sistema seguro de login e registro.
+* **Verificação de Email:** Código de 6 dígitos enviado por email para ativar a conta (via Spring Mail).
+* **Guards de Rota:** Proteção no frontend para impedir acesso não autorizado a páginas de Admin ou Perfil.
+
+### 🌍 Internacionalização
+* **Suporte Bilíngue:** Tradução completa para Português (PT) e Inglês (EN).
+* **Autodetecção:** O sistema identifica o idioma do navegador do usuário na primeira visita.
+* **Persistência:** Lembra a preferência do usuário entre sessões.
+
+### 🛡️ Painel Administrativo
+* **Gestão de Usuários:** Listagem completa, com opções de Banir/Desbanir e Promover/Rebaixar usuários.
+* **Sincronização em Massa:** Dispara atualização de preços de *todas* as cartas no banco via Scryfall.
+* **Monitoramento:** Visão geral de cartas cadastradas e estatísticas do sistema.
+
+### 👤 Perfil & Personalização
+* **Avatar Customizável:** Upload de imagem de perfil com pré-visualização.
+* **Dados Pessoais:** Edição de Nickname e alteração segura de senha.
+* **Watchlist Avançada:** 
+    * **Bulk Import:** Importe listas inteiras de cartas (formato texto) de uma vez.
+    * **Troca de Versão:** Altere a edição (print) da carta diretamente na sua lista, com seletor visual.
+    * **Notificações:** Alertas visuais e por email sobre variações de preço.
+
+### Core (Mercado)
+* **🔍 Busca Inteligente & Cache:** "Fetch-and-Save" automático do Scryfall.
+* **📈 Algo Trading:** Rankings de **Top Risers** e **Top Fallers** em tempo real.
+* **📊 Gráficos Interativos:** Histórico de preços com Chart.js.
+* **📱 Design Responsivo:** Interface otimizada para Mobile (Menu Hambúrguer, tabelas adaptáveis).
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend (API RESTful)
-* **Java 21** & **Spring Boot 4.0.2**: Núcleo da aplicação.
-* **Spring Data JPA (Hibernate)**: Persistência e ORM.
-* **PostgreSQL**: Banco de dados principal relacional.
-* **Jackson Library**: Processamento de JSON da API Scryfall.
-* **Maven**: Gerenciamento de build.
+* **Java 21** & **Spring Boot 3+**: Núcleo da aplicação.
+* **Spring Security + JWT**: Autenticação Stateless.
+* **Spring Data JPA**: Persistência.
+* **JavaMailSender**: Envio de emails transacionais.
+* **PostgreSQL**: Banco de dados relacional.
+* **Maven**: Gerenciamento de dependências.
 
 ### Frontend (SPA)
-* **Angular 21**: Framework utilizando arquitetura de **Standalone Components**.
-* **TypeScript**: Tipagem estática forte.
-* **Angular Material**: Biblioteca de UI (Cards, Inputs, Botões).
-* **Chart.js & ng2-charts**: Renderização de gráficos financeiros.
-* **SCSS**: Estilização modular.
+* **Angular 18+**: Standalone Components (sem NgModules).
+* **TypeScript**: Tipagem estática.
+* **Angular Material**: UI Kit moderno.
+* **Chart.js**: Visualização de dados.
+* **SCSS**: Estilização profissional.
 
 ---
 
 ## 🏗️ Arquitetura e Decisões Técnicas
 
-O projeto segue uma estrutura de **Monorepo** (`/backend` e `/frontend` no mesmo repositório).
-
 ### 1. Modelo de Dados (Backend)
 As tabelas foram renomeadas explicitamente para evitar conflitos de palavras reservadas:
 * `tb_cards`: Tabela principal das cartas.
-* `tb_price_history`: Tabela com o histórico de preços (Relacionamento One-to-Many).
+* `tb_users`: Tabela de usuários (com roles e status).
+* `tb_price_history`: Histórico de preços (One-to-Many).
+* `tb_watchlist_item`: Relacionamento User-Card com metadados (alvos de preço).
+* `tb_notifications`: Sistema de alertas persistentes.
 
-```java
-@Entity @Table(name = "tb_cards")
-public class Card { ... }
-```
+### 2. Fluxo de Autenticação
+1. Usuário se registra -> Status `DISABLED`.
+2. Email com código é enviado.
+3. Usuário insere código -> Status `ACTIVE`.
+4. Login gera JWT válido por prazo determinado.
 
-### 2. Campo Calculado (Runtime)
-O cálculo de variação percentual (`priceChangePercentage`) **não é persistido**. É um campo `@Transient` calculado em memória pelo Controller ao comparar o `priceUsd` atual com o registro mais antigo do histórico.
-
-### 3. Integridade de Dados (Fetch-and-Save)
+### 3. Integração Scryfall (Fetch-and-Save)
 Ao buscar uma carta nova na API externa:
 1.  Busca no Scryfall.
-2.  Salva a entidade `Card` imediatamente com `cardRepository.saveAndFlush(card)`.
-3.  Adiciona o primeiro registro de histórico.
-4.  Isso previne erros de *Foreign Key Constraint* que ocorreriam se tentássemos salvar o histórico antes do ID da carta existir no banco.
-
-### 4. Frontend Standalone & Performance
-*   **Standalone Components:** Não utilizamos `app.module.ts`. Cada componente (Dashboard, CardDetails) importa suas dependências diretamente.
-*   **Blindagem:** Implementação de `ChangeDetectorRef` para forçar atualizações de UI em operações assíncronas complexas, evitando que a interface "trave" ou desatualize.
+2.  Salva a entidade `Card` imediatamente.
+3.  Adiciona o primeiro registro de histórico para evitar incoerência de dados.
 
 ---
 
@@ -101,13 +122,11 @@ cd lotus-watcher
 ```
 
 ### Passo 2: Executar o Backend
-Vá até a pasta do servidor:
+Configure o `application.properties` com suas credenciais de banco e email (para testes de auth).
 ```bash
 cd backend
 mvn spring-boot:run
 ```
-*O servidor iniciará na porta `8080`.*
-> **Nota:** A aplicação espera um banco PostgreSQL com usuário `postgres` e senha `postgres`. Se sua senha for diferente, defina a variável de ambiente `DB_PASSWORD` ou edite o `application.properties`.
 
 ### Passo 3: Executar o Frontend
 Em um **novo terminal**:
@@ -122,15 +141,36 @@ ng serve
 
 ## 🔌 Documentação da API
 
-Principais endpoints (`CardController`):
+Principais endpoints do sistema:
 
+### 🔐 Autenticação (`AuthController`)
 | Método | Endpoint | Descrição |
 | :--- | :--- | :--- |
-| `GET` | `/api/cards/search?name={nome}` | "Fetch-and-Save": Busca no DB ou no Scryfall. |
-| `GET` | `/api/cards/market` | Retorna risers/fallers calculados em memória. |
+| `POST` | `/api/auth/register` | Registro de novos usuários. |
+| `POST` | `/api/auth/login` | Login (Retorna JWT). |
+| `POST` | `/api/auth/verify-email` | Validação do código de 6 dígitos. |
+
+### 🃏 Cartas & Mercado (`CardController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/api/cards/search` | Busca inteligente (DB/Scryfall). |
+| `GET` | `/api/cards/market` | Retorna Top Risers e Fallers. |
 | `GET` | `/api/cards/{id}` | Detalhes da carta. |
-| `GET` | `/api/cards/{id}/history` | Histórico de preços para o gráfico. |
-| `GET` | `/api/cards/prints/{name}` | Outras versões (prints) da carta. |
+| `GET` | `/api/cards/{id}/history` | Histórico de preços para gráficos. |
+
+### 🔖 Watchlist (`WatchlistController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/api/watchlist` | Retorna lista do usuário logado. |
+| `POST` | `/api/watchlist/add` | Adiciona carta à lista. |
+| `POST` | `/api/watchlist/import` | Importação em massa (texto). |
+
+### 🛡️ Admin (`AdminController`)
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/api/admin/users` | Lista todos os usuários. |
+| `POST` | `/api/admin/sync-scryfall` | Força atualização de preços global. |
+| `POST` | `/api/admin/users/{id}/ban` | Banir usuário. |
 
 ---
 

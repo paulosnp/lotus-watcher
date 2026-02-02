@@ -58,6 +58,21 @@
         .import-actions {
             display: flex;
             justify-content: flex-end;
+
+            button[color="primary"] {
+                background-color: #318ce7; // Azul mais escuro (Azure)
+                color: white;
+                font-weight: bold;
+
+                &:hover {
+                    background-color: #1a73e8; // Mais escuro ainda no hover
+                }
+
+                &:disabled {
+                    background-color: rgba(102, 192, 244, 0.3);
+                    color: rgba(255, 255, 255, 0.3);
+                }
+            }
         }
     }
 
@@ -102,6 +117,7 @@
         .image-wrapper {
             position: relative;
             width: 50px; // Thumbnail size
+            cursor: pointer;
 
             .card-thumb {
                 width: 100%;

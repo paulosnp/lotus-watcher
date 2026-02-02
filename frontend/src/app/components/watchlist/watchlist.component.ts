@@ -11,6 +11,7 @@ import { WatchlistDialogComponent } from './watchlist-dialog.component';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { WatchlistVersionDialogComponent } from './watchlist-version-dialog.component';
 
 @Component({
     selector: 'app-watchlist',
@@ -95,6 +96,38 @@ export class WatchlistComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.loadWatchlist();
+            }
+        });
+    }
+
+    openVersionSwap(item: any) {
+        const dialogRef = this.dialog.open(WatchlistVersionDialogComponent, {
+            width: '800px',
+            panelClass: 'lotus-dialog-container',
+            data: {
+                cardId: item.card.id,
+                cardName: item.card.name
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(newCardId => {
+            if (newCardId && newCardId !== item.card.id) {
+                // Update item with new Card ID
+                this.watchlistService.updateItem(item.id, {
+                    cardId: newCardId,
+                    notes: item.notes,
+                    targetPrice: item.targetPrice,
+                    tag: item.tag
+                }).subscribe({
+                    next: () => {
+                        this.snackBar.open('Versão alterada com sucesso!', 'OK', { duration: 3000 });
+                        this.loadWatchlist();
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        this.snackBar.open('Erro ao alterar versão.', 'Fechar', { duration: 3000 });
+                    }
+                });
             }
         });
     }

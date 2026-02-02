@@ -183,6 +183,7 @@ public class ScryfallService {
             String query = "!\"" + name + "\"";
             String encodedQuery = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
             String url = "https://api.scryfall.com/cards/search?q=" + encodedQuery + "&unique=prints";
+            System.out.println(">>> PRINTS SEARCH URL: " + url);
             return fetchJson(url);
         } catch (Exception e) {
             e.printStackTrace();

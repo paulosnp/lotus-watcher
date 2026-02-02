@@ -117,10 +117,12 @@ public class CardController {
     }
 
     @GetMapping("/prints/{name}")
-    public ResponseEntity<JsonNode> getCardPrints(@PathVariable String name) {
+    public ResponseEntity<String> getCardPrints(@PathVariable String name) {
         JsonNode prints = scryfallService.findPrintsByName(name);
         if (prints != null) {
-            return ResponseEntity.ok(prints);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(prints.toString());
         }
         return ResponseEntity.notFound().build();
     }

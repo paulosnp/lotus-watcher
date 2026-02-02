@@ -38,8 +38,7 @@ export class CardService {
 
 
   getCardPrints(cardName: string): Observable<any> {
-
-    return this.http.get<any>(`https://api.scryfall.com/cards/search?q=!"${cardName}"&unique=prints`);
+    return this.http.get<any>(`${this.apiUrl}/prints/${cardName}`);
   }
 
   getMarketOverview(): Observable<any> {

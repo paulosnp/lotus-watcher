@@ -28,7 +28,7 @@
             <ng-container matColumnDef="image">
                 <th mat-header-cell *matHeaderCellDef> Carta </th>
                 <td mat-cell *matCellDef="let item" class="image-cell">
-                    <div class="image-wrapper">
+                    <div class="image-wrapper" (click)="openVersionSwap(item)" matTooltip="Clique para trocar a versão">
                         <img [src]="item.card.imageUrl" class="card-thumb" alt="art">
                         <img [src]="item.card.imageUrl" class="card-zoom" alt="art-zoom">
                     </div>

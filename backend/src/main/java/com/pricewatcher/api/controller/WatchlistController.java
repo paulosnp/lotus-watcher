@@ -30,6 +30,9 @@ public class WatchlistController {
     @Autowired
     private CardRepository cardRepository;
 
+    @Autowired
+    private com.pricewatcher.api.service.ScryfallService scryfallService;
+
     private User getAuthenticatedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -102,6 +105,26 @@ public class WatchlistController {
             WatchlistItem item = itemOpt.get();
             if (!item.getUser().getId().equals(user.getId())) {
                 return ResponseEntity.status(403).body("Not authorized");
+            }
+
+            // HANDLE CARD SWAP
+            if (dto.getCardId() != null && !dto.getCardId().equals(item.getCard().getId())) {
+                // Check if new card exists locally
+                Optional<Card> newCardOpt = cardRepository.findById(dto.getCardId());
+                Card newCard = null;
+
+                if (newCardOpt.isPresent()) {
+                    newCard = newCardOpt.get();
+                } else {
+                    // Fetch from Scryfall
+                    newCard = scryfallService.getCardById(dto.getCardId());
+                }
+
+                if (newCard != null) {
+                    item.setCard(newCard); // SWAP
+                } else {
+                    return ResponseEntity.badRequest().body("Invalid Card ID: " + dto.getCardId());
+                }
             }
 
             item.setNotes(dto.getNotes());

@@ -121,7 +121,7 @@
         <div class="actions" *ngIf="!isEditingName && !isChangingPassword">
             <!-- Global Action mainly for Avatar now -->
             <button mat-raised-button color="primary" (click)="saveAvatar()"
-                [disabled]="isLoading || selectedAvatar === user?.avatar">
+                [disabled]="isLoading || selectedAvatar === (user?.avatar || '')">
                 <mat-icon>save</mat-icon> {{ 'PROFILE.SAVE_AVATAR_BTN' | translate }}
             </button>
         </div>

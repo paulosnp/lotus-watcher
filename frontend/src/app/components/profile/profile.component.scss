@@ -299,5 +299,14 @@
         background-color: #007bff !important;
         /* Blue for Save */
         color: white !important;
+
+        // Custom Disabled State specific for this user request
+        &[disabled],
+        &.mat-button-disabled {
+            background-color: rgba(0, 123, 255, 0.3) !important; // "Lighter" blue (dimmed)
+            color: rgba(255, 255, 255, 0.4) !important;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
     }
 }

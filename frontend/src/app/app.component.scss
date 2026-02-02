@@ -99,6 +99,13 @@
       }
     }
 
+    /* --- DESKTOP ACTIONS WRAPPER --- */
+    .desktop-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
     /* --- SHARED DROPDOWN STYLES --- */
     .dropdown-menu {
       position: absolute;
@@ -114,6 +121,10 @@
       flex-direction: column;
       gap: 2px;
       z-index: 3000;
+
+      .mobile-menu-items {
+        display: none; // Hidden on desktop
+      }
 
       .menu-item {
         display: flex;
@@ -348,16 +359,105 @@
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .navbar {
-    flex-direction: column;
-    padding: 20px;
-    height: auto;
-    gap: 20px;
+    padding: 10px 15px;
+    height: 60px; // Fixed height for mobile
+    gap: 10px;
+    // Keep row direction (default)
   }
 
-  .nav-search {
-    width: 100%;
+  .nav-search-box {
+    flex-grow: 1; // Take all available space
+    width: auto;
+    max-width: none;
+    margin-right: 0;
+  }
+
+  .nav-actions {
+    width: auto; // Only take necessary space
+    flex-shrink: 0; // Don't shrink
+
+    .desktop-actions {
+      display: none !important; // FORCE HIDE DESKTOP BUTTONS
+    }
+  }
+
+  /* Show mobile items in dropdown */
+  .dropdown-menu .mobile-menu-items {
+    display: flex !important; // FORCE SHOW
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 5px;
+
+    .mobile-badge {
+      background: #ff4c4c;
+      color: white;
+      font-size: 10px;
+      border-radius: 50%;
+      padding: 2px 6px;
+      margin-left: auto; // Push to right
+    }
+
+    .mobile-notifications-list {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      margin: 0 10px 10px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+
+      .notification-item {
+        padding: 8px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+
+        .notif-content-mobile {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          overflow: hidden;
+
+          .title {
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+          }
+
+          .msg {
+            color: #8f98a0;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+          }
+        }
+
+        .dot {
+          width: 6px;
+          height: 6px;
+          background: #66c0f4;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        &.unread {
+          background: rgba(102, 192, 244, 0.1);
+        }
+      }
+
+      .empty {
+        padding: 10px;
+        color: #8f98a0;
+        font-style: italic;
+        text-align: center;
+        font-size: 0.85rem;
+      }
+    }
   }
 }
 

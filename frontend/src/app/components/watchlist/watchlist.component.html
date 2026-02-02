@@ -21,7 +21,7 @@
     </div>
 
     @if (watchlist.length > 0) {
-    <div class="table-wrapper mat-elevation-z8">
+    <div class="table-wrapper mat-elevation-z8 desktop-only">
         <table mat-table [dataSource]="watchlist">
 
             <!-- Image Column -->
@@ -100,6 +100,42 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+    </div>
+
+    <!-- MOBILE VIEW (Cards) -->
+    <div class="mobile-watchlist-view mobile-only">
+        <div *ngFor="let item of watchlist" class="mobile-card">
+            <div class="mobile-card-header">
+                <div class="mobile-thumb" (click)="openVersionSwap(item)">
+                    <img [src]="item.card.imageUrl" alt="art">
+                    <div class="swap-icon"><mat-icon>autorenew</mat-icon></div>
+                </div>
+                <div class="mobile-info">
+                    <a [routerLink]="['/card', item.card.id]" class="mobile-name">{{ item.card.name }}</a>
+                    <span class="mobile-set">{{ item.card.setName }}</span>
+                    <span class="mobile-tag" *ngIf="item.tag">{{ item.tag }}</span>
+                </div>
+                <div class="mobile-actions">
+                    <button mat-icon-button (click)="editItem(item)"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button color="warn"
+                        (click)="removeItem(item.id)"><mat-icon>delete</mat-icon></button>
+                </div>
+            </div>
+            <div class="mobile-card-stats">
+                <div class="stat">
+                    <span class="label">Atual</span>
+                    <span class="value price">${{ item.card.priceUsd }}</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Alvo</span>
+                    <span class="value target" [class.hit]="item.targetPrice && item.card.priceUsd <= item.targetPrice">
+                        {{ item.targetPrice ? '$' + item.targetPrice : '-' }}
+                        <mat-icon
+                            *ngIf="item.targetPrice && item.card.priceUsd <= item.targetPrice">notifications_active</mat-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
     } @else {
     <div class="empty-state">

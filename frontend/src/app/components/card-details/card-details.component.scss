@@ -43,9 +43,11 @@
   /* Alinha tudo no topo */
 
   /* RESPONSIVIDADE: Se a tela for menor que 1100px, empilha tudo */
-  @media (max-width: 1100px) {
-    grid-template-columns: 1fr 1fr;
+  /* RESPONSIVIDADE: Se a tela for menor que 960px, empilha tudo */
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
     /* Vira uma coluna só */
+    gap: 20px;
   }
 }
 

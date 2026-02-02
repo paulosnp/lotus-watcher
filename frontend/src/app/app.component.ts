@@ -40,10 +40,12 @@ export class AppComponent {
     if (this.isMenuOpen) this.isNotificationsOpen = false;
   }
 
-  toggleNotifications() {
+  toggleNotifications(keepMenuOpen: boolean = false) {
     this.isNotificationsOpen = !this.isNotificationsOpen;
     if (this.isNotificationsOpen) {
-      this.isMenuOpen = false;
+      if (!keepMenuOpen) {
+        this.isMenuOpen = false;
+      }
       this.notificationService.refresh();
     }
   }
@@ -62,7 +64,8 @@ export class AppComponent {
     }
 
     // Close Notifications
-    if (!target.closest('.notification-wrapper') && this.isNotificationsOpen) {
+    // Allow clicks inside header-menu-wrapper (mobile list) to keep notifications open
+    if (!target.closest('.notification-wrapper') && !target.closest('.header-menu-wrapper') && this.isNotificationsOpen) {
       this.isNotificationsOpen = false;
     }
   }

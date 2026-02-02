@@ -8,64 +8,69 @@
     </div>
 
     <!-- 2. Botões da Direita (Sets + Random) -->
+    <!-- 2. Botões da Direita (Sets + Random) -->
     <div class="nav-actions">
-      <!-- Sets -->
-      <a routerLink="/sets" class="nav-btn" title="Visualizar Expansões">
-        <mat-icon>style</mat-icon>
-        <span>Expansões</span>
-      </a>
+      <!-- Desktop Actions Wrapper -->
+      <div class="desktop-actions">
+        <!-- Sets -->
+        <a routerLink="/sets" class="nav-btn" title="Visualizar Expansões">
+          <mat-icon>style</mat-icon>
+          <span>Expansões</span>
+        </a>
 
-      <!-- Random -->
-      <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom" title="Carta Aleatória">
-        <mat-icon [class.spin]="isLoadingRandom">shuffle</mat-icon>
-        <span>Random</span>
-      </button>
-
-      <!-- Notification Bell -->
-      @if (isLoggedIn) {
-      <div class="notification-wrapper">
-        <button class="nav-btn notification-btn" (click)="toggleNotifications()" title="Notificações">
-          <mat-icon>notifications</mat-icon>
-          @if ((unreadCount$ | async); as count) {
-          @if (count > 0) {
-          <span class="badge">{{ count }}</span>
-          }
-          }
+        <!-- Random -->
+        <button class="nav-btn" (click)="onRandomCard()" [disabled]="isLoadingRandom" title="Carta Aleatória">
+          <mat-icon [class.spin]="isLoadingRandom">shuffle</mat-icon>
+          <span>Random</span>
         </button>
 
-        @if (isNotificationsOpen) {
-        <div class="dropdown-menu notification-dropdown">
-          <div class="dropdown-header">
-            <span>Notificações</span>
-            <span class="count">{{ (unreadCount$ | async) || 0 }} não lidas</span>
-          </div>
+        <!-- Notification Bell -->
+        @if (isLoggedIn) {
+        <div class="notification-wrapper">
+          <button class="nav-btn notification-btn" (click)="toggleNotifications()" title="Notificações">
+            <mat-icon>notifications</mat-icon>
+            @if ((unreadCount$ | async); as count) {
+            @if (count > 0) {
+            <span class="badge">{{ count }}</span>
+            }
+            }
+          </button>
 
-          <div class="notification-list">
-            @for (notification of notifications$ | async; track notification.id) {
-            <div class="notification-item" [class.unread]="!notification.isRead" (click)="markAsRead(notification.id)">
-              <div class="notif-icon">
-                <mat-icon>{{ notification.type === 'PRICE_ALERT' ? 'trending_down' : 'info' }}</mat-icon>
+          @if (isNotificationsOpen) {
+          <div class="dropdown-menu notification-dropdown">
+            <div class="dropdown-header">
+              <span>Notificações</span>
+              <span class="count">{{ (unreadCount$ | async) || 0 }} não lidas</span>
+            </div>
+
+            <div class="notification-list">
+              @for (notification of notifications$ | async; track notification.id) {
+              <div class="notification-item" [class.unread]="!notification.isRead"
+                (click)="markAsRead(notification.id)">
+                <div class="notif-icon">
+                  <mat-icon>{{ notification.type === 'PRICE_ALERT' ? 'trending_down' : 'info' }}</mat-icon>
+                </div>
+                <div class="notif-content">
+                  <span class="notif-title">{{ notification.title }}</span>
+                  <span class="notif-msg">{{ notification.message }}</span>
+                  <span class="notif-time">{{ notification.createdAt | date:'short' }}</span>
+                </div>
+                @if (!notification.isRead) {
+                <div class="unread-dot"></div>
+                }
               </div>
-              <div class="notif-content">
-                <span class="notif-title">{{ notification.title }}</span>
-                <span class="notif-msg">{{ notification.message }}</span>
-                <span class="notif-time">{{ notification.createdAt | date:'short' }}</span>
+              } @empty {
+              <div class="empty-notif">
+                <mat-icon>notifications_off</mat-icon>
+                <p>Nenhuma notificação.</p>
               </div>
-              @if (!notification.isRead) {
-              <div class="unread-dot"></div>
               }
             </div>
-            } @empty {
-            <div class="empty-notif">
-              <mat-icon>notifications_off</mat-icon>
-              <p>Nenhuma notificação.</p>
-            </div>
-            }
           </div>
+          }
         </div>
         }
       </div>
-      }
 
       <!-- Menu Hamburger / Avatar Trigger -->
       <div class="header-menu-wrapper">
@@ -84,7 +89,43 @@
         </button>
 
         @if (isMenuOpen) {
-        <div class="dropdown-menu">
+        <div class="dropdown-menu main-dropdown">
+
+          <!-- MOBILE ONLY ITEMS -->
+          <div class="mobile-menu-items">
+            <!-- Mobile Notifications Link -->
+            @if (isLoggedIn) {
+            <div class="menu-item" (click)="toggleNotifications(true)">
+              <mat-icon>notifications</mat-icon>
+              Notificações
+              @if ((unreadCount$ | async); as count) {
+              @if (count > 0) { <span class="mobile-badge">{{ count }}</span> }
+              }
+            </div>
+
+            @if (isNotificationsOpen) {
+            <div class="mobile-notifications-list">
+              @for (notification of notifications$ | async; track notification.id) {
+              <div class="notification-item" [class.unread]="!notification.isRead"
+                (click)="markAsRead(notification.id)">
+                <div class="notif-content-mobile">
+                  <span class="title">{{ notification.title }}</span>
+                  <span class="msg">{{ notification.message }}</span>
+                </div>
+                @if (!notification.isRead) { <div class="dot"></div> }
+              </div>
+              } @empty {
+              <div class="empty">Nenhuma notificação.</div>
+              }
+            </div>
+            }
+            }
+
+            <a routerLink="/sets" class="menu-item"><mat-icon>style</mat-icon> Expansões</a>
+            <button (click)="onRandomCard()" class="menu-item"><mat-icon>shuffle</mat-icon> Random</button>
+            <div class="menu-divider"></div>
+          </div>
+
           @if (!isLoggedIn) {
           <a routerLink="/login" class="menu-item"><mat-icon>login</mat-icon> Entrar</a>
           <a routerLink="/register" class="menu-item"><mat-icon>person_add</mat-icon> Criar Conta</a>

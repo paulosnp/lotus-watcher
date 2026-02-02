@@ -242,6 +242,185 @@
         }
     }
 
+    // DESKTOP ONLY UTILS
+    .desktop-only {
+        @media (max-width: 768px) {
+            display: none !important;
+        }
+    }
+
+    // MOBILE ONLY UTILS
+    .mobile-only {
+        display: none;
+
+        @media (max-width: 768px) {
+            display: block; // Or flex/grid depending on the component
+        }
+    }
+
+    // --- MOBILE WATCHLIST VIEW ---
+    .mobile-watchlist-view {
+        display: none; // Default hidden
+
+        @media (max-width: 768px) {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mobile-card {
+            background: rgba(22, 32, 45, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            .mobile-card-header {
+                display: flex;
+                gap: 16px;
+
+                .mobile-thumb {
+                    position: relative;
+                    width: 70px;
+                    flex-shrink: 0;
+                    cursor: pointer;
+
+                    img {
+                        width: 100%;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+                    }
+
+                    .swap-icon {
+                        position: absolute;
+                        bottom: -10px;
+                        right: -10px;
+                        background: #66c0f4;
+                        color: #101822;
+                        border-radius: 50%;
+                        width: 24px;
+                        height: 24px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+                        mat-icon {
+                            font-size: 16px;
+                            width: 16px;
+                            height: 16px;
+                        }
+                    }
+                }
+
+                .mobile-info {
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .mobile-name {
+                        color: white;
+                        font-weight: 500;
+                        font-size: 1.1rem;
+                        text-decoration: none;
+                        margin-bottom: 4px;
+                        line-height: 1.2;
+                    }
+
+                    .mobile-set {
+                        color: #8f98a0;
+                        font-size: 0.85rem;
+                        display: flex;
+                        align-items: center; // Align icon if we add one day
+                    }
+
+                    .mobile-tag {
+                        display: inline-block;
+                        background: rgba(102, 192, 244, 0.15);
+                        color: #66c0f4;
+                        padding: 2px 8px;
+                        border-radius: 4px;
+                        font-size: 0.75rem;
+                        margin-top: 6px;
+                        align-self: flex-start;
+                        text-transform: uppercase;
+                        font-weight: bold;
+                    }
+                }
+
+                .mobile-actions {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    justify-content: flex-start;
+
+                    button {
+                        width: 32px;
+                        height: 32px;
+                        line-height: 32px;
+
+                        mat-icon {
+                            font-size: 18px;
+                        }
+                    }
+                }
+            }
+
+            .mobile-card-stats {
+                display: flex;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                padding: 10px;
+                justify-content: space-around;
+
+                .stat {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .label {
+                        font-size: 0.75rem;
+                        color: #8f98a0;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-bottom: 4px;
+                    }
+
+                    .value {
+                        font-size: 1.1rem;
+                        font-weight: bold;
+                        color: white;
+
+                        &.price {
+                            color: #a3cfec;
+                        }
+
+                        &.target {
+                            color: #8f98a0;
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+
+                            &.hit {
+                                color: #a3f7bf;
+                                text-shadow: 0 0 10px rgba(76, 255, 80, 0.3);
+                            }
+
+                            mat-icon {
+                                font-size: 16px;
+                                width: 16px;
+                                height: 16px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @media (max-width: 768px) {
         .hide-mobile {
             display: none;

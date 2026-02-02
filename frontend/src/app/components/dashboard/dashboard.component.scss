@@ -414,6 +414,25 @@
       &:active {
         transform: scale(0.95);
       }
+
+      @media (max-width: 768px) {
+        // display: none !important; // Removed: Show buttons below search
+      }
+    }
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap; // Push buttons to next line
+      gap: 15px;
+      justify-content: center; // Center buttons row
+
+      // Container for the buttons (indirectly selecting via order or just relying on wrap)
+      // Since they are direct children, they will wrap.
+      // Search takes 100%, so buttons will flow below.
+
+      .action-btn-home {
+        flex-grow: 1; // Make them share space evenly
+        max-width: 80px; // But not too wide
+      }
     }
   }
 }
@@ -427,6 +446,7 @@
 
   @media (max-width: 800px) {
     grid-template-columns: 1fr;
+    gap: 15px; // Smaller gap
   }
 }
 
